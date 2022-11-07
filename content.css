@@ -1,0 +1,21 @@
+.nyan-running {
+  height: 20px;
+  position: absolute;
+  top: -5px;
+  left: -15px;
+}
+
+.rainbow {
+  position: absolute;
+  top: -8px;
+  height: 20px;
+  width: 100%;
+  left: -7px;
+}
+
+.night-sky {
+  position: absolute;
+  height: 18px;
+  top: -7px;
+  width: 100%;
+}
