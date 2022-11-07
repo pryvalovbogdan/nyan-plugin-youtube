@@ -1,7 +1,6 @@
 # nyan-plugin-youtube
 
 ## To use plugin just pull it open extension page and add plugin folder there
-[Extensions Page][]
+* <a href="chrome://extensions/">Extensions Page/</a>
 
-[Extensions Page]: chrome://extensions/
 ![Screenshot](assets/screenshot.png)
