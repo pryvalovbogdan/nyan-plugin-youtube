@@ -1,14 +1,7 @@
 const url = 'chrome-extension://' + chrome.runtime.id + '/assets/';
 
 /** Remove default scrubber  **/
-document.querySelector('.ytp-scrubber-button').style.display = 'none'
-
-/** Adding animated nyan cat  **/
-const scrubber = document.querySelector('.ytp-scrubber-container');
-const image = document.createElement('img');
-image.src = url + 'catty.gif';
-image.className = 'nyan-running';
-scrubber.append(image);
+const defaultScrubber = document.querySelector('.ytp-scrubber-button');
 
 /** Changing default toolbar **/
 const toggleToolBars = (parent = document, isChapter) => {
@@ -37,21 +30,97 @@ const toggleToolBars = (parent = document, isChapter) => {
 	});
 }
 
-toggleToolBars();
+const toggleCurrentVideo = (component = defaultScrubber) => {
+	if(component){
+		component.style.display = 'none';
+	}
+
+	/** Adding animated nyan cat  **/
+	const scrubber = document.querySelectorAll('.ytp-scrubber-container');
+
+	scrubber.forEach(item => {
+		const image = document.createElement('img');
+		image.src = url + 'catty.gif';
+		image.className = 'nyan-running';
+
+		item.append(image)
+	})
+
+	toggleToolBars();
+}
+
+if (defaultScrubber) {
+	toggleCurrentVideo();
+}
 
 const targetNode = document.querySelector('.ytp-chapters-container');
 
-/** Config observer to react only for child changing **/
-const config = { attributes: false, childList: true, subtree: false };
+const addObserver = node => {
+	/** Config observer to react only for child changing **/
+	const config = {attributes: false, childList: true, subtree: false};
 
-/** Callback will call on mutation **/
-const callback = () => {
-	toggleToolBars(targetNode, true);
-};
+	/** Callback will call on mutation **/
+	const callback = () => {
+		toggleToolBars(node, true);
+	};
 
-/** Creating observer with callback **/
-const observer = new MutationObserver(callback);
+	/** Creating observer with callback **/
+	const observer = new MutationObserver(callback);
 
-/** Start observing for chapter toolbars with config **/
-observer.observe(targetNode, config);
+	/** Start observing for chapter toolbars with config **/
+	observer.observe(node, config);
+}
+
+if (targetNode) {
+	addObserver(targetNode)
+}
+
+const playerSkeleton = document.querySelector('.hide-skeleton');
+const mainPageRow = document.querySelector('#primary');
+
+if (!playerSkeleton && mainPageRow) {
+	/** Config observer to react only for child changing **/
+	const config = {attributes: false, childList: true, subtree: true};
+
+	/** Callback will call on mutation **/
+	const callback = () => {
+		const rain = document.querySelectorAll('.main-rainbow');
+		const mainPageProgressbars = document.querySelectorAll('.ytd-thumbnail-overlay-resume-playback-renderer');
+		const defaultScrubbers = document.querySelectorAll('.ytp-scrubber-button');
+		const playerSkeleton1 = document.querySelector('.hide-skeleton');
+		const some = document.querySelector('ytd-app');
+
+		if (rain.length && rain.length >= mainPageProgressbars.length) {
+			return;
+		}
+
+		mainPageProgressbars.forEach(item => {
+			if (item.querySelector('.main-rainbow')) {
+				return;
+			}
+
+			const rainbowImage = document.createElement('img');
+
+			rainbowImage.src = url + 'rainbow.png';
+			rainbowImage.className = 'main-rainbow';
+
+			item.append(rainbowImage)
+		})
+
+		const targetNode = document.querySelectorAll('.ytp-chapters-container');
+		toggleCurrentVideo();
+
+		defaultScrubbers.forEach(item => item.style.display = 'none')
+
+		targetNode.forEach(item => {
+			addObserver(item)
+		})
+	};
+
+	/** Creating observer with callback **/
+	const observer = new MutationObserver(callback);
+
+	/** Start observing for chapter toolbars with config **/
+	observer.observe(mainPageRow, config);
+}
 
