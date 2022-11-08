@@ -75,10 +75,9 @@ if (targetNode) {
 	addObserver(targetNode)
 }
 
-const playerSkeleton = document.querySelector('.hide-skeleton');
 const mainPageRow = document.querySelector('#primary');
 
-if (!playerSkeleton && mainPageRow) {
+if (mainPageRow) {
 	/** Config observer to react only for child changing **/
 	const config = {attributes: false, childList: true, subtree: true};
 
@@ -87,8 +86,6 @@ if (!playerSkeleton && mainPageRow) {
 		const rain = document.querySelectorAll('.main-rainbow');
 		const mainPageProgressbars = document.querySelectorAll('.ytd-thumbnail-overlay-resume-playback-renderer');
 		const defaultScrubbers = document.querySelectorAll('.ytp-scrubber-button');
-		const playerSkeleton1 = document.querySelector('.hide-skeleton');
-		const some = document.querySelector('ytd-app');
 
 		if (rain.length && rain.length >= mainPageProgressbars.length) {
 			return;
@@ -122,5 +119,41 @@ if (!playerSkeleton && mainPageRow) {
 
 	/** Start observing for chapter toolbars with config **/
 	observer.observe(mainPageRow, config);
+}
+
+const secondaryPage = document.querySelector('#content');
+console.log('secondaryPage1', secondaryPage)
+if (secondaryPage) {
+	/** Config observer to react only for child changing **/
+	const config = {attributes: false, childList: true, subtree: true};
+
+	/** Callback will call on mutation **/
+	const callback = () => {
+		const rain = document.querySelectorAll('.main-rainbow');
+		const mainPageProgressbars = document.querySelectorAll('.ytd-thumbnail-overlay-resume-playback-renderer');
+
+		if (rain.length && rain.length >= mainPageProgressbars.length) {
+			return;
+		}
+
+		mainPageProgressbars.forEach(item => {
+			if (item.querySelector('.main-rainbow')) {
+				return;
+			}
+
+			const rainbowImage = document.createElement('img');
+
+			rainbowImage.src = url + 'rainbow.png';
+			rainbowImage.className = 'main-rainbow';
+
+			item.append(rainbowImage)
+		})
+	};
+
+	/** Creating observer with callback **/
+	const observer = new MutationObserver(callback);
+
+	/** Start observing for chapter toolbars with config **/
+	observer.observe(secondaryPage, config);
 }
 
