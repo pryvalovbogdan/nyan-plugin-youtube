@@ -2,7 +2,9 @@
 
 ## To use plugin just pull it open extension page and add plugin folder there
 
-* [`Chrome extension page`](chrome://extensions/)
+* [Chrome extension page](chrome://extensions/)
+* <a href="chrome://extensions/" target="_blank">Link</a>
+
 
 ## Usage
 ```
