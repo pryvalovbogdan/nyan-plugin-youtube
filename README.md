@@ -3,7 +3,6 @@
 ## To use plugin just pull it open extension page and add plugin folder there
 
 * [`Chrome extension page`](chrome://extensions/)
-[Chrome extension page](chrome://extensions/)
 
 ## Usage
 ```
