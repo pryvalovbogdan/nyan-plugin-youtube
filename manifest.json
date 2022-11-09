@@ -2,13 +2,20 @@
   "name": "Nyan cat extension",
   "version": "1.0.0",
   "description": "Nyan cat in youtube bar extension",
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "author": "Bogdan Pryvalov",
   "permissions": ["storage", "tabs"],
   "web_accessible_resources": [
     {
       "resources": [
         "assets/rainbow.png",
         "assets/night-sky.gif",
-        "assets/catty.gif"
+        "assets/catty.gif",
+        "assets/icon-nyan.png"
       ],
       "matches": ["https://*.youtube.com/*"]
     }
@@ -21,6 +28,5 @@
     }
   ],
   "host_permissions": ["https://*.youtube.com/*"],
-  "manifest_version": 3,
-  "author": "Bogdan Pryvalov"
+  "manifest_version": 3
 }
