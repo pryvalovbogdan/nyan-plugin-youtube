@@ -122,7 +122,7 @@ if (mainPageRow) {
 }
 
 const secondaryPage = document.querySelector('#content');
-console.log('secondaryPage1', secondaryPage)
+
 if (secondaryPage) {
 	/** Config observer to react only for child changing **/
 	const config = {attributes: false, childList: true, subtree: true};
