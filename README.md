@@ -5,7 +5,11 @@
 * [Chrome extension page](chrome://extensions/)
 * <a href="chrome://extensions/" target="_blank">Link</a>
 
-
+<a href="chrome://extensions/" target="_blank">Link</a>
+[I'm an inline-style link](https://www.google.com)
+[chrome://extensions/](chrome://extensions/)
+[link text itself]: http://www.reddit.com
+[chrome://extensions/]: chrome://extensions/
 ## Usage
 ```
 # clone project or download as zip
