@@ -30,15 +30,18 @@ const toggleToolBars = (parent = document, isChapter) => {
 	});
 }
 
-const toggleCurrentVideo = (component = defaultScrubber) => {
+const toggleCurrentVideo = (component = defaultScrubber, scrubberPass) => {
 	if(component){
 		component.style.display = 'none';
 	}
 
 	/** Adding animated nyan cat  **/
-	const scrubber = document.querySelectorAll('.ytp-scrubber-container');
+	const scrubber = scrubberPass || document.querySelectorAll('.ytp-scrubber-container');
 
 	scrubber.forEach(item => {
+		if(item.querySelectorAll('.nyan-running').length){
+			return
+		}
 		const image = document.createElement('img');
 		image.src = url + 'catty.gif';
 		image.className = 'nyan-running';
@@ -87,6 +90,18 @@ if (mainPageRow) {
 		const mainPageProgressbars = document.querySelectorAll('.ytd-thumbnail-overlay-resume-playback-renderer');
 		const defaultScrubbers = document.querySelectorAll('.ytp-scrubber-button');
 
+		if(document.querySelectorAll('.ytp-scrubber-container').length > document.querySelectorAll('.nyan-running').length){
+			const targetNode = document.querySelectorAll('.ytp-chapters-container');
+
+			toggleCurrentVideo(defaultScrubbers[0], document.querySelectorAll('.ytp-scrubber-container'));
+
+			defaultScrubbers.forEach(item => item.style.display = 'none')
+
+			targetNode.forEach(item => {
+				addObserver(item)
+			})
+		}
+
 		if (rain.length && rain.length >= mainPageProgressbars.length) {
 			return;
 		}
@@ -102,15 +117,6 @@ if (mainPageRow) {
 			rainbowImage.className = 'main-rainbow';
 
 			item.append(rainbowImage)
-		})
-
-		const targetNode = document.querySelectorAll('.ytp-chapters-container');
-		toggleCurrentVideo();
-
-		defaultScrubbers.forEach(item => item.style.display = 'none')
-
-		targetNode.forEach(item => {
-			addObserver(item)
 		})
 	};
 

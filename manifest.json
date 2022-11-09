@@ -8,7 +8,6 @@
     "128": "assets/icon128.png"
   },
   "author": "Bogdan Pryvalov",
-  "permissions": ["storage", "tabs"],
   "web_accessible_resources": [
     {
       "resources": [
