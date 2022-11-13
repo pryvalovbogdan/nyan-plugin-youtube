@@ -22,7 +22,7 @@
   "content_scripts": [
     {
       "matches": ["https://*.youtube.com/*"],
-      "js": ["contentScript.js"],
+      "js": ["content.js"],
       "css": ["content.css"]
     }
   ],

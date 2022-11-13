@@ -1,3 +1,4 @@
+import '../styles/content.css';
 const url = 'chrome-extension://' + chrome.runtime.id + '/assets/';
 
 /** Remove default scrubber  **/
