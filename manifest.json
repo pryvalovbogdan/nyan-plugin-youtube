@@ -8,13 +8,31 @@
     "128": "assets/icon128.png"
   },
   "author": "Bogdan Pryvalov",
+  "action": {
+    "default_icon": {              
+      "16": "assets/icon16.png"
+    },
+    "default_title": "Click Me",
+    "default_popup": "popup.html"  
+  },
+  "permissions": [
+    "tabs",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
   "web_accessible_resources": [
     {
       "resources": [
         "assets/rainbow.png",
         "assets/night-sky.gif",
         "assets/catty.gif",
-        "assets/icon-nyan.png"
+        "assets/icon-nyan.png",
+        "assets/kakashi.gif",
+        "assets/fire.gif",
+        "assets/chidori.gif"
       ],
       "matches": ["https://*.youtube.com/*"]
     }

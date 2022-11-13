@@ -5,12 +5,27 @@
   left: -15px;
 }
 
+.kakashi-running {
+  position: absolute;
+  left: -15px;
+  height: 40px;
+  top: -30px;
+}
+
 .rainbow {
   position: absolute;
   top: -8px;
   height: 20px;
   width: 100%;
   left: -7px;
+}
+
+.fire {
+  position: absolute;
+  width: 100%;
+  left: -7px;
+  height: 40px;
+  top: -34px;
 }
 
 .night-sky {
@@ -20,9 +35,23 @@
   width: 100%;
 }
 
+.chidori {
+  position: absolute;
+  width: 100%;
+  height: 13px;
+  top: -6px;
+}
+
 .main-rainbow {
   position: absolute;
   top: -4px;
   height: 10px;
   width: inherit;
+}
+
+.main-fire {
+  position: absolute;
+  width: inherit;
+  height: 40px;
+  top: -34px;
 }

@@ -1,10 +1,49 @@
+const TOOLBAR_VARIANTS = {
+	kakashi: {
+		scrubber: {
+			className: 'kakashi-running',
+			src: 'kakashi.gif'
+		},
+		loadProgress: {
+			className: 'chidori',
+			src: 'chidori.gif'
+		},
+		playProgress: {
+			className: 'fire',
+			src: 'fire.gif'
+		},
+		mainLoadProgress: {
+			className: 'main-fire',
+			src: 'fire.gif'
+		},
+	},
+	nyan: {
+		scrubber: {
+			className: 'nyan-running',
+			src: 'catty.gif'
+		},
+		loadProgress: {
+			className: 'night-sky.gif',
+			src: 'night-sky'
+		},
+		playProgress: {
+			className: 'rainbow',
+			src: 'rainbow.png'
+		},
+		mainLoadProgress: {
+			className: 'main-rainbow ',
+			src: 'rainbow.png'
+		},
+	}
+}
+
 const url = 'chrome-extension://' + chrome.runtime.id + '/assets/';
 
 /** Remove default scrubber  **/
 const defaultScrubber = document.querySelector('.ytp-scrubber-button');
 
 /** Changing default toolbar **/
-const toggleToolBars = (parent = document, isChapter) => {
+const toggleToolBars = (parent = document, isChapter, classNames) => {
 	const barProgress = parent.querySelectorAll('.ytp-play-progress');
 
 	barProgress.forEach(item => {
@@ -30,7 +69,7 @@ const toggleToolBars = (parent = document, isChapter) => {
 	});
 }
 
-const toggleCurrentVideo = (component = defaultScrubber, scrubberPass) => {
+const toggleCurrentVideo = (component = defaultScrubber, scrubberPass, barVariant = TOOLBAR_VARIANTS['nyan']) => {
 	if(component){
 		component.style.display = 'none';
 	}
@@ -163,3 +202,6 @@ if (secondaryPage) {
 	observer.observe(secondaryPage, config);
 }
 
+module.exports = {
+	toggleCurrentVideo
+}
