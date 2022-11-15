@@ -4,10 +4,10 @@
   "description": "## To use plugin just pull it open extension page and add plugin folder there",
   "main": "src/background/background.ts",
   "scripts": {
-    "start": "webpack --watch --config webpack-config/webpack.config.development.ts",
-    "build": "webpack --color --progress --config webpack-config/webpack.config.production.ts",
-    "build:dev": "webpack --config webpack-config/webpack.config.development.ts",
-    "build-zip": "ZIP=true webpack --config webpack-config/webpack.config.production.ts"
+    "start": "webpack --watch --config webpack-config/webpack.config.ts",
+    "build": "webpack --color --progress --config webpack-config/webpack.config.ts",
+    "build:dev": "webpack --config webpack-config/webpack.config.ts",
+    "build-zip": "ZIP=true NODE_ENV=production webpack --config webpack-config/webpack.config.ts"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,6 @@
     "@types/webpack": "^5.28.0",
     "@types/webpack-dev-server": "^4.7.2",
     "@types/zip-webpack-plugin": "^3.0.3",
-    "babel-loader": "^9.1.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.2",
     "esbuild-loader": "^2.20.0",

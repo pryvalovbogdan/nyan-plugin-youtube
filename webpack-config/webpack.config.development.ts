@@ -13,7 +13,7 @@ function getEntry(baseConfig: any) {
   );
 }
 
-const config  = {
+const config: webpack.Configuration = {
   ...baseConfig,
   mode: 'development',
 };

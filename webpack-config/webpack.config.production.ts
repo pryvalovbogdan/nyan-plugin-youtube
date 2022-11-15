@@ -6,7 +6,7 @@ import { source } from '../package.json';
 import { ESBuildMinifyPlugin } from 'esbuild-loader';
 const ZipPlugin = require('zip-webpack-plugin');
 
-const config = {
+const config: webpack.Configuration = {
   ...baseConfig,
   mode: 'production',
   optimization: {
@@ -15,7 +15,10 @@ const config = {
         target: 'es2015',
         css: true  // Apply minification to CSS assets
       })
-    ]
+    ],
+    splitChunks: {
+      chunks: 'all',
+    },
   },
 };
 
