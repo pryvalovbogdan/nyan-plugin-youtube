@@ -1,10 +1,9 @@
-import { resolve } from 'path';
-import webpack from 'webpack';
+const { resolve } = require('path');;
 
-import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import * as CopyWebpackPlugin from 'copy-webpack-plugin';
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const config: webpack.Configuration = {
+const config = {
 	entry: {
 		content: './src/content/index.ts',
 		background: './src/background',
@@ -16,30 +15,30 @@ const config: webpack.Configuration = {
 				test: /\.(js|ts)?$/,
 				loader: 'esbuild-loader',
 				options: {
-					target: 'es2015'
+					target: 'es2015',
+					loader: 'tsx'
 				},
 				exclude: /node_modules/
 			},
 			{
-				test: /\.css$/i,
+				test: /\.(sass|css)$/,
 				use: [
 					MiniCssExtractPlugin.loader,
-					'css-loader'
-				]
-			}
+					"css-loader",
+					"sass-loader"
+				],
+			},
 		],
 	},
 	resolve: {
-		extensions: ['.json', '.ts', '.js', '.css'],
+		extensions: ['.json', '.ts', '.js', '.scss', '.scss'],
 	},
 	output: {
 		filename: '[name].js',
 		path: resolve(__dirname, '../dist'),
 	},
 	plugins: [
-		new MiniCssExtractPlugin({
-			filename: '[name].css',
-		}),
+		new MiniCssExtractPlugin(),
 		new CopyWebpackPlugin({
 			patterns: [
 				{
@@ -48,12 +47,9 @@ const config: webpack.Configuration = {
 				{
 					from: 'public',
 				},
-				{
-					from: 'src/styles/content.css',
-				},
 			]
 		})
 	]
 };
 
-export default config;
+module.exports = config;

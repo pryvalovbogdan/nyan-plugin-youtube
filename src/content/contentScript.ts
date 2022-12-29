@@ -5,8 +5,8 @@ const url = 'chrome-extension://' + chrome.runtime.id + '/assets/';
 const defaultScrubber = document.querySelector('.ytp-scrubber-button');
 
 /** Changing default toolbar **/
-const toggleToolBars = (parent = document, isChapter) => {
-	const barProgress = parent.querySelectorAll('.ytp-play-progress');
+const toggleToolBars = (parent = document, isChapter?: boolean) => {
+	const barProgress: NodeListOf<HTMLElement> = parent.querySelectorAll('.ytp-play-progress');
 
 	barProgress.forEach(item => {
 		const rainbowImage = document.createElement('img');
@@ -31,7 +31,7 @@ const toggleToolBars = (parent = document, isChapter) => {
 	});
 }
 
-const toggleCurrentVideo = (component = defaultScrubber, scrubberPass) => {
+const toggleCurrentVideo = (component = defaultScrubber, scrubberPass?: HTMLElement[]) => {
 	if(component){
 		component.style.display = 'none';
 	}
