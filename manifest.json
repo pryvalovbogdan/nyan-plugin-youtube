@@ -9,15 +9,10 @@
   },
   "author": "Bogdan Pryvalov",
   "web_accessible_resources": [
-    {
-      "resources": [
-        "assets/rainbow.png",
-        "assets/night-sky.gif",
-        "assets/catty.gif",
-        "assets/icon-nyan.png"
-      ],
-      "matches": ["https://*.youtube.com/*"]
-    }
+    "assets/rainbow.png",
+    "assets/night-sky.gif",
+    "assets/catty.gif",
+    "assets/icon-nyan.png"
   ],
   "content_scripts": [
     {
@@ -26,6 +21,5 @@
       "css": ["content.css"]
     }
   ],
-  "host_permissions": ["https://*.youtube.com/*"],
-  "manifest_version": 3
+  "manifest_version": 2
 }

@@ -1,5 +1,3 @@
-const url = 'chrome-extension://' + chrome.runtime.id + '/assets/';
-
 /** Remove default scrubber  **/
 const defaultScrubber = document.querySelector('.ytp-scrubber-button');
 
@@ -9,7 +7,7 @@ const toggleToolBars = (parent = document, isChapter) => {
 
 	barProgress.forEach(item => {
 		const rainbowImage = document.createElement('img');
-		rainbowImage.src = url + 'rainbow.png';
+		rainbowImage.src = browser.runtime.getURL('assets/rainbow.png');
 		rainbowImage.className = 'rainbow';
 
 		item.append(rainbowImage)
@@ -19,7 +17,7 @@ const toggleToolBars = (parent = document, isChapter) => {
 
 	loadProgress.forEach(item => {
 		const skyImage = document.createElement('img');
-		skyImage.src = url + 'night-sky.gif';
+		skyImage.src = browser.runtime.getURL('assets/night-sky.gif');
 		skyImage.className = 'night-sky';
 
 		if (isChapter) {
@@ -43,7 +41,7 @@ const toggleCurrentVideo = (component = defaultScrubber, scrubberPass) => {
 			return
 		}
 		const image = document.createElement('img');
-		image.src = url + 'catty.gif';
+		image.src = browser.runtime.getURL('assets/catty.gif');
 		image.className = 'nyan-running';
 
 		item.append(image)
@@ -113,7 +111,7 @@ if (mainPageRow) {
 
 			const rainbowImage = document.createElement('img');
 
-			rainbowImage.src = url + 'rainbow.png';
+			rainbowImage.src = browser.runtime.getURL('assets/rainbow.png');
 			rainbowImage.className = 'main-rainbow';
 
 			item.append(rainbowImage)
@@ -149,7 +147,7 @@ if (secondaryPage) {
 
 			const rainbowImage = document.createElement('img');
 
-			rainbowImage.src = url + 'rainbow.png';
+			rainbowImage.src = browser.runtime.getURL('assets/rainbow.png');
 			rainbowImage.className = 'main-rainbow';
 
 			item.append(rainbowImage)
