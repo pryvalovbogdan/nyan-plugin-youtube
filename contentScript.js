@@ -8,6 +8,10 @@ const toggleToolBars = (parent = document, isChapter) => {
 	const barProgress = parent.querySelectorAll('.ytp-play-progress');
 
 	barProgress.forEach(item => {
+		if (item.querySelector('.rainbow')) {
+			return;
+		}
+
 		const rainbowImage = document.createElement('img');
 		rainbowImage.src = url + 'rainbow.png';
 		rainbowImage.className = 'rainbow';
@@ -18,6 +22,10 @@ const toggleToolBars = (parent = document, isChapter) => {
 	const loadProgress = parent.querySelectorAll('.ytp-load-progress');
 
 	loadProgress.forEach(item => {
+		if (item.querySelector('.night-sky')) {
+			return;
+		}
+
 		const skyImage = document.createElement('img');
 		skyImage.src = url + 'night-sky.gif';
 		skyImage.className = 'night-sky';
@@ -154,6 +162,8 @@ if (secondaryPage) {
 
 			item.append(rainbowImage)
 		})
+
+		toggleCurrentVideo();
 	};
 
 	/** Creating observer with callback **/
