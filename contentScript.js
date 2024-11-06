@@ -50,9 +50,13 @@ const toggleCurrentVideo = (component = defaultScrubber, scrubberPass) => {
 		if(item.querySelectorAll('.nyan-running').length){
 			return
 		}
+
 		const image = document.createElement('img');
 		image.src = url + 'catty.gif';
 		image.className = 'nyan-running';
+
+		const defaultScrubbers = document.querySelectorAll('.ytp-scrubber-button');
+		defaultScrubbers.forEach(item => item.style.display = 'none');
 
 		item.append(image)
 	})
@@ -173,3 +177,63 @@ if (secondaryPage) {
 	observer.observe(secondaryPage, config);
 }
 
+const MAX_ITERATIONS = 3;
+
+let interval = null;
+let currentIteration = 0;
+
+const addVideoPreviewObserver = (hoverVideoPreviewContainer) => {
+	/** Config observer to react only for child changing **/
+	const config = {attributes: false, childList: true, subtree: true};
+
+	const callback = () => {
+		const progress = document.querySelector('.YtPlayerProgressBarHost');
+
+		if(!progress || progress && progress.classList.contains('nyanScrubberAttached')){
+			return
+		}
+
+		progress.classList.add('nyanScrubberAttached')
+
+		const loadedContent = progress.querySelector('.YtProgressBarPlayheadHost');
+
+		loadedContent.innerHTML = ''
+
+		const image = document.createElement('img');
+		image.src = url + 'catty.gif';
+		image.className = 'nyan-running';
+		image.style.position = 'absolute'
+		image.style.left = '-10px'
+		image.style.top = '-10px'
+
+		loadedContent.append(image);
+	};
+
+	const observer = new MutationObserver(callback);
+
+	/** Start observing for chapter toolbars with config **/
+	observer.observe(hoverVideoPreviewContainer, config);
+}
+
+const hoverVideoPreviewContainer = document.querySelector('ytd-video-preview')
+
+/** Added interval to wait till content renders **/
+if(hoverVideoPreviewContainer){
+	addVideoPreviewObserver(hoverVideoPreviewContainer)
+} else {
+	interval = setInterval(() => {
+		currentIteration++;
+		const hoverVideoPreviewContainer = document.querySelector('ytd-video-preview')
+
+		if(hoverVideoPreviewContainer){
+			addVideoPreviewObserver(hoverVideoPreviewContainer)
+			clearInterval(interval);
+
+			return;
+		}
+
+		if(currentIteration >= MAX_ITERATIONS){
+			clearInterval(interval);
+		}
+	}, 500)
+}
