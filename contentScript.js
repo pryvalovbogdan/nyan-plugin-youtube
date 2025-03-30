@@ -182,51 +182,78 @@ const MAX_ITERATIONS = 3;
 let interval = null;
 let currentIteration = 0;
 
-const addVideoPreviewObserver = (hoverVideoPreviewContainer) => {
+const addVideoHoverPreviewObserver = (player) => {
 	/** Config observer to react only for child changing **/
 	const config = {attributes: false, childList: true, subtree: true};
 
 	const callback = () => {
-		const progress = document.querySelector('.YtPlayerProgressBarHost');
+		const progressbarPlayed = document.querySelectorAll('.ytProgressBarLineProgressBarPlayed');
+		const progressbarLoaded = document.querySelectorAll('.ytProgressBarLineProgressBarLoaded')
 
-		if(!progress || progress && progress.classList.contains('nyanScrubberAttached')){
-			return
-		}
+		progressbarPlayed.forEach(item => {
+			if (item.querySelector('.main-rainbow') || item.classList.contains('nyanScrubberAttached')) {
+				return;
+			}
 
-		progress.classList.add('nyanScrubberAttached')
+			const rainbowImage = document.createElement('img');
 
-		const loadedContent = progress.querySelector('.YtProgressBarPlayheadHost');
+			rainbowImage.src = url + 'rainbow.png';
+			rainbowImage.className = 'main-rainbow';
+			rainbowImage.style.width = '100%'
+			rainbowImage.style.height = '16px';
+			rainbowImage.style.top = '-6px'
 
-		loadedContent.innerHTML = ''
+			item.append(rainbowImage);
 
-		const image = document.createElement('img');
-		image.src = url + 'catty.gif';
-		image.className = 'nyan-running';
-		image.style.position = 'absolute'
-		image.style.left = '-10px'
-		image.style.top = '-10px'
+			item.classList.add('nyanScrubberAttached')
 
-		loadedContent.append(image);
-	};
+			const image = document.createElement('img');
 
-	const observer = new MutationObserver(callback);
+			image.src = url + 'catty.gif';
+			image.className = 'nyan-running';
+			image.style.position = 'absolute'
+			image.style.right = '-15px'
+			image.style.top = '-8px'
+			image.style.left = 'auto'
+			image.style.zIndex = '2'
+
+			item.append(image);
+		});
+
+		progressbarLoaded.forEach(item => {
+			if (item.querySelector('.night-sky')) {
+				return;
+			}
+
+			const skyImage = document.createElement('img');
+
+			skyImage.src = url + 'night-sky.gif';
+			skyImage.className = 'night-sky';
+			skyImage.style.height = '10px';
+			skyImage.style.top = '-4px';
+
+			item.append(skyImage)
+		});
+	}
+
+	const observer = new MutationObserver(callback)
 
 	/** Start observing for chapter toolbars with config **/
-	observer.observe(hoverVideoPreviewContainer, config);
+	observer.observe(player, config)
 }
 
-const hoverVideoPreviewContainer = document.querySelector('ytd-video-preview')
+const player = document.querySelector('#player-controls');
 
 /** Added interval to wait till content renders **/
-if(hoverVideoPreviewContainer){
-	addVideoPreviewObserver(hoverVideoPreviewContainer)
+if(player){
+	addVideoHoverPreviewObserver(player)
 } else {
 	interval = setInterval(() => {
 		currentIteration++;
-		const hoverVideoPreviewContainer = document.querySelector('ytd-video-preview')
+		const hoverVideoPreviewContainer = document.querySelector('#player-controls')
 
 		if(hoverVideoPreviewContainer){
-			addVideoPreviewObserver(hoverVideoPreviewContainer)
+			addVideoHoverPreviewObserver(hoverVideoPreviewContainer)
 			clearInterval(interval);
 
 			return;
