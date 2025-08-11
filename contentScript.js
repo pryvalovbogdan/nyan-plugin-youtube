@@ -149,6 +149,32 @@ if (secondaryPage) {
 	const callback = () => {
 		const rain = document.querySelectorAll('.main-rainbow');
 		const mainPageProgressbars = document.querySelectorAll('.ytd-thumbnail-overlay-resume-playback-renderer');
+		const watchedProgressBarSegment = document.querySelectorAll('.ytThumbnailOverlayProgressBarHostWatchedProgressBar');
+		const rainSegment = document.querySelectorAll('.main-rainbow-watched-segment');
+
+		if (rainSegment.length < watchedProgressBarSegment.length) {
+			watchedProgressBarSegment.forEach(item => {
+				if (item.querySelector('.main-rainbow-watched-segment')) {
+					return;
+				}
+
+				const rainbowImage = document.createElement('img');
+
+				rainbowImage.src = url + 'rainbow.png';
+				rainbowImage.className = 'main-rainbow-watched-segment';
+				rainbowImage.style.height = '12px';
+				rainbowImage.style.top = '0px';
+				rainbowImage.style.position = 'absolute';
+				rainbowImage.style.width = '100%';
+				item.style.position = 'relative';
+				item.style.height = '100%';
+
+				item.parentElement.style.height = '8px';
+				item.parentElement.style.marginBottom = '6px';
+
+				item.append(rainbowImage)
+			});
+		}
 
 		if (rain.length && rain.length >= mainPageProgressbars.length) {
 			return;
@@ -165,7 +191,7 @@ if (secondaryPage) {
 			rainbowImage.className = 'main-rainbow';
 
 			item.append(rainbowImage)
-		})
+		});
 
 		toggleCurrentVideo();
 	};
