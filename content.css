@@ -3,6 +3,7 @@
   position: absolute;
   top: -5px;
   left: -15px;
+  transform: scale(1.1);
 }
 
 .rainbow {
@@ -11,6 +12,10 @@
   height: 20px;
   width: 100%;
   left: -7px;
+}
+
+.nyan-running:hover {
+  transform: scale(1.5);
 }
 
 .night-sky {
@@ -25,4 +30,9 @@
   top: -4px;
   height: 10px;
   width: inherit;
+}
+
+.ytp-progress-list {
+  height: 8px !important;
+  overflow: visible !important;
 }
