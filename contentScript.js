@@ -54,11 +54,28 @@ const toggleCurrentVideo = (component = defaultScrubber, scrubberPass) => {
 		const image = document.createElement('img');
 		image.src = url + 'catty.gif';
 		image.className = 'nyan-running';
+        image.style.left = 0;
 
 		const defaultScrubbers = document.querySelectorAll('.ytp-scrubber-button');
 		defaultScrubbers.forEach(item => item.style.display = 'none');
 
-		item.append(image)
+        const kittens = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+        kittens.forEach((ind) =>{
+            const image2 = image.cloneNode(true)
+
+            image2.style.left = 20 * ind + 'px';
+            item.prepend(image2)
+        })
+
+        item.append(image)
+
+        kittens.forEach((ind) =>{
+            const image2 = image.cloneNode(true)
+
+            image2.style.left = -20 * ind + 'px';
+            item.append(image2)
+        })
 	})
 
 	toggleToolBars();
