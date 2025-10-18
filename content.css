@@ -3,6 +3,11 @@
   position: absolute;
   top: -5px;
   left: -15px;
+  transform: scale(1.1);
+}
+
+.nyan-running:hover {
+    transform: scale(1.5);
 }
 
 .rainbow {
@@ -25,4 +30,9 @@
   top: -4px;
   height: 10px;
   width: inherit;
+}
+
+.ytp-progress-list {
+  height: 8px !important;
+  overflow: visible !important;
 }

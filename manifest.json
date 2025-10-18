@@ -1,6 +1,6 @@
 {
   "name": "Nyan cat extension",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Nyan cat in youtube bar extension",
   "icons": {
     "16": "assets/icon16.png",
