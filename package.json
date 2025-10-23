@@ -1,0 +1,38 @@
+{
+  "name": "nyan-plugin-youtube",
+  "version": "1.0.0",
+  "description": "Nyan cat in youtube bar extension",
+  "main": "src/js/contentScript.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "style-fix": "stylelint \"**/*.{css,scss}\" --fix",
+    "clean": "rm -rf dist",
+    "build:js": "esbuild src/js/contentScript.js --bundle --minify --target=es2020 --outfile=dist/contentScript.js",
+    "build:css": "mkdir -p dist && csso src/styles/content.css --output dist/content.css",
+    "copy:manifest": "cp manifest.json dist/manifest.json",
+    "copy:icons": "rsync -av --exclude='screenshots' assets/ dist/assets/",
+    "build": "yarn clean && yarn build:js && yarn build:css && yarn copy:manifest && yarn copy:icons",
+    "zip": "yarn build && cd dist && zip -r ../extension.zip . && cd -"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pryvalovbogdan/nyan-plugin-youtube.git"
+  },
+  "author": "Bogdan Pryvalov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pryvalovbogdan/nyan-plugin-youtube/issues"
+  },
+  "type": "module",
+  "homepage": "https://github.com/pryvalovbogdan/nyan-plugin-youtube#readme",
+  "devDependencies": {
+    "csso-cli": "^4.0.2",
+    "esbuild": "^0.25.11",
+    "prettier": "^3.6.2",
+    "stylelint": "^16.25.0",
+    "stylelint-config-css-modules": "^4.5.1",
+    "stylelint-config-prettier": "^9.0.5",
+    "stylelint-config-standard": "^39.0.1",
+    "stylelint-prettier": "^5.0.3"
+  }
+}

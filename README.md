@@ -13,7 +13,7 @@
 # reload youtube page
 ```
 
-![Screenshot](assets/screenshot.png)
+![Screenshot](assets/screenshots/screenshot.png)
 
 ## License
 
