@@ -51,6 +51,12 @@ const toggleCurrentVideo = (component = defaultScrubber, scrubberPass) => {
 			return
 		}
 
+        const miniPlayer = document.querySelector('.html5-video-player');
+
+        if (miniPlayer){
+            miniPlayer.style.setProperty('overflow', 'visible', 'important');
+        }
+
 		const image = document.createElement('img');
 		image.src = url + 'catty.gif';
 		image.className = 'nyan-running';
@@ -222,6 +228,8 @@ const addVideoHoverPreviewObserver = (player) => {
 			}
 
 			const rainbowImage = document.createElement('img');
+
+            item.parentNode.style.setProperty('overflow', 'visible', 'important');
 
 			rainbowImage.src = url + 'rainbow.png';
 			rainbowImage.className = 'main-rainbow';
