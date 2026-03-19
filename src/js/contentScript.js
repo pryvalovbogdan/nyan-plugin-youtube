@@ -78,7 +78,7 @@ const targetNode = document.querySelector('.ytp-chapters-container');
 
 const addObserver = node => {
 	/** Config observer to react only for child changing **/
-	const config = {attributes: false, childList: true, subtree: false};
+	const config = {attributes: true, childList: true, subtree: true};
 
 	/** Callback will call on mutation **/
 	const callback = () => {
@@ -92,9 +92,31 @@ const addObserver = node => {
 	observer.observe(node, config);
 }
 
+let intervalRainbow = null;
+let currentIterationRainbow = 0;
+
 if (targetNode) {
 	addObserver(targetNode)
+} else {
+    intervalRainbow = setInterval(() => {
+        currentIterationRainbow++;
+        const targetNode = document.querySelector('.ytp-chapters-container');
+
+        if (targetNode) {
+            toggleToolBars(targetNode);
+            clearInterval(intervalRainbow);
+            intervalRainbow = null;
+            return;
+        }
+
+        if (currentIterationRainbow >= MAX_ITERATIONS) {
+            clearInterval(intervalRainbow);
+            intervalRainbow = null;
+        }
+    }, 500);
 }
+
+
 
 const mainPageRow = document.querySelector('#primary');
 
