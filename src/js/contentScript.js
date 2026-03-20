@@ -76,9 +76,9 @@ if (defaultScrubber) {
 
 const targetNode = document.querySelector('.ytp-chapters-container');
 
-const addObserver = node => {
+const addObserver = (node, configProp) => {
 	/** Config observer to react only for child changing **/
-	const config = {attributes: false, childList: true, subtree: false};
+	const config = configProp || { attributes: false, childList: true, subtree: false };
 
 	/** Callback will call on mutation **/
 	const callback = () => {
@@ -92,8 +92,30 @@ const addObserver = node => {
 	observer.observe(node, config);
 }
 
+let intervalRainbow = null;
+let currentIterationRainbow = 0;
+
 if (targetNode) {
 	addObserver(targetNode)
+} else {
+    /** Await for render load container **/
+    intervalRainbow = setInterval(() => {
+        currentIterationRainbow++;
+        const targetNode = document.querySelector('.ytp-chapters-container');
+        const config = { attributes: false, childList: true, subtree: true };
+
+        if (targetNode) {
+            addObserver(targetNode, config)
+            clearInterval(intervalRainbow);
+            intervalRainbow = null;
+            return;
+        }
+
+        if (currentIterationRainbow >= MAX_ITERATIONS) {
+            clearInterval(intervalRainbow);
+            intervalRainbow = null;
+        }
+    }, 500);
 }
 
 const mainPageRow = document.querySelector('#primary');
