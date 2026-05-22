@@ -298,7 +298,49 @@ const addVideoHoverPreviewObserver = (player) => {
 	observer.observe(player, config)
 }
 
+const addYoutubeMusicObserver = (player) => {
+    const progressbarPlayed = player.querySelector('#primaryProgress');
+    const progressbarLoaded = player.querySelector('#secondaryProgress');
+    const scrubber = player.querySelector('#sliderKnob');
+
+    const rainbowImage = document.createElement('img');
+
+    progressbarPlayed.parentNode.style.setProperty('overflow', 'visible', 'important');
+
+    rainbowImage.src = url + 'japan.png';
+    rainbowImage.className = 'main-rainbow';
+    rainbowImage.style.width = '100%'
+    rainbowImage.style.height = '16px';
+    rainbowImage.style.top = '-6px'
+
+    progressbarPlayed.append(rainbowImage);
+
+    const skyImage = document.createElement('img');
+
+    skyImage.src = url + 'night-sky.gif';
+    skyImage.className = 'night-sky';
+    skyImage.style.height = '10px';
+    skyImage.style.top = '-4px';
+
+    progressbarLoaded.append(skyImage)
+
+    scrubber.classList.add('nyanScrubberAttached')
+
+    const nyanImage = document.createElement('img');
+
+    nyanImage.src = url + 'cute-kawaii.gif';
+    nyanImage.className = 'nyan-running';
+    nyanImage.style.position = 'absolute'
+    nyanImage.style.right = '0'
+    nyanImage.style.top = '7px'
+    nyanImage.style.left = 'auto'
+
+    scrubber.append(nyanImage);
+}
+
+
 const player = document.querySelector('#player-controls');
+const musicPlayer = document.querySelector('#progress-bar');
 
 /** Added interval to wait till content renders **/
 if(player){
@@ -320,3 +362,9 @@ if(player){
 		}
 	}, 500)
 }
+
+if(musicPlayer){
+    addYoutubeMusicObserver(musicPlayer);
+}
+
+
