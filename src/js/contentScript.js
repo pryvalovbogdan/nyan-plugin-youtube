@@ -73,6 +73,30 @@ const toggleCurrentVideo = (component = defaultScrubber, scrubberPass) => {
 if (defaultScrubber) {
 	toggleCurrentVideo();
 }
+let intervalScrubber = null;
+let currentIterationScrubber = 0;
+
+if (defaultScrubber) {
+    toggleCurrentVideo()
+} else {
+    /** Await for render load container **/
+    intervalScrubber = setInterval(() => {
+        currentIterationScrubber++;
+        const defaultScrubber = document.querySelector('.ytp-scrubber-button');
+
+        if (defaultScrubber) {
+            toggleCurrentVideo(defaultScrubber);
+            clearInterval(intervalScrubber);
+            intervalScrubber = null;
+            return;
+        }
+
+        if (currentIterationScrubber >= MAX_ITERATIONS) {
+            clearInterval(intervalScrubber);
+            intervalScrubber = null;
+        }
+    }, 500);
+}
 
 const targetNode = document.querySelector('.ytp-chapters-container');
 
@@ -169,69 +193,100 @@ if (mainPageRow) {
 
 const secondaryPage = document.querySelector('#content');
 
-if (secondaryPage) {
-	/** Config observer to react only for child changing **/
-	const config = {attributes: false, childList: true, subtree: true};
+const  addSecondaryPageObserver = (secondaryPage) => {
+    /** Config observer to react only for child changing **/
+    const config = {attributes: false, childList: true, subtree: true};
 
-	/** Callback will call on mutation **/
-	const callback = () => {
-		const rain = document.querySelectorAll('.main-rainbow');
-		const mainPageProgressbars = document.querySelectorAll('.ytd-thumbnail-overlay-resume-playback-renderer');
-		const watchedProgressBarSegment = document.querySelectorAll('.ytThumbnailOverlayProgressBarHostWatchedProgressBar');
-		const rainSegment = document.querySelectorAll('.main-rainbow-watched-segment');
+    /** Callback will call on mutation **/
+    const callback = () => {
+        const rain = document.querySelectorAll('.main-rainbow');
+        const mainPageProgressbars = document.querySelectorAll('.ytd-thumbnail-overlay-resume-playback-renderer');
+        const watchedProgressBarSegment = document.querySelectorAll('.ytThumbnailOverlayProgressBarHostWatchedProgressBar');
+        const rainSegment = document.querySelectorAll('.main-rainbow-watched-segment');
+        const miniPlayerParent = document.querySelector('.ytp-miniplayer-ui');
+        const scrubber =  miniPlayerParent?.parentNode?.querySelector('.ytp-scrubber-container');
 
-		if (rainSegment.length < watchedProgressBarSegment.length) {
-			watchedProgressBarSegment.forEach(item => {
-				if (item.querySelector('.main-rainbow-watched-segment')) {
-					return;
-				}
+        if(miniPlayerParent && scrubber && !scrubber.classList.contains('plugin-attached')){
+            scrubber.classList.add('plugin-attached');
+            toggleCurrentVideo();
+        }
 
-				const rainbowImage = document.createElement('img');
+        if (rainSegment.length < watchedProgressBarSegment.length) {
+            watchedProgressBarSegment.forEach(item => {
+                if (item.querySelector('.main-rainbow-watched-segment')) {
+                    return;
+                }
 
-				rainbowImage.src = url + 'rainbow.png';
-				rainbowImage.className = 'main-rainbow-watched-segment';
-				rainbowImage.style.height = '12px';
-				rainbowImage.style.top = '0px';
-				rainbowImage.style.position = 'absolute';
-				rainbowImage.style.width = '100%';
-				item.style.position = 'relative';
-				item.style.height = '100%';
+                const rainbowImage = document.createElement('img');
 
-				item.parentElement.style.height = '8px';
-				item.parentElement.style.marginBottom = '6px';
+                rainbowImage.src = url + 'rainbow.png';
+                rainbowImage.className = 'main-rainbow-watched-segment';
+                rainbowImage.style.height = '12px';
+                rainbowImage.style.top = '0px';
+                rainbowImage.style.position = 'absolute';
+                rainbowImage.style.width = '100%';
+                item.style.position = 'relative';
+                item.style.height = '100%';
 
-				item.append(rainbowImage)
-			});
-		}
+                item.parentElement.style.height = '8px';
+                item.parentElement.style.marginBottom = '6px';
 
-		if (rain.length && rain.length >= mainPageProgressbars.length) {
-			return;
-		}
+                item.append(rainbowImage)
+            });
+        }
 
-		mainPageProgressbars.forEach(item => {
-			if (item.querySelector('.main-rainbow')) {
-				return;
-			}
+        if (rain.length && rain.length >= mainPageProgressbars.length) {
+            return;
+        }
 
-			const rainbowImage = document.createElement('img');
+        mainPageProgressbars.forEach(item => {
+            if (item.querySelector('.main-rainbow')) {
+                return;
+            }
 
-			rainbowImage.src = url + 'rainbow.png';
-			rainbowImage.className = 'main-rainbow';
+            const rainbowImage = document.createElement('img');
 
-			item.append(rainbowImage)
-		});
+            rainbowImage.src = url + 'rainbow.png';
+            rainbowImage.className = 'main-rainbow';
 
-		toggleCurrentVideo();
-	};
+            item.append(rainbowImage)
+        });
 
-	/** Creating observer with callback **/
-	const observer = new MutationObserver(callback);
+        toggleCurrentVideo();
+    };
 
-	/** Start observing for chapter toolbars with config **/
-	observer.observe(secondaryPage, config);
+    /** Creating observer with callback **/
+    const observer = new MutationObserver(callback);
+
+    /** Start observing for chapter toolbars with config **/
+    observer.observe(secondaryPage, config);
 }
 
+let iterationSecondaryPage = 0;
+let secondaryPageInterval = null;
+
 const MAX_ITERATIONS = 3;
+
+/** Added interval to wait till content renders **/
+if(secondaryPage){
+    addSecondaryPageObserver(secondaryPage)
+} else {
+    secondaryPageInterval = setInterval(() => {
+        iterationSecondaryPage++;
+        const secondaryPage = document.querySelector('#content');
+
+        if(secondaryPage){
+            addSecondaryPageObserver(secondaryPage)
+            clearInterval(secondaryPageInterval);
+
+            return;
+        }
+
+        if(iterationSecondaryPage >= MAX_ITERATIONS){
+            clearInterval(secondaryPageInterval);
+        }
+    }, 500)
+}
 
 let interval = null;
 let currentIteration = 0;
