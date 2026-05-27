@@ -2,6 +2,63 @@ const url = 'chrome-extension://' + chrome.runtime.id + '/assets/';
 
 /** Remove default scrubber  **/
 const defaultScrubber = document.querySelector('.ytp-scrubber-button');
+let currentScrubberSrc = 'catty.gif';
+
+const catsData = {
+    'black.gif': { src: 'black.gif', styles: { height: '34px !important', top: '-13px',  topHover: '-16px' } },
+    'cat-garfield.gif': { src: 'cat-garfield.gif', styles: { height: '42px !important', top: '-25px',  topHover: '-28px' } },
+    'catty.gif': { src: 'catty.gif', styles: { height: '20px !important', top: '-5px',  topHover: '-8px' } },
+    'cute-cat.gif': { src: 'cute-cat.gif', styles: { height: '40px !important', top: '-18px',  topHover: '-22px' } },
+    'cute-kawaii.gif': { src: 'cute-kawaii.gif', styles: { height: '56px !important', top: '-42px',  topHover: '-48px' }  },
+    'gatito.gif': { src: 'gatito.gif', styles: { height: '40px !important', top: '-28px',  topHover: '-30px' } },
+    'glitch-cat.gif': { src: 'glitch-cat.gif', styles: { height: '28px !important', top: '-13px', topHover: '-18px' } },
+    'kitty-wigglez.gif': { src: 'kitty-wigglez.gif' },
+    'orange-cat-orange.gif': { src: 'orange-cat-orange.gif' },
+    'pixel-cat.gif': { src: 'pixel-cat.gif' },
+    'sleeping-fat-cat-zzzzzzzzz.gif': { src: 'sleeping-fat-cat-zzzzzzzzz.gif' },
+    'white-cat.gif': { src: 'white-cat.gif' },
+};
+
+function updateActiveCatElements(srcName) {
+    const activeRunningCats = document.querySelectorAll('.nyan-running');
+    console.log('activeRunningCats', activeRunningCats)
+    activeRunningCats.forEach(catImg => {
+        const catConfig = catsData[srcName];
+        console.log('currentSrc22', catConfig)
+        catImg.src = url + srcName;
+        catImg.style.setProperty('height', catConfig.styles.height.replace(' !important', ''), 'important');
+        if (catConfig.styles.top) {
+            catImg.style.top = catConfig.styles.top;
+        }
+    });
+}
+
+chrome.storage.sync.get(['selectedCat'], (result) => {
+    console.log('result', result)
+    if (result.selectedCat) {
+        currentScrubberSrc = result.selectedCat;
+        console.log('Restored saved cat asset:', currentScrubberSrc);
+
+        // If elements are already rendered by the time storage resolves, force an early update
+        updateActiveCatElements(currentScrubberSrc);
+    }
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'CHANGE_CAT_IMAGE') {
+        console.log('Received new cat image message:', message.src);
+
+        currentScrubberSrc = message.src;
+
+        // Save selection to storage so it persists across reloads and tab instances
+        chrome.storage.sync.set({ selectedCat: message.src }, () => {
+            // Update currently rendered elements dynamically
+            updateActiveCatElements(currentScrubberSrc);
+            sendResponse({ status: 'success', saved: message.src });
+        });
+    }
+    return true;
+});
 
 /** Changing default toolbar **/
 const toggleToolBars = (parent = document, isChapter) => {
@@ -11,6 +68,9 @@ const toggleToolBars = (parent = document, isChapter) => {
 		if (item.querySelector('.rainbow')) {
 			return;
 		}
+
+        item.style.backgroundColor = 'transparent';
+        item.style.setProperty('background', 'transparent', 'important');
 
 		const rainbowImage = document.createElement('img');
 		rainbowImage.src = url + 'rainbow.png';
@@ -58,7 +118,7 @@ const toggleCurrentVideo = (component = defaultScrubber, scrubberPass) => {
         }
 
 		const image = document.createElement('img');
-		image.src = url + 'catty.gif';
+		image.src = url + currentScrubberSrc;
 		image.className = 'nyan-running';
 
 		const defaultScrubbers = document.querySelectorAll('.ytp-scrubber-button');
@@ -243,16 +303,23 @@ const addVideoHoverPreviewObserver = (player) => {
 	const callback = () => {
 		const progressbarPlayed = document.querySelectorAll('.ytProgressBarLineProgressBarPlayed');
 		const progressbarLoaded = document.querySelectorAll('.ytProgressBarLineProgressBarLoaded')
+        const defaultScrubbers = document.querySelector('.ytProgressBarPlayheadProgressBarPlayheadDot');
+
+        if(defaultScrubbers && !defaultScrubbers.classList.contains('displayedNone')){
+            defaultScrubbers.style.display = 'none';
+            defaultScrubbers.classList.add('displayedNone')
+        }
 
 		progressbarPlayed.forEach(item => {
 			if (item.querySelector('.main-rainbow') || item.classList.contains('nyanScrubberAttached')) {
 				return;
 			}
-
+            console.log('progressbarLoaded HTML Context:', item.parentNode.parentNode.parentNode.outerHTML);
 			const rainbowImage = document.createElement('img');
 
             item.parentNode.style.setProperty('overflow', 'visible', 'important');
-
+            console.log('itemitemitem6', item)
+            item.style.setProperty('backgroundColor', 'transparent', 'important');
 			rainbowImage.src = url + 'rainbow.png';
 			rainbowImage.className = 'main-rainbow';
 			rainbowImage.style.width = '100%'
@@ -265,13 +332,21 @@ const addVideoHoverPreviewObserver = (player) => {
 
 			const image = document.createElement('img');
 
-			image.src = url + 'catty.gif';
+			image.src = url + currentScrubberSrc;
 			image.className = 'nyan-running';
 			image.style.position = 'absolute'
 			image.style.right = '-15px'
 			image.style.top = '-8px'
 			image.style.left = 'auto'
 			image.style.zIndex = '2'
+            const catConfig = catsData[currentScrubberSrc];
+            console.log('item', item)
+
+            image.style.setProperty('height', catConfig.styles.height.replace(' !important', ''), 'important');
+
+            if (catConfig.styles.topHover) {
+                image.style.top = catConfig.styles.topHover;
+            }
 
 			item.append(image);
 		});
@@ -307,7 +382,7 @@ const addYoutubeMusicObserver = (player) => {
 
     progressbarPlayed.parentNode.style.setProperty('overflow', 'visible', 'important');
 
-    rainbowImage.src = url + 'japan.png';
+    rainbowImage.src = url + 'rainbow.png';
     rainbowImage.className = 'main-rainbow';
     rainbowImage.style.width = '100%'
     rainbowImage.style.height = '16px';
@@ -328,7 +403,7 @@ const addYoutubeMusicObserver = (player) => {
 
     const nyanImage = document.createElement('img');
 
-    nyanImage.src = url + 'cute-kawaii.gif';
+    nyanImage.src = url + currentScrubberSrc;
     nyanImage.className = 'nyan-running';
     nyanImage.style.position = 'absolute'
     nyanImage.style.right = '0'

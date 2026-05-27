@@ -328,6 +328,11 @@ chokidar@^3.5.3:
   optionalDependencies:
     fsevents "~2.3.2"
 
+chrome-types@^0.1.429:
+  version "0.1.429"
+  resolved "https://registry.yarnpkg.com/chrome-types/-/chrome-types-0.1.429.tgz#8960e95dd8846f48c1b6db5c8d3846ed25c154c0"
+  integrity sha512-+GZMwJQ4GEhrlZsEanDWnjbw9YDv0nZRxGyEEqDcjI1PvW8ucsKVn/5hmnmKv/j/hgL1pIbU6J1ixaNKRiNaGg==
+
 clap@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/clap/-/clap-3.1.1.tgz#c2d2688f89eb90a68e7b8a6619ed2303b43c2c04"

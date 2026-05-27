@@ -1,0 +1,410 @@
+/* --- Color Palettes (Variables) --- */
+:root {
+  /* Default Dark Theme (Calm & Deep) */
+  --bg-color: #18181c;
+  --tile-bg: #232329;
+  --tile-bg-hover: #2a2a32;
+  --border-color: #2f2f37;
+  --text-color: #eee;
+  --accent-color: #80deea;
+  --shadow-color: rgb(
+    128 222 234 / 15%
+  );
+  --scroll-track: #1f1f23;
+  --scroll-thumb: #3a3a42;
+  --scroll-thumb-hover: #4f4f5a;
+  --toggle-bg: #3a3a42;
+  --text-main: #f5f5ee; /* Soft cream color for the main text */
+  --shadow-1: #3a3247; /* Deep purple-navy layer */
+  --shadow-2: #bd5071; /* Retro pink/magenta layer */
+  --shadow-3: #f18c4f; /* Retro orange layer */
+  --shadow-4: #eec55a; /* Retro yellow layer */
+  --shadow-5: #3e517a; /* Dark blue base offset */
+}
+
+body.light-theme {
+  /* Light Theme (Clean & Soft) */
+  --bg-color: #f5f5f7;
+  --tile-bg: #fff;
+  --tile-bg-hover: #eaeaea;
+  --border-color: #d2d2d7;
+  --text-color: #1d1d1f;
+  --accent-color: #00bcd4;
+  --shadow-color: rgb(
+    0 188 212 / 20%
+  );
+  --scroll-track: #e5e5ea;
+  --scroll-thumb: #ccc;
+  --scroll-thumb-hover: #b3b3b3;
+  --toggle-bg: #b3b3b3;
+  --text-main: #232329; /* Dark charcoal for clean light contrast */
+
+  /* Keeping the trail vibrant but slightly softer for light mode background */
+  --shadow-1: #d2d2d7;
+  --shadow-2: #e07a97;
+  --shadow-3: #ffa875;
+  --shadow-4: #ffd875;
+  --shadow-5: #637cb5;
+}
+
+/* --- Base Layout --- */
+body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI', Roboto,
+    sans-serif;
+  background-color: var(
+    --bg-color
+  );
+  color: var(--text-color);
+  margin: 0;
+  padding: 12px;
+  width: 280px;
+  box-sizing: border-box;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.theme-label {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* The Switch Shell */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The Slider Track */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: var(
+    --toggle-bg
+  );
+  transition: 0.3s
+    cubic-bezier(
+      0.4,
+      0,
+      0.2,
+      1
+    );
+  border-radius: 22px;
+}
+
+/* The Slider Button Knob */
+.slider::before {
+  position: absolute;
+  content: '';
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s
+    cubic-bezier(
+      0.4,
+      0,
+      0.2,
+      1
+    );
+  border-radius: 50%;
+  box-shadow: 0 1px 3px
+    rgb(0 0 0 / 20%);
+}
+
+input:checked + .slider {
+  background-color: var(
+    --accent-color
+  );
+}
+
+input:checked
+  + .slider::before {
+  transform: translateX(20px);
+}
+
+/* --- Grid & Items Layout --- */
+.cat-grid-container {
+  display: grid;
+  grid-template-columns: repeat(
+    3,
+    1fr
+  );
+  gap: 10px;
+  max-height: 270px;
+  overflow-y: auto;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.cat-grid-item {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  background: var(--tile-bg);
+  border-radius: 10px;
+  padding: 6px;
+  cursor: pointer;
+  box-sizing: border-box;
+  border: 1px solid
+    var(--border-color);
+  transition:
+    transform 0.2s
+      cubic-bezier(
+        0.4,
+        0,
+        0.2,
+        1
+      ),
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.cat-grid-item:hover {
+  transform: translateY(-2px);
+  background-color: var(
+    --tile-bg-hover
+  );
+  border-color: var(
+    --accent-color
+  );
+  box-shadow: 0 4px 12px
+    var(--shadow-color);
+}
+
+.cat-grid-item:active {
+  transform: translateY(0)
+    scale(0.96);
+}
+
+/* --- Scrollbars --- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(
+    --scroll-track
+  );
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(
+    --scroll-thumb
+  );
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(
+    --scroll-thumb-hover
+  );
+}
+
+.theme-toggle-container {
+  display: flex;
+  justify-content: space-between;
+
+  /* Changed to flex-start to keep the toggle switch aligned beautifully with the top header line */
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding: 0 4px;
+}
+
+/* --- Retro Text Effect Styling --- */
+.brand-header {
+  display: flex;
+  flex-direction: column;
+  line-height: 0.85; /* Pulls the two stacked words closer together */
+  padding-top: 4px;
+}
+
+.kitty-title {
+  font-family:
+    Georgia,
+    'Times New Roman', serif; /* Elegant high-contrast serif */
+
+  font-style: italic;
+  font-size: 34px;
+  font-weight: 400;
+  color: var(--text-main);
+  margin: 0;
+  padding: 0;
+  letter-spacing: -0.5px;
+
+  /* The Secret Sauce: Multi-layered hard shadows creates the repeating offset trail */
+  text-shadow:
+    1px 1px 0 var(--shadow-1),
+    2px 2px 0 var(--shadow-1),
+    3px 3px 0 var(--shadow-2),
+    4px 4px 0 var(--shadow-2),
+    5px 5px 0 var(--shadow-3),
+    6px 6px 0 var(--shadow-3),
+    7px 7px 0 var(--shadow-4),
+    8px 8px 0 var(--shadow-4),
+    9px 9px 0 var(--shadow-5),
+    10px 10px 1px
+      rgb(0 0 0 / 30%);
+}
+
+/* Make the word "selector" lowercase and slightly offset for a dynamic look */
+.kitty-title.subtitle {
+  font-size: 34px;
+  font-weight: 400;
+  font-style: italic;
+  padding-left: 8px; /* Slightly indented look */
+  margin-top: 4px;
+}
+
+/* --- Header Layout Structure --- */
+.theme-toggle-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Perfectly centers title and switch horizontally */
+  margin-bottom: 14px;
+  padding: 8px 4px 4px 2px;
+  box-sizing: border-box;
+}
+
+/* --- Retro Text Layout Block (Single Line) --- */
+.kitty-title {
+  font-family:
+    Georgia,
+    'Times New Roman', serif;
+  font-style: italic;
+  font-size: 24px; /* Scaled down perfectly to fit "Kitty selector" inline at 280px width */
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+  padding: 0;
+  letter-spacing: -0.8px; /* Tighter letter grouping for that authentic retro feel */
+  white-space: nowrap; /* Forces text to remain strictly on one line */
+
+  /* Fine-tuned 3D retro shadow trail matching the smaller font size */
+  text-shadow:
+    1px 1px 0 var(--shadow-1),
+    2px 2px 0 var(--shadow-2),
+    3px 3px 0 var(--shadow-3),
+    4px 4px 0 var(--shadow-4),
+    5px 5px 0 var(--shadow-5),
+    6px 6px 1px
+      rgb(0 0 0 / 25%);
+}
+
+/* --- Clean Toggle Switch Realignment --- */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 20px;
+  margin-top: 0; /* Reset previous offset adjustments */
+  flex-shrink: 0; /* Prevents the switch from squeezing if text runs long */
+}
+
+.slider::before {
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+}
+
+input:checked
+  + .slider::before {
+  transform: translateX(18px);
+}
+
+/* --- Boundary Divider --- */
+.header-divider {
+  height: 1px;
+  background: var(
+    --border-color
+  );
+  margin: 0 4px 12px;
+  opacity: 0.5;
+}
+
+.cat-grid-container {
+  display: grid;
+  grid-template-columns: repeat(
+    3,
+    1fr
+  );
+  gap: 10px;
+  max-height: 260px; /* Adjusted slightly to leave clean padding at the bottom curve */
+  overflow-y: auto;
+  padding: 2px 4px 6px; /* Extra breathing space at the bottom for scrollbars */
+  box-sizing: border-box;
+}
+
+/* --- Root Window Shell --- */
+html {
+  /* This prevents rough edges if the popup window renders over dark browser components */
+  background-color: transparent;
+}
+
+body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI', Roboto,
+    sans-serif;
+  background-color: var(
+    --bg-color
+  );
+  color: var(--text-color);
+  margin: 0;
+  width: 280px;
+  box-sizing: border-box;
+
+  /* Modern Rounded Window Frame Setup */
+  padding: 16px 14px 14px; /* Balanced spacing around content */
+  border-radius: 16px; /* Smooth modern corner curves */
+  border: 1px solid
+    var(--border-color); /* Premium micro-border */
+
+  /* Smooth transitions for theme switching toggles */
+  transition:
+    background-color 0.3s
+      cubic-bezier(
+        0.4,
+        0,
+        0.2,
+        1
+      ),
+    border-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+
+  /* Subtle card elevation shadow layer */
+  box-shadow:
+    0 8px 32px
+      rgb(0 0 0 / 24%),
+    0 1px 2px
+      rgb(255 255 255 / 5%)
+      inset;
+}
+
+/* --- Smooth Theme adjustments for the container outer bounds --- */
+body.light-theme {
+  box-shadow:
+    0 8px 24px rgb(0 0 0 / 8%),
+    0 1px 0
+      rgb(255 255 255 / 60%)
+      inset;
+}
