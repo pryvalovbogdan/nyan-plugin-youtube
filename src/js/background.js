@@ -1,5 +1,7 @@
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'OPEN_POPUP') {
-        chrome.action.openPopup();
-    }
+import { ACTIONS } from './consts.js';
+
+chrome.runtime.onMessage.addListener(request => {
+  if (request.action === ACTIONS.OPEN_POPUP) {
+    chrome.action.openPopup();
+  }
 });

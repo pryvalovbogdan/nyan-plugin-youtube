@@ -38,7 +38,6 @@
   overflow: visible !important;
 }
 
-/* --- Modern Custom Nyan Notification Banner --- */
 .nyan-promo-banner {
   position: fixed;
   top: 70px;
@@ -93,10 +92,9 @@
 }
 
 .nyan-promo-text strong {
-  color: #80deea; /* Matches extension accent color */
+  color: #80deea;
 }
 
-/* Interactive Action Buttons Wrapper */
 .nyan-promo-actions {
   display: flex;
   align-items: center;

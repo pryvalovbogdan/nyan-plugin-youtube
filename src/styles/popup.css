@@ -1,8 +1,4 @@
-/* ==========================================================================
-   1. COLOR PALETTES & THEMES (VARIABLES)
-   ========================================================================== */
 :root {
-  /* Default Dark Theme (Calm & Deep) */
   --bg-color: #18181c;
   --tile-bg: #232329;
   --tile-bg-hover: #2a2a32;
@@ -16,8 +12,6 @@
   --scroll-thumb: #3a3a42;
   --scroll-thumb-hover: #4f4f5a;
   --toggle-bg: #3a3a42;
-
-  /* Retro Typography Layers */
   --text-main: #f5f5ee;
   --shadow-1: #3a3247;
   --shadow-2: #bd5071;
@@ -27,7 +21,6 @@
 }
 
 body.light-theme {
-  /* Light Theme (Clean & Soft) */
   --bg-color: #f5f5f7;
   --tile-bg: #fff;
   --tile-bg-hover: #eaeaea;
@@ -42,8 +35,6 @@ body.light-theme {
   --scroll-thumb-hover: #b3b3b3;
   --toggle-bg: #b3b3b3;
   --text-main: #232329;
-
-  /* Softer vibrant trail for white background */
   --shadow-1: #d2d2d7;
   --shadow-2: #e07a97;
   --shadow-3: #ffa875;
@@ -51,9 +42,6 @@ body.light-theme {
   --shadow-5: #637cb5;
 }
 
-/* ==========================================================================
-   2. ROOT SHELL & BASE LAYOUT
-   ========================================================================== */
 html {
   background-color: transparent;
 }
@@ -102,9 +90,6 @@ body.light-theme {
       inset;
 }
 
-/* ==========================================================================
-   3. HEADER UI: TITLE, SUPPORT BUTTON & SWITCH
-   ========================================================================== */
 .theme-toggle-container {
   display: flex;
   justify-content: space-between;
@@ -114,7 +99,6 @@ body.light-theme {
   box-sizing: border-box;
 }
 
-/* Single Line Retro Branding */
 .kitty-title {
   font-family:
     Georgia,
@@ -207,7 +191,6 @@ body.light-theme {
   box-shadow: none;
 }
 
-/* Switch Infrastructure */
 .switch {
   position: relative;
   display: inline-block;
@@ -270,7 +253,6 @@ input:checked
   transform: translateX(18px);
 }
 
-/* Separator Line */
 .header-divider {
   height: 1px;
   background: var(
@@ -280,9 +262,6 @@ input:checked
   opacity: 0.5;
 }
 
-/* ==========================================================================
-   4. CAT GRID IMAGES LAYOUT & SCROLLBAR
-   ========================================================================== */
 .cat-grid-container {
   display: grid;
   grid-template-columns: repeat(
@@ -337,7 +316,30 @@ input:checked
     scale(0.96);
 }
 
-/* Custom Webkit Scrollbars */
+.cat-grid-item.selected {
+  background-color: var(
+    --tile-bg-hover
+  );
+  border-color: var(
+    --accent-color
+  );
+  box-shadow:
+    0 0 0 1px
+      var(--accent-color),
+    0 4px 12px
+      var(--shadow-color);
+  transform: translateY(-1px);
+}
+
+.cat-grid-item.selected:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1.5px
+      var(--accent-color),
+    0 6px 16px
+      var(--shadow-color);
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }

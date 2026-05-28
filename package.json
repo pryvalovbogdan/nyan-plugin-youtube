@@ -8,11 +8,17 @@
     "style-fix": "stylelint \"**/*.{css,scss}\" --fix",
     "clean": "rm -rf dist",
     "build:js": "esbuild src/js/*.js --bundle --minify --target=es2020 --outdir=dist",
+    "build:js:watch": "esbuild src/js/*.js --bundle --target=es2020 --outdir=dist --watch",
     "build:css": "mkdir -p dist && csso src/styles/content.css --output dist/content.css && csso src/styles/popup.css --output dist/popup.css",
+    "build:css:watch": "chokidar 'src/styles/**/*.css' -c 'yarn build:css'",
+    "build:static:watch": "chokidar 'manifest.json' 'popup.html' -c 'yarn copy:manifest && yarn copy:html'",
     "copy:html": "cp *.html dist/",
     "copy:manifest": "cp manifest.json dist/manifest.json",
     "copy:icons": "rsync -av --exclude='screenshots' assets/ dist/assets/",
     "build": "yarn clean && yarn build:js && yarn build:css && yarn copy:html && yarn copy:manifest && yarn copy:icons",
+    "dev": "yarn build && concurrently -n js,css,static,chrome \"yarn build:js:watch\" \"yarn build:css:watch\" \"yarn build:static:watch\" \"web-ext run --target chromium --source-dir dist\"",
+    "lint": "eslint src/js/**/*.js",
+    "lint:fix": "eslint src/js/**/*.js --fix",
     "zip": "yarn build && cd dist && zip -r ../extension.zip . && cd -"
   },
   "repository": {
@@ -27,14 +33,23 @@
   "type": "module",
   "homepage": "https://github.com/pryvalovbogdan/nyan-plugin-youtube#readme",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "chokidar-cli": "^3.0.0",
     "chrome-types": "^0.1.429",
+    "concurrently": "^9.2.1",
     "csso-cli": "^4.0.2",
     "esbuild": "^0.25.11",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-unused-imports": "^4.4.1",
     "prettier": "^3.6.2",
     "stylelint": "^16.25.0",
     "stylelint-config-css-modules": "^4.5.1",
     "stylelint-config-prettier": "^9.0.5",
     "stylelint-config-standard": "^39.0.1",
-    "stylelint-prettier": "^5.0.3"
+    "stylelint-prettier": "^5.0.3",
+    "web-ext": "^10.3.0"
   }
 }
