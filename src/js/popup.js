@@ -1,4 +1,4 @@
-import { ACTIONS, PLUGIN_CLASSES, POPUP_IDS, STORAGE_KEYS, catsData } from './consts.js';
+import { ACTIONS, CUSTOM_CAT_SENTINEL, PLUGIN_CLASSES, POPUP_IDS, STORAGE_KEYS, catsData } from './consts.js';
 import { LANGUAGE_NAMES, detectBrowserLanguage, getTranslation } from './i18n.js';
 
 function applyTranslations(lang) {
@@ -12,6 +12,33 @@ function applyTranslations(lang) {
   if (supportBtn) supportBtn.textContent = t.support;
 }
 
+async function handleCatSelection(imgSrc, isCustomBase64 = false) {
+  const syncKey = isCustomBase64 ? CUSTOM_CAT_SENTINEL : imgSrc;
+
+  await chrome.storage.sync.set({ [STORAGE_KEYS.SELECTED_CAT]: syncKey });
+  const matchingTabs = await chrome.tabs.query({
+    url: ['*://*.youtube.com/*', '*://music.youtube.com/*'],
+  });
+
+  if (!matchingTabs || matchingTabs.length === 0) return;
+
+  matchingTabs.forEach(tab => {
+    chrome.tabs.sendMessage(
+      tab.id,
+      {
+        action: ACTIONS.CHANGE_CAT_IMAGE,
+        src: isCustomBase64 ? CUSTOM_CAT_SENTINEL : imgSrc,
+        isCustom: isCustomBase64,
+      },
+      () => {
+        if (chrome.runtime.lastError) {
+          console.log(`Tab ${tab.id} busy or not ready yet.`);
+        }
+      },
+    );
+  });
+}
+
 function renderCatGrid() {
   const gridContainer = document.getElementById(POPUP_IDS.CAT_GRID);
 
@@ -19,48 +46,82 @@ function renderCatGrid() {
     return;
   }
 
-  chrome.storage.sync.get([STORAGE_KEYS.SELECTED_CAT], result => {
-    Object.values(catsData).forEach(cat => {
-      const catImg = document.createElement('img');
+  chrome.storage.sync.get([STORAGE_KEYS.SELECTED_CAT], syncResult => {
+    chrome.storage.local.get(['customUserCat'], localResult => {
+      const activeSelection = syncResult[STORAGE_KEYS.SELECTED_CAT];
 
-      catImg.src = `./assets/${cat.src}`;
-      catImg.className = PLUGIN_CLASSES.CAT_GRID_ITEM;
-      catImg.addEventListener('click', () => handleCatSelection(cat.src, catImg));
+      if (localResult.customUserCat) {
+        const userCatImg = document.createElement('img');
 
-      if (result[STORAGE_KEYS.SELECTED_CAT] === cat.src) {
-        catImg.classList.add('selected');
+        userCatImg.src = localResult.customUserCat; // Direct raw target integration
+        userCatImg.className = `${PLUGIN_CLASSES.CAT_GRID_ITEM} custom-user-tile`;
+        userCatImg.alt = 'Custom uploaded cat theme';
+
+        if (activeSelection === CUSTOM_CAT_SENTINEL) {
+          userCatImg.classList.add('selected');
+        }
+
+        userCatImg.addEventListener('click', () => {
+          document.querySelectorAll(`.${PLUGIN_CLASSES.CAT_GRID_ITEM}`).forEach(el => el.classList.remove('selected'));
+          userCatImg.classList.add('selected');
+          handleCatSelection(localResult.customUserCat, true);
+        });
+
+        gridContainer.appendChild(userCatImg);
       }
 
-      gridContainer.appendChild(catImg);
+      Object.values(catsData).forEach(cat => {
+        const catImg = document.createElement('img');
+
+        catImg.src = `./assets/${cat.src}`;
+        catImg.className = PLUGIN_CLASSES.CAT_GRID_ITEM;
+
+        if (activeSelection === cat.src) {
+          catImg.classList.add('selected');
+        }
+
+        catImg.addEventListener('click', () => {
+          document.querySelectorAll(`.${PLUGIN_CLASSES.CAT_GRID_ITEM}`).forEach(el => el.classList.remove('selected'));
+          catImg.classList.add('selected');
+          handleCatSelection(cat.src, false);
+        });
+
+        gridContainer.appendChild(catImg);
+      });
     });
   });
 }
 
-async function handleCatSelection(imgSrc, catImg) {
-  const previousSelected = document.querySelector(`.${PLUGIN_CLASSES.CAT_GRID_ITEM}.selected`);
+function initGifUploader() {
+  const uploaderInput = document.getElementById('gifUploader');
 
-  if (previousSelected) {
-    previousSelected.classList.remove('selected');
-  }
+  if (!uploaderInput) return;
 
-  catImg.classList.add('selected');
+  uploaderInput.addEventListener('change', event => {
+    const file = event.target.files[0];
 
-  const matchingTabs = await chrome.tabs.query({
-    url: ['*://*.youtube.com/*', '*://music.youtube.com/*'],
-  });
+    if (!file) return;
 
-  if (!matchingTabs || matchingTabs.length === 0) {
-    await chrome.storage.sync.set({ [STORAGE_KEYS.SELECTED_CAT]: imgSrc });
+    const reader = new FileReader();
 
-    return;
-  }
+    reader.onload = async e => {
+      const base64DataUrl = e.target.result;
 
-  matchingTabs.forEach(tab => {
-    chrome.tabs.sendMessage(tab.id, { action: ACTIONS.CHANGE_CAT_IMAGE, src: imgSrc }, () => {
-      if (chrome.runtime.lastError) {
-        console.log(`Tab ${tab.id} busy or not ready yet.`);
-      }
-    });
+      chrome.storage.local.set({ customUserCat: base64DataUrl }, () => {
+        const gridContainer = document.getElementById(POPUP_IDS.CAT_GRID);
+
+        const uploadCard = gridContainer.firstElementChild;
+
+        gridContainer.innerHTML = '';
+        gridContainer.appendChild(uploadCard);
+
+        renderCatGrid();
+
+        handleCatSelection(base64DataUrl, true);
+      });
+    };
+
+    reader.readAsDataURL(file);
   });
 }
 
@@ -153,4 +214,5 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCatGrid();
   initTheme();
   initLanguage();
+  initGifUploader();
 });

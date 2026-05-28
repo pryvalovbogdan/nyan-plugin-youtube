@@ -1,9 +1,33 @@
-import { ACTIONS, ASSETS, PLUGIN_CLASSES, PLUGIN_IDS, STORAGE_KEYS, YT_SELECTORS, catsData } from './consts.js';
+import {
+  ACTIONS,
+  ASSETS,
+  CUSTOM_CAT_SENTINEL,
+  PLUGIN_CLASSES,
+  PLUGIN_IDS,
+  STORAGE_KEYS,
+  YT_SELECTORS,
+  catsData,
+} from './consts.js';
 import { detectBrowserLanguage, getTranslation } from './i18n.js';
 
 const url = `chrome-extension://${chrome.runtime.id}/assets/`;
 const MAX_ITERATIONS = 3;
 let currentScrubberSrc = 'catty.gif';
+let customCatDataUrl = null;
+
+const CUSTOM_FALLBACK_STYLES = { height: '28px', top: '-13px', topHover: '-16px', topMusic: '-1px' };
+
+function getCatStyles(src) {
+  return catsData[src]?.styles || CUSTOM_FALLBACK_STYLES;
+}
+
+function getCatSrcUrl(src) {
+  if (src === CUSTOM_CAT_SENTINEL || src.startsWith('data:image/png;base64')) {
+    return customCatDataUrl || '';
+  }
+
+  return url + src;
+}
 
 function waitForElement(selector, callback) {
   const el = document.querySelector(selector);
@@ -33,31 +57,53 @@ function waitForElement(selector, callback) {
 }
 
 function updateActiveCatElements(srcName) {
-  const catConfig = catsData[srcName];
+  const styles = getCatStyles(srcName);
   const isYouTubeMusic = window.location.hostname === 'music.youtube.com';
 
   document.querySelectorAll(`.${PLUGIN_CLASSES.CAT_RUNNING}`).forEach(catImg => {
-    catImg.src = url + srcName;
-    catImg.style.setProperty('height', catConfig.styles.height, 'important');
-    catImg.style.top = isYouTubeMusic ? catConfig.styles.topMusic : catConfig.styles.top;
+    catImg.src = getCatSrcUrl(srcName);
+    catImg.style.setProperty('height', styles.height, 'important');
+    catImg.style.top = isYouTubeMusic ? styles.topMusic : styles.top;
   });
 }
 
-chrome.storage.sync.get([STORAGE_KEYS.SELECTED_CAT], result => {
-  if (result[STORAGE_KEYS.SELECTED_CAT]) {
-    currentScrubberSrc = result[STORAGE_KEYS.SELECTED_CAT];
-    updateActiveCatElements(currentScrubberSrc);
-  }
+function applyCustomCat(dataUrl) {
+  customCatDataUrl = dataUrl;
+  currentScrubberSrc = CUSTOM_CAT_SENTINEL;
+  updateActiveCatElements(currentScrubberSrc);
+}
+
+chrome.storage.local.get(['customUserCat'], localResult => {
+  chrome.storage.sync.get([STORAGE_KEYS.SELECTED_CAT], syncResult => {
+    const saved = syncResult[STORAGE_KEYS.SELECTED_CAT];
+
+    if (saved === CUSTOM_CAT_SENTINEL && localResult.customUserCat) {
+      applyCustomCat(localResult.customUserCat);
+    } else if (saved && saved !== CUSTOM_CAT_SENTINEL) {
+      currentScrubberSrc = saved;
+      updateActiveCatElements(currentScrubberSrc);
+    }
+  });
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === ACTIONS.CHANGE_CAT_IMAGE) {
-    currentScrubberSrc = message.src;
+    if (message.isCustom) {
+      chrome.storage.local.get(['customUserCat'], localResult => {
+        if (localResult.customUserCat) {
+          applyCustomCat(localResult.customUserCat);
+        }
 
-    chrome.storage.sync.set({ [STORAGE_KEYS.SELECTED_CAT]: message.src }, () => {
-      updateActiveCatElements(currentScrubberSrc);
-      sendResponse({ status: 'success', saved: message.src });
-    });
+        sendResponse({ status: 'success' });
+      });
+    } else {
+      currentScrubberSrc = message.src;
+      customCatDataUrl = null;
+      chrome.storage.sync.set({ [STORAGE_KEYS.SELECTED_CAT]: message.src }, () => {
+        updateActiveCatElements(currentScrubberSrc);
+        sendResponse({ status: 'success' });
+      });
+    }
   }
 
   return true;
@@ -101,14 +147,14 @@ function toggleCurrentVideo(component, scrubbers) {
 
     if (miniPlayer) miniPlayer.style.setProperty('overflow', 'visible', 'important');
 
-    const catConfig = catsData[currentScrubberSrc];
+    const styles = getCatStyles(currentScrubberSrc);
     const image = document.createElement('img');
 
-    image.src = url + currentScrubberSrc;
+    image.src = getCatSrcUrl(currentScrubberSrc);
     image.className = PLUGIN_CLASSES.CAT_RUNNING;
-    image.style.setProperty('height', catConfig.styles.height, 'important');
+    image.style.setProperty('height', styles.height, 'important');
 
-    if (catConfig.styles.topHover) image.style.top = catConfig.styles.topHover;
+    if (styles.topHover) image.style.top = styles.topHover;
 
     document.querySelectorAll(YT_SELECTORS.SCRUBBER_BUTTON).forEach(btn => (btn.style.display = 'none'));
     item.append(image);
@@ -220,15 +266,15 @@ waitForElement(YT_SELECTORS.PLAYER_CONTROLS, player => {
       item.append(rainbow);
       item.classList.add(PLUGIN_CLASSES.SCRUBBER_ATTACHED);
 
-      const catConfig = catsData[currentScrubberSrc];
+      const styles = getCatStyles(currentScrubberSrc);
       const cat = document.createElement('img');
 
-      cat.src = url + currentScrubberSrc;
+      cat.src = getCatSrcUrl(currentScrubberSrc);
       cat.className = PLUGIN_CLASSES.CAT_RUNNING;
       cat.style.cssText = 'position:absolute;right:-15px;left:auto;z-index:2';
-      cat.style.setProperty('height', catConfig.styles.height, 'important');
+      cat.style.setProperty('height', styles.height, 'important');
 
-      if (catConfig.styles.topHover) cat.style.top = catConfig.styles.topHover;
+      if (styles.topHover) cat.style.top = styles.topHover;
 
       item.append(cat);
     });
@@ -273,14 +319,14 @@ function addYoutubeMusicObserver(player) {
   scrubber.classList.add(PLUGIN_CLASSES.SCRUBBER_ATTACHED);
   scrubber.querySelector(YT_SELECTORS.MUSIC_SLIDER_KNOB_INNER).style.setProperty('display', 'none', 'important');
 
-  const catConfig = catsData[currentScrubberSrc];
+  const styles = getCatStyles(currentScrubberSrc);
   const cat = document.createElement('img');
 
-  cat.src = url + currentScrubberSrc;
+  cat.src = getCatSrcUrl(currentScrubberSrc);
   cat.className = PLUGIN_CLASSES.CAT_RUNNING;
   cat.style.cssText = 'position:absolute;right:0;left:auto';
-  cat.style.setProperty('height', catConfig.styles.height, 'important');
-  cat.style.setProperty('top', catConfig.styles.topMusic, 'important');
+  cat.style.setProperty('height', styles.height, 'important');
+  cat.style.setProperty('top', styles.topMusic, 'important');
   scrubber.append(cat);
 }
 

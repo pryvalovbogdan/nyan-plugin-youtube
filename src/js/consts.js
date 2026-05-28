@@ -10,6 +10,8 @@ export const STORAGE_KEYS = {
   BANNER_DISMISSED: 'bannerDismissed',
 };
 
+export const CUSTOM_CAT_SENTINEL = '__custom__';
+
 export const PLUGIN_CLASSES = {
   CAT_RUNNING: 'nyan-running',
   RAINBOW: 'rainbow',

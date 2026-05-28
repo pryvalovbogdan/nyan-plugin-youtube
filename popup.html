@@ -18,7 +18,13 @@
         <button id="langDropdownTrigger" class="lang-dropdown-trigger">English</button>
         <div id="langDropdownMenu" class="lang-dropdown-menu"></div>
     </div>
-    <div class="cat-grid-container" id="catGrid"></div>
+    <div class="cat-grid-container" id="catGrid">
+        <label class="cat-grid-item upload-tile-card" for="gifUploader" title="Upload your own custom GIF!">
+            <div class="upload-plus-icon">+</div>
+            <div class="upload-text">Upload GIF</div>
+            <input type="file" id="gifUploader" accept="image/gif" style="display: none;" />
+        </label>
+    </div>
     <div class="support-button-container">
         <a href="https://ko-fi.com/nyancustombar" target="_blank" class="support-button" id="supportBtn" title="Support the project">
             Support
