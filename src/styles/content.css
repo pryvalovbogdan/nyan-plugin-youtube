@@ -37,3 +37,120 @@
   height: 8px !important;
   overflow: visible !important;
 }
+
+/* --- Modern Custom Nyan Notification Banner --- */
+.nyan-promo-banner {
+  position: fixed;
+  top: 70px;
+  left: 30px;
+  z-index: 99999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #18181c;
+  color: #eee;
+  border: 1px solid #2f2f37;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI', Roboto,
+    sans-serif;
+  box-shadow: 0 8px 24px
+    rgb(0 0 0 / 30%);
+  animation: slideDownBanner
+    0.4s
+    cubic-bezier(
+      0.4,
+      0,
+      0.2,
+      1
+    );
+  box-sizing: border-box;
+  width: 50%;
+}
+
+@keyframes slideDownBanner {
+  from {
+    transform: translateY(
+      -20px
+    );
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.nyan-promo-text {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.nyan-promo-text strong {
+  color: #80deea; /* Matches extension accent color */
+}
+
+/* Interactive Action Buttons Wrapper */
+.nyan-promo-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.nyan-promo-btn {
+  font-family:
+    Georgia,
+    'Times New Roman', serif;
+  font-style: italic;
+  font-size: 13px;
+  font-weight: 700;
+  color: #18181c;
+  background-color: #80deea;
+  border: none;
+  border-radius: 18px;
+  padding: 6px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px
+    rgb(128 222 234 / 30%);
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s
+      ease,
+    box-shadow 0.15s ease;
+}
+
+.nyan-promo-btn:hover {
+  transform: translateY(-1px);
+  background-color: #a7f3fd;
+  box-shadow: 0 4px 12px
+    rgb(128 222 234 / 50%);
+}
+
+.nyan-promo-close {
+  background: transparent;
+  border: none;
+  color: #88888f;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 50%;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s
+      ease;
+}
+
+.nyan-promo-close:hover {
+  color: #fff;
+  background-color: rgb(
+    255 255 255 / 10%
+  );
+}

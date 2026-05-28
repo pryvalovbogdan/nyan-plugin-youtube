@@ -1,16 +1,16 @@
 const catsData = {
     black: { src: 'black.gif' },
-    garfield: { src: 'cat-garfield.gif' },
     catty: { src: 'catty.gif' },
+    glitch: { src: 'glitch-cat.gif', },
     cute: { src: 'cute-cat.gif' },
     kawaii: { src: 'cute-kawaii.gif' },
     gatito: { src: 'gatito.gif' },
-    glitch: { src: 'glitch-cat.gif', },
     wigglez: { src: 'kitty-wigglez.gif' },
     orange: { src: 'orange-cat-orange.gif' },
     pixel: { src: 'pixel-cat.gif' },
-    sleeping: { src: 'sleeping-fat-cat-zzzzzzzzz.gif' },
+    garfield: { src: 'cat-garfield.gif' },
     white: { src: 'white-cat.gif' },
+    'orange-cat-dancing.gif': { src: 'orange-cat-dancing.gif' },
 };
 
 // Initialize the Grid UI
@@ -38,18 +38,28 @@ function renderCatGrid() {
 
 // Target the active web page and send the payload
 async function handleCatSelection(imgSrc) {
-    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const matchingTabs = await chrome.tabs.query({
+        url: [
+            "*://*.youtube.com/*",
+            "*://music.youtube.com/*"
+        ]
+    });
 
-    if (!activeTab?.id) return;
 
-    chrome.tabs.sendMessage(activeTab.id, {
-        action: 'CHANGE_CAT_IMAGE',
-        src: imgSrc
-    }, (response) => {
-        // Optional tracking / logging catch block
-        if (chrome.runtime.lastError) {
-            console.warn("Could not inject image into this page context:", chrome.runtime.lastError.message);
-        }
+    if (!matchingTabs || matchingTabs.length === 0) {
+        await chrome.storage.sync.set({ selectedCat: imgSrc });
+        return
+    };
+
+    matchingTabs.forEach(tab => {
+        chrome.tabs.sendMessage(tab.id, {
+            action: 'CHANGE_CAT_IMAGE',
+            src: imgSrc
+        }, () => {
+            if (chrome.runtime.lastError) {
+                console.log(`Tab ${tab.id} busy or not ready yet.`);
+            }
+        });
     });
 }
 

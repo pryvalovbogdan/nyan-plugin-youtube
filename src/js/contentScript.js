@@ -5,30 +5,32 @@ const defaultScrubber = document.querySelector('.ytp-scrubber-button');
 let currentScrubberSrc = 'catty.gif';
 
 const catsData = {
-    'black.gif': { src: 'black.gif', styles: { height: '34px !important', top: '-13px',  topHover: '-16px' } },
-    'cat-garfield.gif': { src: 'cat-garfield.gif', styles: { height: '42px !important', top: '-25px',  topHover: '-28px' } },
-    'catty.gif': { src: 'catty.gif', styles: { height: '20px !important', top: '-5px',  topHover: '-8px' } },
-    'cute-cat.gif': { src: 'cute-cat.gif', styles: { height: '40px !important', top: '-18px',  topHover: '-22px' } },
-    'cute-kawaii.gif': { src: 'cute-kawaii.gif', styles: { height: '56px !important', top: '-42px',  topHover: '-48px' }  },
-    'gatito.gif': { src: 'gatito.gif', styles: { height: '40px !important', top: '-28px',  topHover: '-30px' } },
-    'glitch-cat.gif': { src: 'glitch-cat.gif', styles: { height: '28px !important', top: '-13px', topHover: '-18px' } },
-    'kitty-wigglez.gif': { src: 'kitty-wigglez.gif' },
-    'orange-cat-orange.gif': { src: 'orange-cat-orange.gif' },
-    'pixel-cat.gif': { src: 'pixel-cat.gif' },
-    'sleeping-fat-cat-zzzzzzzzz.gif': { src: 'sleeping-fat-cat-zzzzzzzzz.gif' },
-    'white-cat.gif': { src: 'white-cat.gif' },
+    'black.gif': { src: 'black.gif', styles: { height: '34px !important', top: '-13px',  topHover: '-16px', topMusic: '-1px' } },
+    'catty.gif': { src: 'catty.gif', styles: { height: '20px !important', top: '-5px',  topHover: '-8px', topMusic: '5px' } },
+    'glitch-cat.gif': { src: 'glitch-cat.gif', styles: { height: '28px !important', top: '-13px', topHover: '-18px', topMusic: '-5px' } },
+    'cute-cat.gif': { src: 'cute-cat.gif', styles: { height: '45px !important', top: '-23px',  topHover: '-25px', topMusic: '-13px' } },
+    'cute-kawaii.gif': { src: 'cute-kawaii.gif', styles: { height: '56px !important', top: '-42px',  topHover: '-48px', topMusic: '-33px' }  },
+    'gatito.gif': { src: 'gatito.gif', styles: { height: '40px !important', top: '-28px',  topHover: '-30px', topMusic: '-18px' } },
+    'kitty-wigglez.gif': { src: 'kitty-wigglez.gif', styles: { height: '32px !important', top: '-17px', topHover: '-20px', topMusic: '-11px' } },
+    'orange-cat-orange.gif': { src: 'orange-cat-orange.gif', styles: { height: '32px !important', top: '-17px', topHover: '-20px', topMusic: '-5px' } },
+    'pixel-cat.gif': { src: 'pixel-cat.gif', styles: { height: '32px !important', top: '-17px', topHover: '-20px', topMusic: '-7px' } },
+    'cat-garfield.gif': { src: 'cat-garfield.gif', styles: { height: '42px !important', top: '-25px',  topHover: '-28px', topMusic: '-14px' } },
+    'white-cat.gif': { src: 'white-cat.gif', styles: { height: '37px !important', top: '-17px', topHover: '-20px', topMusic: '-7px' } },
+    'orange-cat-dancing.gif': { src: 'orange-cat-dancing.gif', styles: { height: '40px !important', top: '-23px', topHover: '-25px', topMusic: '-15px' } },
 };
 
 function updateActiveCatElements(srcName) {
     const activeRunningCats = document.querySelectorAll('.nyan-running');
-    console.log('activeRunningCats', activeRunningCats)
+
     activeRunningCats.forEach(catImg => {
         const catConfig = catsData[srcName];
-        console.log('currentSrc22', catConfig)
+
         catImg.src = url + srcName;
         catImg.style.setProperty('height', catConfig.styles.height.replace(' !important', ''), 'important');
         if (catConfig.styles.top) {
-            catImg.style.top = catConfig.styles.top;
+            const isYouTubeMusic = window.location.hostname === 'music.youtube.com';
+
+            catImg.style.top = isYouTubeMusic ? catConfig.styles.topMusic : catConfig.styles.top;
         }
     });
 }
@@ -120,6 +122,14 @@ const toggleCurrentVideo = (component = defaultScrubber, scrubberPass) => {
 		const image = document.createElement('img');
 		image.src = url + currentScrubberSrc;
 		image.className = 'nyan-running';
+        const catConfig = catsData[currentScrubberSrc];
+        console.log('item222', item, catConfig)
+
+        image.style.setProperty('height', catConfig.styles.height.replace(' !important', ''), 'important');
+
+        if (catConfig.styles.topHover) {
+            image.style.top = catConfig.styles.topHover;
+        }
 
 		const defaultScrubbers = document.querySelectorAll('.ytp-scrubber-button');
 		defaultScrubbers.forEach(item => item.style.display = 'none');
@@ -395,10 +405,10 @@ const addVideoHoverPreviewObserver = (player) => {
 			image.style.left = 'auto'
 			image.style.zIndex = '2'
             const catConfig = catsData[currentScrubberSrc];
-            console.log('item', item)
+            console.log('item', item, catConfig)
 
             image.style.setProperty('height', catConfig.styles.height.replace(' !important', ''), 'important');
-
+            image.style.height = catConfig.styles.height;
             if (catConfig.styles.topHover) {
                 image.style.top = catConfig.styles.topHover;
             }
@@ -455,15 +465,19 @@ const addYoutubeMusicObserver = (player) => {
     progressbarLoaded.append(skyImage)
 
     scrubber.classList.add('nyanScrubberAttached')
-
+    const knob = scrubber.querySelector('.slider-knob-inner.tp-yt-paper-slider');
+    knob.style.setProperty('display', 'none', 'important');
+    const catConfig = catsData[currentScrubberSrc];
     const nyanImage = document.createElement('img');
-
     nyanImage.src = url + currentScrubberSrc;
+
     nyanImage.className = 'nyan-running';
     nyanImage.style.position = 'absolute'
     nyanImage.style.right = '0'
     nyanImage.style.top = '7px'
     nyanImage.style.left = 'auto'
+    nyanImage.style.setProperty('height', catConfig.styles.height.replace(' !important', ''), 'important');
+    nyanImage.style.setProperty('top', catConfig.styles.topMusic, 'important');
 
     scrubber.append(nyanImage);
 }
@@ -497,4 +511,40 @@ if(musicPlayer){
     addYoutubeMusicObserver(musicPlayer);
 }
 
+function injectPromoBanner() {
+    if (document.getElementById('nyanPromoBanner')) return;
 
+    chrome.storage.sync.get(['bannerDismissed'], (result) => {
+        if (result.bannerDismissed) return;
+
+        const targetContainer = document.querySelector('#content') || document.querySelector('#primary');
+        if (!targetContainer) return;
+
+        const banner = document.createElement('div');
+        banner.id = 'nyanPromoBanner';
+        banner.className = 'nyan-promo-banner';
+
+        banner.innerHTML = `
+            <div class="nyan-promo-text">
+                Wow! Now you can choose your own <strong>Custom Nyan Cat</strong> theme for the progress bar! 🐱✨
+            </div>
+            <div class="nyan-promo-actions">
+                <button class="nyan-promo-btn" id="nyanPromoOpenBtn">Select Cat</button>
+                <button class="nyan-promo-close" id="nyanPromoCloseBtn" title="Dismiss">&times;</button>
+            </div>
+        `;
+
+        targetContainer.prepend(banner);
+
+        document.getElementById('nyanPromoOpenBtn').addEventListener('click', () => {
+            chrome.runtime.sendMessage({ action: 'OPEN_POPUP' });
+        });
+
+        document.getElementById('nyanPromoCloseBtn').addEventListener('click', () => {
+            banner.remove();
+            chrome.storage.sync.set({ bannerDismissed: true });
+        });
+    });
+}
+
+injectPromoBanner();

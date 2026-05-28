@@ -2,20 +2,24 @@
 <html>
 <head>
     <title>Kitty picker</title>
-    <link rel="stylesheet" href="./popup.css">
+    <link rel="stylesheet" href="./src/styles/popup.css">
 </head>
 <body>
-<div class="theme-toggle-container">
-    <h1 class="kitty-title">Kitty selector</h1>
+    <div class="theme-toggle-container">
+        <h1 class="kitty-title">Kitty selector</h1>
 
-    <label class="switch">
-        <input type="checkbox" id="themeCheckbox">
-        <span class="slider"></span>
-    </label>
-</div>
+        <label class="switch">
+            <input type="checkbox" id="themeCheckbox">
+            <span class="slider"></span>
+        </label>
+    </div>
 
-<div class="cat-grid-container" id="catGrid"></div>
-
-<script src="./popup.js"></script>
+    <div class="cat-grid-container" id="catGrid"></div>
+    <div class="support-button-container">
+        <a href="https://ko-fi.com/nyancustombar" target="_blank" class="support-button" title="Support the project">
+            Support
+        </a>
+    </div>
+    <script src="./src/js/popup.js"></script>
 </body>
 </html>

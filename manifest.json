@@ -16,6 +16,9 @@
   "host_permissions": [
     "https://*.youtube.com/*"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "web_accessible_resources": [
     {
       "resources": ["assets/*"],
