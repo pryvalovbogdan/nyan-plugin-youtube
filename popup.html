@@ -6,7 +6,7 @@
 </head>
 <body>
     <div class="theme-toggle-container">
-        <h1 class="kitty-title">Kitty selector</h1>
+        <h1 class="kitty-title" id="popupTitle">Kitty selector</h1>
 
         <label class="switch">
             <input type="checkbox" id="themeCheckbox">
@@ -14,9 +14,13 @@
         </label>
     </div>
 
+    <div class="lang-select-container">
+        <button id="langDropdownTrigger" class="lang-dropdown-trigger">English</button>
+        <div id="langDropdownMenu" class="lang-dropdown-menu"></div>
+    </div>
     <div class="cat-grid-container" id="catGrid"></div>
     <div class="support-button-container">
-        <a href="https://ko-fi.com/nyancustombar" target="_blank" class="support-button" title="Support the project">
+        <a href="https://ko-fi.com/nyancustombar" target="_blank" class="support-button" id="supportBtn" title="Support the project">
             Support
         </a>
     </div>

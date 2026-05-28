@@ -46,7 +46,7 @@ module.exports = [
             'no-shadow': 'warn',
             'no-param-reassign': 'warn',
             'consistent-return': 'warn',
-            'no-plusplus': 'warn',
+            'no-plusplus': 'off',
             'camelcase': 'off',
 
             'import/extensions': ['error', 'ignorePackages', { js: 'always' }],

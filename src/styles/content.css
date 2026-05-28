@@ -41,7 +41,7 @@
 .nyan-promo-banner {
   position: fixed;
   top: 70px;
-  left: 30px;
+  left: 35px;
   z-index: 99999;
   display: flex;
   justify-content: space-between;
@@ -68,7 +68,8 @@
       1
     );
   box-sizing: border-box;
-  width: 50%;
+  width: auto;
+  margin-right: 30px;
 }
 
 @keyframes slideDownBanner {
@@ -113,6 +114,7 @@
   border: none;
   border-radius: 18px;
   padding: 6px 14px;
+  margin-left: 10px;
   cursor: pointer;
   white-space: nowrap;
   box-shadow: 0 2px 6px
@@ -150,5 +152,28 @@
   color: #fff;
   background-color: rgb(
     255 255 255 / 10%
+  );
+}
+
+.nyan-promo-banner.light-theme {
+  background-color: #fff;
+  color: #18181c;
+  border: 1px solid #e0e0e6;
+  box-shadow: 0 8px 24px
+    rgb(0 0 0 / 10%);
+}
+
+.nyan-promo-banner.light-theme .nyan-promo-text strong {
+  color: #0097a7;
+}
+
+.nyan-promo-banner.light-theme .nyan-promo-close {
+  color: #666;
+}
+
+.nyan-promo-banner.light-theme .nyan-promo-close:hover {
+  color: #18181c;
+  background-color: rgb(
+    0 0 0 / 8%
   );
 }

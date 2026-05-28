@@ -1,4 +1,5 @@
 import { ACTIONS, ASSETS, PLUGIN_CLASSES, PLUGIN_IDS, STORAGE_KEYS, YT_SELECTORS, catsData } from './consts.js';
+import { detectBrowserLanguage, getTranslation } from './i18n.js';
 
 const url = `chrome-extension://${chrome.runtime.id}/assets/`;
 const MAX_ITERATIONS = 3;
@@ -289,16 +290,30 @@ if (musicPlayer) {
   addYoutubeMusicObserver(musicPlayer);
 }
 
+function applyBannerTranslation(banner, lang) {
+  const t = getTranslation(lang);
+  const textEl = banner.querySelector('.nyan-promo-text');
+  const openBtn = banner.querySelector(`#${PLUGIN_IDS.PROMO_OPEN_BTN}`);
+  const closeBtn = banner.querySelector(`#${PLUGIN_IDS.PROMO_CLOSE_BTN}`);
+
+  if (textEl) textEl.innerHTML = t.bannerText;
+
+  if (openBtn) openBtn.textContent = t.bannerBtn;
+
+  if (closeBtn) closeBtn.title = t.bannerClose;
+}
+
 function injectPromoBanner() {
-  if (document.getElementById(PLUGIN_IDS.PROMO_BANNER)) return;
+  if (document.getElementById(PLUGIN_IDS.PROMO_BANNER)) {
+    return;
+  }
 
   chrome.storage.sync.get([STORAGE_KEYS.BANNER_DISMISSED], result => {
     if (result[STORAGE_KEYS.BANNER_DISMISSED]) {
       return;
     }
 
-    const targetContainer =
-      document.querySelector(YT_SELECTORS.CONTENT) || document.querySelector(YT_SELECTORS.PRIMARY);
+    const targetContainer = document.body;
 
     if (!targetContainer) {
       return;
@@ -310,16 +325,25 @@ function injectPromoBanner() {
     banner.className = PLUGIN_CLASSES.PROMO_BANNER;
 
     banner.innerHTML = `
-            <div class="nyan-promo-text">
-                Wow! Now you can choose your own <strong>Custom Nyan Cat</strong> theme for the progress bar! 🐱✨
-            </div>
+            <div class="nyan-promo-text"></div>
             <div class="nyan-promo-actions">
-                <button class="nyan-promo-btn" id="${PLUGIN_IDS.PROMO_OPEN_BTN}">Select Cat</button>
-                <button class="nyan-promo-close" id="${PLUGIN_IDS.PROMO_CLOSE_BTN}" title="Dismiss">&times;</button>
+                <button class="nyan-promo-btn" id="${PLUGIN_IDS.PROMO_OPEN_BTN}"></button>
+                <button class="nyan-promo-close" id="${PLUGIN_IDS.PROMO_CLOSE_BTN}">&times;</button>
             </div>
         `;
 
     targetContainer.prepend(banner);
+
+    chrome.storage.sync.get([STORAGE_KEYS.THEME, STORAGE_KEYS.LANGUAGE], prefs => {
+      const savedTheme = prefs[STORAGE_KEYS.THEME];
+      const isLight = savedTheme ? savedTheme === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches;
+
+      banner.classList.toggle(PLUGIN_CLASSES.LIGHT_THEME, isLight);
+
+      const lang = prefs[STORAGE_KEYS.LANGUAGE] || detectBrowserLanguage();
+
+      applyBannerTranslation(banner, lang);
+    });
 
     document.getElementById(PLUGIN_IDS.PROMO_OPEN_BTN).addEventListener('click', () => {
       chrome.runtime.sendMessage({ action: ACTIONS.OPEN_POPUP });
@@ -333,3 +357,19 @@ function injectPromoBanner() {
 }
 
 injectPromoBanner();
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'sync') return;
+
+  const banner = document.getElementById(PLUGIN_IDS.PROMO_BANNER);
+
+  if (!banner) return;
+
+  if (changes[STORAGE_KEYS.THEME]) {
+    banner.classList.toggle(PLUGIN_CLASSES.LIGHT_THEME, changes[STORAGE_KEYS.THEME].newValue === 'light');
+  }
+
+  if (changes[STORAGE_KEYS.LANGUAGE]) {
+    applyBannerTranslation(banner, changes[STORAGE_KEYS.LANGUAGE].newValue);
+  }
+});

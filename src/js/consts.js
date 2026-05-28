@@ -6,6 +6,7 @@ export const ACTIONS = {
 export const STORAGE_KEYS = {
   SELECTED_CAT: 'selectedCat',
   THEME: 'theme',
+  LANGUAGE: 'language',
   BANNER_DISMISSED: 'bannerDismissed',
 };
 
@@ -32,6 +33,7 @@ export const PLUGIN_IDS = {
 export const POPUP_IDS = {
   CAT_GRID: 'catGrid',
   THEME_CHECKBOX: 'themeCheckbox',
+  LANGUAGE_SELECT: 'languageSelect',
 };
 
 export const YT_SELECTORS = {
