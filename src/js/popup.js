@@ -8,10 +8,16 @@ function applyTranslations(lang) {
 
   const title = document.getElementById('popupTitle');
   const supportBtn = document.getElementById('supportBtn');
+  const labelHeight = document.getElementById('labelHeight');
+  const labelTop = document.getElementById('labelTop');
 
   if (title) title.textContent = t.title;
 
   if (supportBtn) supportBtn.textContent = t.support;
+
+  if (labelHeight) labelHeight.textContent = t.labelHeight;
+
+  if (labelTop) labelTop.textContent = t.labelTop;
 }
 
 async function handleCatSelection(imgSrc, isCustomBase64 = false) {

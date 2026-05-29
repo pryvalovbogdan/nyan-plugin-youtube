@@ -577,14 +577,35 @@ body.light-theme
 .control-btn {
   background: none;
   border: none;
-  color: var(--accent-color);
   cursor: pointer;
-  font-size: 9px;
-  padding: 2px 5px;
+  padding: 4px 6px;
   border-radius: 4px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: background-color
     0.15s ease;
+}
+
+.control-btn::before {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+}
+
+.control-btn--down::before {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid
+    var(--accent-color);
+}
+
+.control-btn--up::before {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 5px solid
+    var(--accent-color);
 }
 
 .control-btn:hover {
