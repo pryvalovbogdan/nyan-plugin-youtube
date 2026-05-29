@@ -1,6 +1,8 @@
 import { ACTIONS, CUSTOM_CAT_SENTINEL, PLUGIN_CLASSES, POPUP_IDS, STORAGE_KEYS, catsData } from './consts.js';
 import { LANGUAGE_NAMES, detectBrowserLanguage, getTranslation } from './i18n.js';
 
+let customCatStyles = { height: 28, top: -13 };
+
 function applyTranslations(lang) {
   const t = getTranslation(lang);
 
@@ -92,6 +94,69 @@ function renderCatGrid() {
   });
 }
 
+function updateCustomControlDisplay() {
+  const heightEl = document.getElementById('heightValue');
+  const topEl = document.getElementById('topValue');
+
+  if (heightEl) heightEl.textContent = customCatStyles.height;
+
+  if (topEl) topEl.textContent = customCatStyles.top;
+}
+
+function sendCustomStylesUpdate() {
+  chrome.storage.local.set({ [STORAGE_KEYS.CUSTOM_CAT_STYLES]: customCatStyles });
+  chrome.tabs.query({ url: ['*://*.youtube.com/*', '*://music.youtube.com/*'] }, tabs => {
+    tabs.forEach(tab => {
+      chrome.tabs.sendMessage(tab.id, { action: ACTIONS.UPDATE_CUSTOM_CAT_STYLES, styles: customCatStyles }, () => {
+        if (chrome.runtime.lastError) {
+          console.log(`Tab ${tab.id} busy or not ready yet.`);
+        }
+      });
+    });
+  });
+}
+
+function initCustomCatControls() {
+  const controls = document.getElementById('customCatControls');
+
+  if (!controls) return;
+
+  document.getElementById('heightUp').addEventListener('click', () => {
+    customCatStyles.height += 1;
+    updateCustomControlDisplay();
+    sendCustomStylesUpdate();
+  });
+
+  document.getElementById('heightDown').addEventListener('click', () => {
+    customCatStyles.height = Math.max(1, customCatStyles.height - 1);
+    updateCustomControlDisplay();
+    sendCustomStylesUpdate();
+  });
+
+  document.getElementById('topUp').addEventListener('click', () => {
+    customCatStyles.top += 1;
+    updateCustomControlDisplay();
+    sendCustomStylesUpdate();
+  });
+
+  document.getElementById('topDown').addEventListener('click', () => {
+    customCatStyles.top -= 1;
+    updateCustomControlDisplay();
+    sendCustomStylesUpdate();
+  });
+
+  chrome.storage.local.get(['customUserCat', STORAGE_KEYS.CUSTOM_CAT_STYLES], result => {
+    if (!result.customUserCat) return;
+
+    if (result[STORAGE_KEYS.CUSTOM_CAT_STYLES]) {
+      customCatStyles = result[STORAGE_KEYS.CUSTOM_CAT_STYLES];
+    }
+
+    updateCustomControlDisplay();
+    controls.style.display = 'flex';
+  });
+}
+
 function initGifUploader() {
   const uploaderInput = document.getElementById('gifUploader');
 
@@ -109,15 +174,19 @@ function initGifUploader() {
 
       chrome.storage.local.set({ customUserCat: base64DataUrl }, () => {
         const gridContainer = document.getElementById(POPUP_IDS.CAT_GRID);
-
         const uploadCard = gridContainer.firstElementChild;
 
         gridContainer.innerHTML = '';
         gridContainer.appendChild(uploadCard);
 
         renderCatGrid();
-
         handleCatSelection(base64DataUrl, true);
+
+        const controls = document.getElementById('customCatControls');
+
+        if (controls) controls.style.display = 'flex';
+
+        updateCustomControlDisplay();
       });
     };
 
@@ -215,4 +284,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initLanguage();
   initGifUploader();
+  initCustomCatControls();
 });

@@ -1,6 +1,7 @@
 export const ACTIONS = {
   CHANGE_CAT_IMAGE: 'CHANGE_CAT_IMAGE',
   OPEN_POPUP: 'OPEN_POPUP',
+  UPDATE_CUSTOM_CAT_STYLES: 'UPDATE_CUSTOM_CAT_STYLES',
 };
 
 export const STORAGE_KEYS = {
@@ -8,6 +9,7 @@ export const STORAGE_KEYS = {
   THEME: 'theme',
   LANGUAGE: 'language',
   BANNER_DISMISSED: 'bannerDismissed',
+  CUSTOM_CAT_STYLES: 'customCatStyles',
 };
 
 export const CUSTOM_CAT_SENTINEL = '__custom__';
