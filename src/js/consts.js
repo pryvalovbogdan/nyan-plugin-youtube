@@ -10,6 +10,7 @@ export const STORAGE_KEYS = {
   LANGUAGE: 'language',
   BANNER_DISMISSED: 'bannerDismissed',
   CUSTOM_CAT_STYLES: 'customCatStyles',
+  CUSTOM_USER_CAT: 'customUserCat',
 };
 
 export const CUSTOM_CAT_SENTINEL = '__custom__';
