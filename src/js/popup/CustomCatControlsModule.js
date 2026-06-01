@@ -8,26 +8,14 @@ export class CustomCatControlsModule extends PopupModule {
 
     if (!controls) return;
 
-    document.getElementById('heightUp').addEventListener('click', () => {
-      customCatStyles.height += 1;
+    document.getElementById('heightSlider').addEventListener('input', e => {
+      customCatStyles.height = parseInt(e.target.value, 10);
       updateCustomControlDisplay();
       sendCustomStylesUpdate();
     });
 
-    document.getElementById('heightDown').addEventListener('click', () => {
-      customCatStyles.height = Math.max(1, customCatStyles.height - 1);
-      updateCustomControlDisplay();
-      sendCustomStylesUpdate();
-    });
-
-    document.getElementById('topUp').addEventListener('click', () => {
-      customCatStyles.top += 1;
-      updateCustomControlDisplay();
-      sendCustomStylesUpdate();
-    });
-
-    document.getElementById('topDown').addEventListener('click', () => {
-      customCatStyles.top -= 1;
+    document.getElementById('topSlider').addEventListener('input', e => {
+      customCatStyles.top = parseInt(e.target.value, 10);
       updateCustomControlDisplay();
       sendCustomStylesUpdate();
     });

@@ -26,8 +26,8 @@ export class GifUploaderModule extends PopupModule {
           gridContainer.innerHTML = '';
           gridContainer.appendChild(uploadCard);
 
-          CatGridModule.render();
           handleCatSelection(base64DataUrl, true);
+          CatGridModule.render();
 
           const controls = document.getElementById('customCatControls');
 

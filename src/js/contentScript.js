@@ -187,6 +187,56 @@ function addObserver(node, config = { attributes: false, childList: true, subtre
   observer.observe(node, config);
 }
 
+const togglePreview = () => {
+  const dot = document.querySelector(YT_SELECTORS.HOVER_PLAYHEAD_DOT);
+
+  if (dot && !dot.classList.contains(PLUGIN_CLASSES.DOT_HIDDEN)) {
+    dot.style.display = 'none';
+    dot.classList.add(PLUGIN_CLASSES.DOT_HIDDEN);
+  }
+
+  document.querySelectorAll(YT_SELECTORS.HOVER_PROGRESS_PLAYED).forEach(item => {
+    if (
+      item.querySelector(`.${PLUGIN_CLASSES.MAIN_RAINBOW}`) ||
+      item.classList.contains(PLUGIN_CLASSES.SCRUBBER_ATTACHED)
+    )
+      return;
+
+    item.parentNode.style.setProperty('overflow', 'visible', 'important');
+
+    const rainbow = document.createElement('img');
+
+    rainbow.src = url + ASSETS.RAINBOW;
+    rainbow.className = PLUGIN_CLASSES.MAIN_RAINBOW;
+    rainbow.style.cssText = 'width:100%;height:16px;top:-6px';
+    item.append(rainbow);
+    item.classList.add(PLUGIN_CLASSES.SCRUBBER_ATTACHED);
+
+    const styles = getCatStyles(currentScrubberSrc);
+    const cat = document.createElement('img');
+
+    cat.src = getCatSrcUrl(currentScrubberSrc);
+    cat.className = PLUGIN_CLASSES.CAT_RUNNING;
+    cat.style.cssText = 'position:absolute;right:-15px;left:auto;z-index:2';
+    cat.style.setProperty('height', styles.height, 'important');
+
+    if (styles.topHover) cat.style.top = styles.topHover;
+
+    item.append(cat);
+  });
+
+  document.querySelectorAll(YT_SELECTORS.HOVER_PROGRESS_LOADED).forEach(item => {
+    if (item.querySelector(`.${PLUGIN_CLASSES.NIGHT_SKY}`)) return;
+
+    const sky = document.createElement('img');
+
+    sky.src = url + ASSETS.NIGHT_SKY;
+    sky.className = PLUGIN_CLASSES.NIGHT_SKY;
+    sky.style.cssText = 'height:10px;top:-4px';
+    item.append(sky);
+  });
+};
+
 // Main scrubber
 waitForElement(YT_SELECTORS.SCRUBBER_BUTTON, el => toggleCurrentVideo(el));
 
@@ -207,6 +257,13 @@ waitForElement(YT_SELECTORS.CONTENT, contentEl => {
       toggleCurrentVideo(defaultScrubbers[0], scrubbers);
       defaultScrubbers.forEach(btn => (btn.style.display = 'none'));
       document.querySelectorAll(YT_SELECTORS.CHAPTERS_CONTAINER).forEach(node => addObserver(node));
+    }
+
+    const d = document.querySelector('#shorts-container');
+    const dot = document.querySelector(YT_SELECTORS.HOVER_PLAYHEAD_DOT);
+
+    if (d && dot) {
+      togglePreview();
     }
 
     // Mini player scrubber
@@ -260,53 +317,7 @@ waitForElement(YT_SELECTORS.CONTENT, contentEl => {
 // Video hover preview
 waitForElement(YT_SELECTORS.PLAYER_CONTROLS, player => {
   const observer = new MutationObserver(() => {
-    const dot = document.querySelector(YT_SELECTORS.HOVER_PLAYHEAD_DOT);
-
-    if (dot && !dot.classList.contains(PLUGIN_CLASSES.DOT_HIDDEN)) {
-      dot.style.display = 'none';
-      dot.classList.add(PLUGIN_CLASSES.DOT_HIDDEN);
-    }
-
-    document.querySelectorAll(YT_SELECTORS.HOVER_PROGRESS_PLAYED).forEach(item => {
-      if (
-        item.querySelector(`.${PLUGIN_CLASSES.MAIN_RAINBOW}`) ||
-        item.classList.contains(PLUGIN_CLASSES.SCRUBBER_ATTACHED)
-      )
-        return;
-
-      item.parentNode.style.setProperty('overflow', 'visible', 'important');
-
-      const rainbow = document.createElement('img');
-
-      rainbow.src = url + ASSETS.RAINBOW;
-      rainbow.className = PLUGIN_CLASSES.MAIN_RAINBOW;
-      rainbow.style.cssText = 'width:100%;height:16px;top:-6px';
-      item.append(rainbow);
-      item.classList.add(PLUGIN_CLASSES.SCRUBBER_ATTACHED);
-
-      const styles = getCatStyles(currentScrubberSrc);
-      const cat = document.createElement('img');
-
-      cat.src = getCatSrcUrl(currentScrubberSrc);
-      cat.className = PLUGIN_CLASSES.CAT_RUNNING;
-      cat.style.cssText = 'position:absolute;right:-15px;left:auto;z-index:2';
-      cat.style.setProperty('height', styles.height, 'important');
-
-      if (styles.topHover) cat.style.top = styles.topHover;
-
-      item.append(cat);
-    });
-
-    document.querySelectorAll(YT_SELECTORS.HOVER_PROGRESS_LOADED).forEach(item => {
-      if (item.querySelector(`.${PLUGIN_CLASSES.NIGHT_SKY}`)) return;
-
-      const sky = document.createElement('img');
-
-      sky.src = url + ASSETS.NIGHT_SKY;
-      sky.className = PLUGIN_CLASSES.NIGHT_SKY;
-      sky.style.cssText = 'height:10px;top:-4px';
-      item.append(sky);
-    });
+    togglePreview();
   });
 
   observer.observe(player, { attributes: false, childList: true, subtree: true });

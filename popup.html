@@ -26,22 +26,21 @@
         </label>
     </div>
     <div class="custom-cat-controls" id="customCatControls">
+        <span class="controls-section-title" id="adjustPositionTitle">Adjust Position</span>
         <div class="custom-cat-control-row">
             <span class="control-label" id="labelHeight">Height</span>
-            <div class="control-stepper">
-                <button class="control-btn control-btn--down" id="heightDown"></button>
+            <div class="control-slider-wrap">
+                <input type="range" class="control-slider" id="heightSlider" min="8" max="80" value="28" aria-label="Height">
                 <span class="control-value" id="heightValue">28</span>
                 <span class="control-unit">px</span>
-                <button class="control-btn control-btn--up" id="heightUp"></button>
             </div>
         </div>
         <div class="custom-cat-control-row">
-            <span class="control-label" id="labelTop">Top</span>
-            <div class="control-stepper">
-                <button class="control-btn control-btn--down" id="topDown"></button>
+            <span class="control-label" id="labelTop">Top offset</span>
+            <div class="control-slider-wrap">
+                <input type="range" class="control-slider" id="topSlider" min="-50" max="20" value="-13" aria-label="Top offset">
                 <span class="control-value" id="topValue">-13</span>
                 <span class="control-unit">px</span>
-                <button class="control-btn control-btn--up" id="topUp"></button>
             </div>
         </div>
     </div>

@@ -8,16 +8,30 @@ export class LanguageModule extends PopupModule {
 
     const title = document.getElementById('popupTitle');
     const supportBtn = document.getElementById('supportBtn');
+    const adjustPositionTitle = document.getElementById('adjustPositionTitle');
     const labelHeight = document.getElementById('labelHeight');
     const labelTop = document.getElementById('labelTop');
 
-    if (title) title.textContent = t.title;
+    if (title) {
+      title.textContent = t.title;
+    }
 
-    if (supportBtn) supportBtn.textContent = t.support;
+    if (supportBtn) {
+      supportBtn.textContent = t.support;
+    }
 
-    if (labelHeight) labelHeight.textContent = t.labelHeight;
+    if (adjustPositionTitle) {
+      adjustPositionTitle.textContent = t.adjustPosition;
+    }
 
-    if (labelTop) labelTop.textContent = t.labelTop;
+    if (labelHeight) {
+      labelHeight.textContent = t.height;
+    }
+
+    if (labelTop) {
+    }
+
+    labelTop.textContent = t.topOffset;
   }
 
   #buildLanguageSelect(savedLang) {

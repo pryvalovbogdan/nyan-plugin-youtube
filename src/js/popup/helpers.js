@@ -32,10 +32,24 @@ export async function handleCatSelection(imgSrc, isCustomBase64 = false) {
 export function updateCustomControlDisplay() {
   const heightEl = document.getElementById('heightValue');
   const topEl = document.getElementById('topValue');
+  const heightSlider = document.getElementById('heightSlider');
+  const topSlider = document.getElementById('topSlider');
 
-  if (heightEl) heightEl.textContent = customCatStyles.height;
+  if (heightEl) {
+    heightEl.textContent = customCatStyles.height;
+  }
 
-  if (topEl) topEl.textContent = customCatStyles.top;
+  if (topEl) {
+    topEl.textContent = customCatStyles.top;
+  }
+
+  if (heightSlider) {
+    heightSlider.value = customCatStyles.height;
+  }
+
+  if (topSlider) {
+    topSlider.value = customCatStyles.top;
+  }
 }
 
 export function sendCustomStylesUpdate() {
