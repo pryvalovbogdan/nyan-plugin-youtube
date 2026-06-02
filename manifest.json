@@ -14,7 +14,8 @@
     "storage"
   ],
   "host_permissions": [
-    "https://*.youtube.com/*"
+    "https://*.youtube.com/*",
+    "https://nyan-progressbar.com/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -23,6 +24,14 @@
     {
       "resources": ["assets/*"],
       "matches": ["https://*.youtube.com/*"]
+    },
+    {
+      "resources": ["assets/icon128.png"],
+      "matches": ["https://nyan-progressbar.com/*"]
+    },
+    {
+      "resources": ["assets/icon128.png"],
+      "matches": ["http://localhost/*"]
     }
   ],
   "action": {
@@ -33,7 +42,17 @@
       "matches": ["https://*.youtube.com/*"],
       "js": ["contentScript.js"],
       "css": ["content.css"]
+    },
+    {
+      "matches": ["https://nyan-progressbar.com/*", "http://localhost/*"],
+      "js": ["websiteContentScript.js"]
     }
   ],
+  "externally_connectable": {
+    "matches": [
+      "https://nyan-progressbar.com/*",
+      "http://localhost/*"
+    ]
+  },
   "manifest_version": 3
 }

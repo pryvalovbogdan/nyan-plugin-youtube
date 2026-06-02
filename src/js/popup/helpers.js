@@ -6,17 +6,33 @@ export async function handleCatSelection(imgSrc, isCustomBase64 = false) {
   const syncKey = isCustomBase64 ? CUSTOM_CAT_SENTINEL : imgSrc;
 
   await chrome.storage.sync.set({ [STORAGE_KEYS.SELECTED_CAT]: syncKey });
-  const matchingTabs = await chrome.tabs.query({
-    url: ['*://*.youtube.com/*', '*://music.youtube.com/*'],
-  });
 
-  if (!matchingTabs || matchingTabs.length === 0) return;
+  const [youtubeTabs, websiteTabs] = await Promise.all([
+    chrome.tabs.query({ url: ['*://*.youtube.com/*', '*://music.youtube.com/*'] }),
+    chrome.tabs.query({ url: ['https://nyan-progressbar.com/*', 'http://localhost/*'] }),
+  ]);
 
-  matchingTabs.forEach(tab => {
+  youtubeTabs.forEach(tab => {
     chrome.tabs.sendMessage(
       tab.id,
       {
         action: ACTIONS.CHANGE_CAT_IMAGE,
+        src: isCustomBase64 ? CUSTOM_CAT_SENTINEL : imgSrc,
+        isCustom: isCustomBase64,
+      },
+      () => {
+        if (chrome.runtime.lastError) {
+          console.log(`Tab ${tab.id} busy or not ready yet.`);
+        }
+      },
+    );
+  });
+
+  websiteTabs.forEach(tab => {
+    chrome.tabs.sendMessage(
+      tab.id,
+      {
+        action: ACTIONS.CAT_SELECTED_IN_POPUP,
         src: isCustomBase64 ? CUSTOM_CAT_SENTINEL : imgSrc,
         isCustom: isCustomBase64,
       },

@@ -45,7 +45,7 @@ module.exports = [
             'prefer-const': 'warn',
             'no-shadow': 'warn',
             'no-param-reassign': 'warn',
-            'consistent-return': 'warn',
+            'consistent-return': 'off',
             'no-plusplus': 'off',
             'camelcase': 'off',
 
