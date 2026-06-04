@@ -1,6 +1,6 @@
 {
   "name": "Nyan cat extension",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "Nyan cat in youtube bar extension",
   "icons": {
     "16": "assets/icon16.png",
@@ -8,24 +8,51 @@
     "128": "assets/icon128.png"
   },
   "author": "Bogdan Pryvalov",
+  "permissions": [
+    "activeTab",
+    "alarms",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://*.youtube.com/*",
+    "https://nyan-progressbar.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "web_accessible_resources": [
     {
-      "resources": [
-        "assets/rainbow.png",
-        "assets/night-sky.gif",
-        "assets/catty.gif",
-        "assets/icon-nyan.png"
-      ],
+      "resources": ["assets/*"],
       "matches": ["https://*.youtube.com/*"]
+    },
+    {
+      "resources": ["assets/icon128.png"],
+      "matches": ["https://nyan-progressbar.com/*"]
+    },
+    {
+      "resources": ["assets/icon128.png"],
+      "matches": ["http://localhost/*"]
     }
   ],
+  "action": {
+    "default_popup": "popup.html"
+  },
   "content_scripts": [
     {
       "matches": ["https://*.youtube.com/*"],
       "js": ["contentScript.js"],
       "css": ["content.css"]
+    },
+    {
+      "matches": ["https://nyan-progressbar.com/*", "http://localhost/*"],
+      "js": ["websiteContentScript.js"]
     }
   ],
-  "host_permissions": ["https://*.youtube.com/*"],
+  "externally_connectable": {
+    "matches": [
+      "https://nyan-progressbar.com/*",
+      "http://localhost/*"
+    ]
+  },
   "manifest_version": 3
 }

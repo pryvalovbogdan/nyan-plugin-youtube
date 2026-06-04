@@ -1,3 +1,6 @@
 .idea
 node_modules
 dist
+extension.zip
+extension
+nyan-progressbar
