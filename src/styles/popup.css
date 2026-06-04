@@ -123,9 +123,18 @@ body.light-theme {
 
 .support-button-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+.support-button-row {
+  display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 12px;
+  gap: 6px;
+  width: 100%;
 }
 
 .support-button {
@@ -133,14 +142,15 @@ body.light-theme {
     Georgia,
     'Times New Roman', serif;
   font-style: italic;
-  font-size: 17px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-main);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 14px;
+  flex: 1;
+  padding: 6px 8px;
   white-space: nowrap;
   cursor: pointer;
   background-color: var(
@@ -189,6 +199,40 @@ body.light-theme {
     --tile-bg
   );
   box-shadow: none;
+}
+
+.support-button--rate {
+  position: relative;
+  text-shadow:
+    1px 1px 0 #ff2255,
+    2px 2px 0 #ff7700,
+    3px 3px 0 #ffdd00,
+    4px 4px 1px
+      rgb(0 0 0 / 20%);
+}
+
+.heart-particle {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  animation: floatHeart
+    var(--duration, 0.9s)
+    ease-out forwards;
+}
+
+@keyframes floatHeart {
+  0% {
+    opacity: 1;
+    transform: translateY(0)
+      translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-65px)
+      translateX(var(--drift, 0px))
+      scale(0.5);
+  }
 }
 
 .switch {
@@ -582,24 +626,28 @@ body.light-theme
 }
 
 .control-slider {
-  -webkit-appearance: none;
+  appearance: none;
   appearance: none;
   width: 96px;
   height: 4px;
   border-radius: 2px;
-  background: var(--border-color);
+  background: var(
+    --border-color
+  );
   outline: none;
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .control-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
+  appearance: none;
   appearance: none;
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--accent-color);
+  background: var(
+    --accent-color
+  );
   cursor: pointer;
 }
 
@@ -607,7 +655,9 @@ body.light-theme
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--accent-color);
+  background: var(
+    --accent-color
+  );
   cursor: pointer;
   border: none;
 }

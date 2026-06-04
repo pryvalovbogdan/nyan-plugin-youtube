@@ -1,5 +1,13 @@
 import { ACTIONS, CUSTOM_CAT_SENTINEL, STORAGE_KEYS } from './consts.js';
 
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.tabs.query({ url: ['*://*.youtube.com/*', '*://music.youtube.com/*'] }, tabs => {
+    tabs.forEach(tab => {
+      if (tab.id) chrome.tabs.reload(tab.id);
+    });
+  });
+});
+
 chrome.runtime.onMessage.addListener(request => {
   if (request.action === ACTIONS.OPEN_POPUP) {
     chrome.action.openPopup();

@@ -7,31 +7,29 @@ export class LanguageModule extends PopupModule {
     const t = getTranslation(lang);
 
     const title = document.getElementById('popupTitle');
-    const supportBtn = document.getElementById('supportBtn');
+    const donateBtn = document.getElementById('donateBtn');
+    const customizeBtn = document.getElementById('customizeBtn');
+    const moreBtn = document.getElementById('moreBtn');
+    const rateUsLabel = document.getElementById('rateUsLabel');
     const adjustPositionTitle = document.getElementById('adjustPositionTitle');
     const labelHeight = document.getElementById('labelHeight');
     const labelTop = document.getElementById('labelTop');
 
-    if (title) {
-      title.textContent = t.title;
-    }
+    if (title) title.textContent = t.title;
 
-    if (supportBtn) {
-      supportBtn.textContent = t.support;
-    }
+    if (donateBtn) donateBtn.textContent = t.donate;
 
-    if (adjustPositionTitle) {
-      adjustPositionTitle.textContent = t.adjustPosition;
-    }
+    if (customizeBtn) customizeBtn.textContent = t.customize;
 
-    if (labelHeight) {
-      labelHeight.textContent = t.height;
-    }
+    if (moreBtn) moreBtn.textContent = t.more;
 
-    if (labelTop) {
-    }
+    if (rateUsLabel) rateUsLabel.textContent = t.rateUs;
 
-    labelTop.textContent = t.topOffset;
+    if (adjustPositionTitle) adjustPositionTitle.textContent = t.adjustPosition;
+
+    if (labelHeight) labelHeight.textContent = t.height;
+
+    if (labelTop) labelTop.textContent = t.topOffset;
   }
 
   #buildLanguageSelect(savedLang) {
