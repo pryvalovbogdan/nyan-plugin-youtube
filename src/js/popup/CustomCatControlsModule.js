@@ -20,6 +20,12 @@ export class CustomCatControlsModule extends PopupModule {
       sendCustomStylesUpdate();
     });
 
+    document.getElementById('resetPositionBtn').addEventListener('click', () => {
+      Object.assign(customCatStyles, { height: 28, top: -13 });
+      updateCustomControlDisplay();
+      sendCustomStylesUpdate();
+    });
+
     chrome.storage.local.get([STORAGE_KEYS.CUSTOM_USER_CAT, STORAGE_KEYS.CUSTOM_CAT_STYLES], result => {
       if (!result[STORAGE_KEYS.CUSTOM_USER_CAT]) return;
 

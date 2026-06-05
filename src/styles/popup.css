@@ -607,6 +607,13 @@ body.light-theme
   min-width: 40px;
 }
 
+.controls-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
 .controls-section-title {
   font-size: 10px;
   font-weight: 700;
@@ -614,7 +621,24 @@ body.light-theme
   opacity: 0.45;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  margin-bottom: 2px;
+}
+
+.reset-position-btn {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-color);
+  opacity: 0.55;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 2px 6px;
+  cursor: pointer;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+
+.reset-position-btn:hover {
+  opacity: 0.9;
+  border-color: var(--text-color);
 }
 
 .control-slider-wrap {
