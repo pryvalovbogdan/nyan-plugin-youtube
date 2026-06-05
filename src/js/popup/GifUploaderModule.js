@@ -1,6 +1,6 @@
 import { POPUP_IDS, STORAGE_KEYS } from '../consts.js';
 import { CatGridModule } from './CatGridModule.js';
-import { handleCatSelection, updateCustomControlDisplay } from './helpers.js';
+import { handleCatSelection } from './helpers.js';
 import { PopupModule } from './PopupModule.js';
 
 export class GifUploaderModule extends PopupModule {
@@ -28,12 +28,6 @@ export class GifUploaderModule extends PopupModule {
 
           handleCatSelection(base64DataUrl, true);
           CatGridModule.render();
-
-          const controls = document.getElementById('customCatControls');
-
-          if (controls) controls.style.display = 'flex';
-
-          updateCustomControlDisplay();
         });
       };
 

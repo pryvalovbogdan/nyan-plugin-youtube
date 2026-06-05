@@ -14,19 +14,25 @@ const url = `chrome-extension://${chrome.runtime.id}/assets/`;
 const MAX_ITERATIONS = 3;
 let currentScrubberSrc = 'catty.gif';
 let customCatDataUrl = null;
-let customCatStyles = { height: 28, top: -13 };
+let catStyleOverrides = {};
 
 const CUSTOM_FALLBACK_STYLES = { height: '28px', top: '-13px', topHover: '-16px', topMusic: '-1px' };
 
 function getCatStyles(src) {
-  if (src === CUSTOM_CAT_SENTINEL) {
+  const override = catStyleOverrides[src];
+
+  if (override) {
+    const { height, top } = override;
+
     return {
-      height: `${customCatStyles.height}px`,
-      top: `${customCatStyles.top}px`,
-      topHover: `${customCatStyles.top - 3}px`,
-      topMusic: `${customCatStyles.top + 12}px`,
+      height: `${height}px`,
+      top: `${top}px`,
+      topHover: `${top - 3}px`,
+      topMusic: `${top + 12}px`,
     };
   }
+
+  if (src === CUSTOM_CAT_SENTINEL) return CUSTOM_FALLBACK_STYLES;
 
   return catsData[src]?.styles || CUSTOM_FALLBACK_STYLES;
 }
@@ -83,9 +89,9 @@ function applyCustomCat(dataUrl) {
   updateActiveCatElements(currentScrubberSrc);
 }
 
-chrome.storage.local.get(['customUserCat', STORAGE_KEYS.CUSTOM_CAT_STYLES], localResult => {
-  if (localResult[STORAGE_KEYS.CUSTOM_CAT_STYLES]) {
-    customCatStyles = localResult[STORAGE_KEYS.CUSTOM_CAT_STYLES];
+chrome.storage.local.get(['customUserCat', STORAGE_KEYS.CAT_STYLE_OVERRIDES], localResult => {
+  if (localResult[STORAGE_KEYS.CAT_STYLE_OVERRIDES]) {
+    catStyleOverrides = localResult[STORAGE_KEYS.CAT_STYLE_OVERRIDES];
   }
 
   chrome.storage.sync.get([STORAGE_KEYS.SELECTED_CAT], syncResult => {
@@ -118,8 +124,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ status: 'success' });
       });
     }
-  } else if (message.action === ACTIONS.UPDATE_CUSTOM_CAT_STYLES) {
-    customCatStyles = message.styles;
+  } else if (message.action === ACTIONS.UPDATE_CAT_STYLE) {
+    if (message.styles) {
+      catStyleOverrides[message.catSrc] = message.styles;
+    } else {
+      delete catStyleOverrides[message.catSrc];
+    }
+
     updateActiveCatElements(currentScrubberSrc);
     sendResponse({ status: 'success' });
   }

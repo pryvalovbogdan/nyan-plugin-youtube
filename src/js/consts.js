@@ -1,6 +1,7 @@
 export const ACTIONS = {
   CHANGE_CAT_IMAGE: 'CHANGE_CAT_IMAGE',
   OPEN_POPUP: 'OPEN_POPUP',
+  UPDATE_CAT_STYLE: 'UPDATE_CAT_STYLE',
   UPDATE_CUSTOM_CAT_STYLES: 'UPDATE_CUSTOM_CAT_STYLES',
   UPLOAD_CUSTOM_CAT: 'UPLOAD_CUSTOM_CAT',
   SELECT_CAT: 'SELECT_CAT',
@@ -13,7 +14,7 @@ export const STORAGE_KEYS = {
   THEME: 'theme',
   LANGUAGE: 'language',
   BANNER_DISMISSED: 'bannerDismissed',
-  CUSTOM_CAT_STYLES: 'customCatStyles',
+  CAT_STYLE_OVERRIDES: 'catStyleOverrides',
   CUSTOM_USER_CAT: 'customUserCat',
 };
 
@@ -67,6 +68,8 @@ export const YT_SELECTORS = {
   MUSIC_SLIDER_KNOB: '#sliderKnob',
   MUSIC_SLIDER_KNOB_INNER: '.slider-knob-inner.tp-yt-paper-slider',
 };
+
+export const YOUTUBE_URL_PATTERNS = ['*://*.youtube.com/*', '*://music.youtube.com/*'];
 
 export const ASSETS = {
   RAINBOW: 'rainbow.png',
