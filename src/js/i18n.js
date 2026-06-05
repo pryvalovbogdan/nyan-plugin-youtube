@@ -11,6 +11,7 @@ export const TRANSLATIONS = {
     adjustPosition: 'Adjust Position',
     height: 'Height',
     topOffset: 'Top offset',
+    resetPosition: 'Set default position',
   },
   es: {
     title: 'Selector de gatito',
@@ -24,6 +25,7 @@ export const TRANSLATIONS = {
     adjustPosition: 'Ajustar posición',
     height: 'Altura',
     topOffset: 'Desplazamiento',
+    resetPosition: 'Posición predeterminada',
   },
   pt: {
     title: 'Seletor de gatinho',
@@ -37,6 +39,7 @@ export const TRANSLATIONS = {
     adjustPosition: 'Ajustar posição',
     height: 'Altura',
     topOffset: 'Deslocamento',
+    resetPosition: 'Posição padrão',
   },
   vi: {
     title: 'Chọn mèo',
@@ -50,6 +53,7 @@ export const TRANSLATIONS = {
     adjustPosition: 'Điều chỉnh vị trí',
     height: 'Chiều cao',
     topOffset: 'Khoảng trên',
+    resetPosition: 'Vị trí mặc định',
   },
   id: {
     title: 'Pilih kucing',
@@ -63,6 +67,7 @@ export const TRANSLATIONS = {
     adjustPosition: 'Sesuaikan posisi',
     height: 'Tinggi',
     topOffset: 'Offset atas',
+    resetPosition: 'Posisi default',
   },
   fr: {
     title: 'Sélecteur de chaton',
@@ -76,6 +81,7 @@ export const TRANSLATIONS = {
     adjustPosition: 'Ajuster la position',
     height: 'Hauteur',
     topOffset: 'Décalage haut',
+    resetPosition: 'Position par défaut',
   },
   tl: {
     title: 'Pumili ng pusa',
@@ -89,6 +95,7 @@ export const TRANSLATIONS = {
     adjustPosition: 'Ayusin ang posisyon',
     height: 'Taas',
     topOffset: 'Itaas na offset',
+    resetPosition: 'Default na posisyon',
   },
   tr: {
     title: 'Kedi seçici',
@@ -102,6 +109,7 @@ export const TRANSLATIONS = {
     adjustPosition: 'Konumu ayarla',
     height: 'Yükseklik',
     topOffset: 'Üst ofset',
+    resetPosition: 'Varsayılan konum',
   },
   pl: {
     title: 'Wybór kotka',
@@ -115,6 +123,7 @@ export const TRANSLATIONS = {
     adjustPosition: 'Dostosuj pozycję',
     height: 'Wysokość',
     topOffset: 'Przesunięcie',
+    resetPosition: 'Domyślna pozycja',
   },
   de: {
     title: 'Kätzchen-Auswahl',
@@ -128,6 +137,7 @@ export const TRANSLATIONS = {
     adjustPosition: 'Position anpassen',
     height: 'Höhe',
     topOffset: 'Oberer Versatz',
+    resetPosition: 'Standardposition',
   },
   uk: {
     title: 'Вибір котика',
@@ -141,6 +151,7 @@ export const TRANSLATIONS = {
     adjustPosition: 'Налаштувати позицію',
     height: 'Висота',
     topOffset: 'Зсув зверху',
+    resetPosition: 'Типова позиція',
   },
 };
 

@@ -1,5 +1,13 @@
 import { STORAGE_KEYS } from '../consts.js';
-import { customCatStyles, sendCustomStylesUpdate, updateCustomControlDisplay } from './helpers.js';
+import {
+  catStyleOverrides,
+  customCatStyles,
+  loadStylesForCat,
+  resetCatStyle,
+  selectedCatState,
+  sendCustomStylesUpdate,
+  updateCustomControlDisplay,
+} from './helpers.js';
 import { PopupModule } from './PopupModule.js';
 
 export class CustomCatControlsModule extends PopupModule {
@@ -20,15 +28,22 @@ export class CustomCatControlsModule extends PopupModule {
       sendCustomStylesUpdate();
     });
 
-    chrome.storage.local.get([STORAGE_KEYS.CUSTOM_USER_CAT, STORAGE_KEYS.CUSTOM_CAT_STYLES], result => {
-      if (!result[STORAGE_KEYS.CUSTOM_USER_CAT]) return;
+    document.getElementById('resetPositionBtn').addEventListener('click', () => {
+      resetCatStyle(selectedCatState.src);
+    });
 
-      if (result[STORAGE_KEYS.CUSTOM_CAT_STYLES]) {
-        Object.assign(customCatStyles, result[STORAGE_KEYS.CUSTOM_CAT_STYLES]);
+    chrome.storage.local.get([STORAGE_KEYS.CAT_STYLE_OVERRIDES], localResult => {
+      if (localResult[STORAGE_KEYS.CAT_STYLE_OVERRIDES]) {
+        Object.assign(catStyleOverrides, localResult[STORAGE_KEYS.CAT_STYLE_OVERRIDES]);
       }
 
-      updateCustomControlDisplay();
-      controls.style.display = 'flex';
+      chrome.storage.sync.get([STORAGE_KEYS.SELECTED_CAT], syncResult => {
+        const saved = syncResult[STORAGE_KEYS.SELECTED_CAT] || 'catty.gif';
+
+        selectedCatState.src = saved;
+        loadStylesForCat(saved);
+        controls.style.display = 'flex';
+      });
     });
   }
 }

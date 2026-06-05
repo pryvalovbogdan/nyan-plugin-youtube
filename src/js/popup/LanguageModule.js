@@ -14,6 +14,7 @@ export class LanguageModule extends PopupModule {
     const adjustPositionTitle = document.getElementById('adjustPositionTitle');
     const labelHeight = document.getElementById('labelHeight');
     const labelTop = document.getElementById('labelTop');
+    const resetPositionBtn = document.getElementById('resetPositionBtn');
 
     if (title) title.textContent = t.title;
 
@@ -30,6 +31,8 @@ export class LanguageModule extends PopupModule {
     if (labelHeight) labelHeight.textContent = t.height;
 
     if (labelTop) labelTop.textContent = t.topOffset;
+
+    if (resetPositionBtn) resetPositionBtn.textContent = t.resetPosition;
   }
 
   #buildLanguageSelect(savedLang) {
