@@ -23,6 +23,10 @@ export class GifUploaderModule extends PopupModule {
           const gridContainer = document.getElementById(POPUP_IDS.CAT_GRID);
           const uploadCard = gridContainer.firstElementChild;
 
+          if (chrome.runtime.lastError) {
+            console.error('Storage failed:', chrome.runtime.lastError.message);
+          }
+
           gridContainer.innerHTML = '';
           gridContainer.appendChild(uploadCard);
 
