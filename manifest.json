@@ -1,6 +1,6 @@
 {
   "name": "Nyan cat extension",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Replace YouTube's boring progress bar with an animated cat on a rainbow trail. 12 cats to choose from or upload your own GIF.",
   "icons": {
     "16": "assets/icon16.png",
@@ -23,16 +23,28 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["assets/*"],
-      "matches": ["https://*.youtube.com/*"]
+      "resources": [
+        "assets/*"
+      ],
+      "matches": [
+        "https://*.youtube.com/*"
+      ]
     },
     {
-      "resources": ["assets/icon128.png"],
-      "matches": ["https://nyan-progressbar.com/*"]
+      "resources": [
+        "assets/icon128.png"
+      ],
+      "matches": [
+        "https://nyan-progressbar.com/*"
+      ]
     },
     {
-      "resources": ["assets/icon128.png"],
-      "matches": ["http://localhost/*"]
+      "resources": [
+        "assets/icon128.png"
+      ],
+      "matches": [
+        "http://localhost/*"
+      ]
     }
   ],
   "action": {
@@ -40,13 +52,24 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://*.youtube.com/*"],
-      "js": ["contentScript.js"],
-      "css": ["content.css"]
+      "matches": [
+        "https://*.youtube.com/*"
+      ],
+      "js": [
+        "contentScript.js"
+      ],
+      "css": [
+        "content.css"
+      ]
     },
     {
-      "matches": ["https://nyan-progressbar.com/*", "http://localhost/*"],
-      "js": ["websiteContentScript.js"]
+      "matches": [
+        "https://nyan-progressbar.com/*",
+        "http://localhost/*"
+      ],
+      "js": [
+        "websiteContentScript.js"
+      ]
     }
   ],
   "externally_connectable": {

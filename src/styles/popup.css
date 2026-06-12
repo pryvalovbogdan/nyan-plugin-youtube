@@ -40,6 +40,12 @@ body.light-theme {
   --shadow-3: #ffa875;
   --shadow-4: #ffd875;
   --shadow-5: #637cb5;
+
+  box-shadow:
+    0 8px 24px rgb(0 0 0 / 8%),
+    0 1px 0
+      rgb(255 255 255 / 60%)
+      inset;
 }
 
 html {
@@ -79,14 +85,6 @@ body {
       rgb(0 0 0 / 24%),
     0 1px 2px
       rgb(255 255 255 / 5%)
-      inset;
-}
-
-body.light-theme {
-  box-shadow:
-    0 8px 24px rgb(0 0 0 / 8%),
-    0 1px 0
-      rgb(255 255 255 / 60%)
       inset;
 }
 
@@ -203,15 +201,15 @@ body.light-theme {
   box-shadow: none;
 }
 
-.support-button--rate {
+.support-button-rate {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   position: relative;
   text-shadow:
-    1px 1px 0 #ff2255,
-    2px 2px 0 #ff7700,
-    3px 3px 0 #ffdd00,
+    1px 1px 0 #f25,
+    2px 2px 0 #f70,
+    3px 3px 0 #fd0,
     4px 4px 1px
       rgb(0 0 0 / 20%);
 }
@@ -221,21 +219,26 @@ body.light-theme {
   pointer-events: none;
   user-select: none;
   line-height: 1;
-  animation: floatHeart
+  animation: float-heart
     var(--duration, 0.9s)
     ease-out forwards;
 }
 
-@keyframes floatHeart {
+@keyframes float-heart {
   0% {
     opacity: 1;
     transform: translateY(0)
       translateX(0) scale(1);
   }
+
   100% {
     opacity: 0;
-    transform: translateY(-65px)
-      translateX(var(--drift, 0px))
+    transform: translateY(
+        -65px
+      )
+      translateX(
+        var(--drift, 0)
+      )
       scale(0.5);
   }
 }
@@ -638,16 +641,21 @@ body.light-theme
   color: var(--text-color);
   opacity: 0.55;
   background: none;
-  border: 1px solid var(--border-color);
+  border: 1px solid
+    var(--border-color);
   border-radius: 4px;
   padding: 2px 6px;
   cursor: pointer;
-  transition: opacity 0.15s, border-color 0.15s;
+  transition:
+    opacity 0.15s,
+    border-color 0.15s;
 }
 
 .reset-position-btn:hover {
   opacity: 0.9;
-  border-color: var(--text-color);
+  border-color: var(
+    --text-color
+  );
 }
 
 .control-slider-wrap {
@@ -659,7 +667,6 @@ body.light-theme
 }
 
 .control-slider {
-  appearance: none;
   appearance: none;
   width: 96px;
   height: 4px;
@@ -673,7 +680,6 @@ body.light-theme
 }
 
 .control-slider::-webkit-slider-thumb {
-  appearance: none;
   appearance: none;
   width: 14px;
   height: 14px;
@@ -708,4 +714,21 @@ body.light-theme
   font-size: 11px;
   color: var(--text-color);
   opacity: 0.45;
+}
+
+.upload-error {
+  display: none;
+  margin: 8px 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #4a1d1d;
+  color: #ffb3b3;
+  font-size: 12px;
+  text-align: center;
+}
+
+body.light-theme
+  .upload-error {
+  background: #ffe1e1;
+  color: #8a1f1f;
 }

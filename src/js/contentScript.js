@@ -6,8 +6,9 @@ import {
   PLUGIN_IDS,
   STORAGE_KEYS,
   YT_SELECTORS,
-  catsData,
+  debugLog,
 } from './consts.js';
+import { resolveCatStyles } from './catStyles.js';
 import { detectBrowserLanguage, getTranslation } from './i18n.js';
 
 const url = `chrome-extension://${chrome.runtime.id}/assets/`;
@@ -16,26 +17,7 @@ let currentScrubberSrc = 'catty.gif';
 let customCatDataUrl = null;
 let catStyleOverrides = {};
 
-const CUSTOM_FALLBACK_STYLES = { height: '28px', top: '-13px', topHover: '-16px', topMusic: '-1px' };
-
-function getCatStyles(src) {
-  const override = catStyleOverrides[src];
-
-  if (override) {
-    const { height, top } = override;
-
-    return {
-      height: `${height}px`,
-      top: `${top}px`,
-      topHover: `${top - 3}px`,
-      topMusic: `${top + 12}px`,
-    };
-  }
-
-  if (src === CUSTOM_CAT_SENTINEL) return CUSTOM_FALLBACK_STYLES;
-
-  return catsData[src]?.styles || CUSTOM_FALLBACK_STYLES;
-}
+const getCatStyles = src => resolveCatStyles(src, catStyleOverrides);
 
 function getCatSrcUrl(src) {
   if (src === CUSTOM_CAT_SENTINEL || src.startsWith('data:image/png;base64')) {
@@ -192,7 +174,15 @@ function toggleCurrentVideo(component, scrubbers) {
   toggleToolBars();
 }
 
+// Nodes that already have a MutationObserver attached. Prevents stacking
+// duplicate observers on the same chapter containers across mutation passes.
+const observedNodes = new WeakSet();
+
 function addObserver(node, config = { attributes: false, childList: true, subtree: false }) {
+  if (observedNodes.has(node)) return;
+
+  observedNodes.add(node);
+
   const observer = new MutationObserver(() => toggleToolBars(node, true));
 
   observer.observe(node, config);
@@ -250,6 +240,39 @@ const togglePreview = () => {
 
 // Main scrubber
 waitForElement(YT_SELECTORS.SCRUBBER_BUTTON, el => toggleCurrentVideo(el));
+
+// YouTube is a SPA: re-attach promptly after internal navigation instead of
+// relying solely on the catch-all content observer below.
+window.addEventListener('yt-navigate-finish', () => {
+  waitForElement(YT_SELECTORS.SCRUBBER_BUTTON, el => toggleCurrentVideo(el));
+  waitForElement(YT_SELECTORS.CHAPTERS_CONTAINER, node => {
+    addObserver(node, { attributes: false, childList: true, subtree: true });
+  });
+});
+
+// Startup health check: warns (debug builds) when YouTube renames the class
+// names this extension depends on, so breakage is caught before user reports.
+const HEALTH_CHECK_SELECTORS = [
+  'SCRUBBER_BUTTON',
+  'SCRUBBER_CONTAINER',
+  'PLAY_PROGRESS',
+  'LOAD_PROGRESS',
+  'VIDEO_PLAYER',
+];
+
+function runSelectorHealthCheck() {
+  if (!window.location.pathname.startsWith('/watch')) return;
+
+  const missing = HEALTH_CHECK_SELECTORS.filter(key => !document.querySelector(YT_SELECTORS[key]));
+
+  if (missing.length) {
+    debugLog('Selector health check failed. Missing:', missing.map(key => YT_SELECTORS[key]).join(', '));
+  } else {
+    debugLog('Selector health check passed.');
+  }
+}
+
+setTimeout(runSelectorHealthCheck, 5000);
 
 // Chapter toolbars
 waitForElement(YT_SELECTORS.CHAPTERS_CONTAINER, node => {

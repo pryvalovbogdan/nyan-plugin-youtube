@@ -59,7 +59,7 @@
     sans-serif;
   box-shadow: 0 8px 24px
     rgb(0 0 0 / 30%);
-  animation: slideDownBanner
+  animation: slide-down-banner
     0.4s
     cubic-bezier(
       0.4,
@@ -72,7 +72,7 @@
   margin-right: 30px;
 }
 
-@keyframes slideDownBanner {
+@keyframes slide-down-banner {
   from {
     transform: translateY(
       -20px
@@ -163,15 +163,19 @@
     rgb(0 0 0 / 10%);
 }
 
-.nyan-promo-banner.light-theme .nyan-promo-text strong {
+.nyan-promo-banner.light-theme
+  .nyan-promo-text
+  strong {
   color: #0097a7;
 }
 
-.nyan-promo-banner.light-theme .nyan-promo-close {
+.nyan-promo-banner.light-theme
+  .nyan-promo-close {
   color: #666;
 }
 
-.nyan-promo-banner.light-theme .nyan-promo-close:hover {
+.nyan-promo-banner.light-theme
+  .nyan-promo-close:hover {
   color: #18181c;
   background-color: rgb(
     0 0 0 / 8%

@@ -1,4 +1,10 @@
-import { ACTIONS, CUSTOM_CAT_SENTINEL, STORAGE_KEYS, YOUTUBE_URL_PATTERNS } from './consts.js';
+import { ACTIONS, CUSTOM_CAT_SENTINEL, STORAGE_KEYS, YOUTUBE_URL_PATTERNS, debugLog } from './consts.js';
+
+// Reading chrome.runtime.lastError marks it as handled; tabs without a
+// content script (e.g. discarded tabs) are expected and safely ignored.
+const ignoreLastError = () => {
+  if (chrome.runtime.lastError) debugLog('sendMessage skipped:', chrome.runtime.lastError.message);
+};
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.tabs.query({ url: YOUTUBE_URL_PATTERNS }, tabs => {
@@ -19,10 +25,7 @@ function notifyYouTubeTabs(message, sendResponse) {
     tabs.forEach(tab => {
       if (!tab.id) return;
 
-      chrome.tabs.sendMessage(tab.id, message, () => {
-        if (chrome.runtime.lastError) {
-        }
-      });
+      chrome.tabs.sendMessage(tab.id, message, ignoreLastError);
     });
     sendResponse({ ok: true });
   });

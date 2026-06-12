@@ -1,4 +1,4 @@
-import { ACTIONS, CUSTOM_CAT_SENTINEL, STORAGE_KEYS, YOUTUBE_URL_PATTERNS, catsData } from '../consts.js';
+import { ACTIONS, CUSTOM_CAT_SENTINEL, STORAGE_KEYS, YOUTUBE_URL_PATTERNS, catsData, debugLog } from '../consts.js';
 
 export const customCatStyles = { height: 28, top: -13 };
 export const catStyleOverrides = {};
@@ -45,9 +45,7 @@ export async function handleCatSelection(imgSrc, isCustomBase64 = false) {
         isCustom: isCustomBase64,
       },
       () => {
-        if (chrome.runtime.lastError) {
-          console.log(`Tab ${tab.id} busy or not ready yet.`);
-        }
+        if (chrome.runtime.lastError) debugLog(`Tab ${tab.id} busy or not ready yet.`);
       },
     );
   });
@@ -61,9 +59,7 @@ export async function handleCatSelection(imgSrc, isCustomBase64 = false) {
         isCustom: isCustomBase64,
       },
       () => {
-        if (chrome.runtime.lastError) {
-          console.log(`Tab ${tab.id} busy or not ready yet.`);
-        }
+        if (chrome.runtime.lastError) debugLog(`Tab ${tab.id} busy or not ready yet.`);
       },
     );
   });
@@ -104,9 +100,7 @@ export function sendCustomStylesUpdate() {
         tab.id,
         { action: ACTIONS.UPDATE_CAT_STYLE, catSrc, styles: catStyleOverrides[catSrc] },
         () => {
-          if (chrome.runtime.lastError) {
-            console.log(`Tab ${tab.id} busy or not ready yet.`);
-          }
+          if (chrome.runtime.lastError) debugLog(`Tab ${tab.id} busy or not ready yet.`);
         },
       );
     });
@@ -125,9 +119,7 @@ export function resetCatStyle(catSrc) {
   chrome.tabs.query({ url: YOUTUBE_URL_PATTERNS }, tabs => {
     tabs.forEach(tab => {
       chrome.tabs.sendMessage(tab.id, { action: ACTIONS.UPDATE_CAT_STYLE, catSrc, styles: null }, () => {
-        if (chrome.runtime.lastError) {
-          console.log(`Tab ${tab.id} busy or not ready yet.`);
-        }
+        if (chrome.runtime.lastError) debugLog(`Tab ${tab.id} busy or not ready yet.`);
       });
     });
   });
