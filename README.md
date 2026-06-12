@@ -118,7 +118,14 @@ yarn build        # Clean, bundle JS, minify CSS, copy assets → dist/
 yarn build:js     # Bundle and minify JS only (esbuild)
 yarn build:css    # Minify CSS only (csso)
 yarn zip          # Build and create extension.zip for distribution
+yarn test         # Run unit tests (Vitest)
+yarn lint         # Lint JS (ESLint)
+yarn style-check  # Lint CSS (Stylelint, src only)
 ```
+
+The `dist/manifest.json` version is always derived from `package.json` at build time (`scripts/sync-manifest.mjs`), so the two can't drift. Debug logging is enabled in watch builds and stripped from production via esbuild's `--define:__NYAN_DEBUG__`.
+
+CI (`.github/workflows/ci.yml`) runs lint, tests, and a full build on every PR, verifies the version sync, and attaches `extension.zip` to GitHub releases on `v*` tags.
 
 ## Adding a new cat
 

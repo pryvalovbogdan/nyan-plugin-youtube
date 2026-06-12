@@ -1,7 +1,28 @@
 import { POPUP_IDS, STORAGE_KEYS } from '../consts.js';
+import { validateUploadFile } from '../utils/uploadValidation.js';
+import { detectBrowserLanguage, getTranslation } from '../utils/i18n.js';
 import { CatGridModule } from './CatGridModule.js';
 import { handleCatSelection } from './helpers.js';
 import { PopupModule } from './PopupModule.js';
+
+function showUploadError(messageKey) {
+  chrome.storage.sync.get([STORAGE_KEYS.LANGUAGE], prefs => {
+    const lang = prefs[STORAGE_KEYS.LANGUAGE] || detectBrowserLanguage();
+    const t = getTranslation(lang);
+    let errorEl = document.getElementById(POPUP_IDS.UPLOAD_ERROR);
+
+    if (!errorEl) {
+      errorEl = document.createElement('div');
+      errorEl.id = POPUP_IDS.UPLOAD_ERROR;
+      errorEl.className = 'upload-error';
+      document.getElementById(POPUP_IDS.CAT_GRID)?.before(errorEl);
+    }
+
+    errorEl.textContent = t[messageKey];
+    errorEl.style.display = 'block';
+    setTimeout(() => (errorEl.style.display = 'none'), 4000);
+  });
+}
 
 export class GifUploaderModule extends PopupModule {
   init() {
@@ -12,7 +33,18 @@ export class GifUploaderModule extends PopupModule {
     uploaderInput.addEventListener('change', event => {
       const file = event.target.files[0];
 
+      // Allow re-selecting the same file after a failed attempt
+      event.target.value = '';
+
       if (!file) return;
+
+      const error = validateUploadFile(file);
+
+      if (error) {
+        showUploadError(error);
+
+        return;
+      }
 
       const reader = new FileReader();
 
