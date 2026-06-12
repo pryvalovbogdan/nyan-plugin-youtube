@@ -93,7 +93,7 @@ export const TRANSLATIONS = {
     topOffset: 'Décalage haut',
     resetPosition: 'Position par défaut',
     uploadErrorType: 'Veuillez choisir un fichier image (GIF, PNG, WebP ou JPEG).',
-    uploadErrorSize: 'L\'image est trop volumineuse. Taille maximale : 4 Mo.',
+    uploadErrorSize: "L'image est trop volumineuse. Taille maximale : 4 Mo.",
   },
   tl: {
     title: 'Pumili ng pusa',
