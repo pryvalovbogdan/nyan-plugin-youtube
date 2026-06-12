@@ -1,5 +1,3 @@
-// Copies manifest.json to dist/ with its version forced to package.json's version,
-// so the two can never drift apart in a shipped build.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));

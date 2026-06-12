@@ -1,6 +1,6 @@
 import { POPUP_IDS, STORAGE_KEYS } from '../consts.js';
-import { validateUploadFile } from '../uploadValidation.js';
-import { detectBrowserLanguage, getTranslation } from '../i18n.js';
+import { validateUploadFile } from '../utils/uploadValidation.js';
+import { detectBrowserLanguage, getTranslation } from '../utils/i18n.js';
 import { CatGridModule } from './CatGridModule.js';
 import { handleCatSelection } from './helpers.js';
 import { PopupModule } from './PopupModule.js';

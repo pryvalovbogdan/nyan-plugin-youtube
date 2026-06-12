@@ -8,8 +8,8 @@ import {
   YT_SELECTORS,
   debugLog,
 } from './consts.js';
-import { resolveCatStyles } from './catStyles.js';
-import { detectBrowserLanguage, getTranslation } from './i18n.js';
+import { resolveCatStyles } from './utils/catStyles.js';
+import { detectBrowserLanguage, getTranslation } from './utils/i18n.js';
 
 const url = `chrome-extension://${chrome.runtime.id}/assets/`;
 const MAX_ITERATIONS = 3;

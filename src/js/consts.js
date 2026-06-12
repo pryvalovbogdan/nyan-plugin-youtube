@@ -47,9 +47,9 @@ export const POPUP_IDS = {
   UPLOAD_ERROR: 'uploadError',
 };
 
-// Maximum size for user-uploaded custom cat images (2 MB).
+// Maximum size for user-uploaded custom cat images (4 MB).
 // Base64 encoding inflates this ~33% before it hits chrome.storage.local.
-export const MAX_UPLOAD_BYTES = 2 * 1024 * 1024;
+export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 // Flip to true (or build with --define:__NYAN_DEBUG__=true) for verbose logging.
 export const DEBUG = typeof __NYAN_DEBUG__ !== 'undefined' ? __NYAN_DEBUG__ : false;

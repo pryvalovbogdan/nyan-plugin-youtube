@@ -1,5 +1,5 @@
 import { STORAGE_KEYS } from '../consts.js';
-import { LANGUAGE_NAMES, detectBrowserLanguage, getTranslation } from '../i18n.js';
+import { LANGUAGE_NAMES, detectBrowserLanguage, getTranslation } from '../utils/i18n.js';
 import { PopupModule } from './PopupModule.js';
 
 export class LanguageModule extends PopupModule {

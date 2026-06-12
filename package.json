@@ -7,8 +7,8 @@
     "test": "vitest run",
     "style-fix": "stylelint \"src/styles/**/*.{css,scss}\" --fix",
     "clean": "rm -rf dist",
-    "build:js": "esbuild src/js/contentScript.js src/js/background.js src/js/popup.js src/js/websiteContentScript.js --bundle --minify --target=es2020 --define:__NYAN_DEBUG__=false --outdir=dist",
-    "build:js:watch": "esbuild src/js/contentScript.js src/js/background.js src/js/popup.js src/js/websiteContentScript.js --bundle --target=es2020 --define:__NYAN_DEBUG__=true --outdir=dist --watch",
+    "build:js": "esbuild src/js/contentScript.js background=src/js/background/index.js src/js/popup.js src/js/websiteContentScript.js --bundle --minify --target=es2020 --define:__NYAN_DEBUG__=false --outdir=dist",
+    "build:js:watch": "esbuild src/js/contentScript.js background=src/js/background/index.js src/js/popup.js src/js/websiteContentScript.js --bundle --target=es2020 --define:__NYAN_DEBUG__=true --outdir=dist --watch",
     "build:css": "mkdir -p dist && csso src/styles/content.css --output dist/content.css && csso src/styles/popup.css --output dist/popup.css",
     "build:css:watch": "chokidar 'src/styles/**/*.css' -c 'yarn build:css'",
     "build:static:watch": "chokidar 'manifest.json' 'popup.html' -c 'yarn copy:manifest && yarn copy:html'",
@@ -21,7 +21,8 @@
     "lint:fix": "eslint src/js/**/*.js --fix",
     "zip": "yarn build && cd dist && zip -r ../extension.zip . && cd -",
     "test:watch": "vitest",
-    "style-check": "stylelint \"src/styles/**/*.{css,scss}\""
+    "style-check": "stylelint \"src/styles/**/*.{css,scss}\"",
+    "test:coverage": "vitest run --coverage"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
   "homepage": "https://github.com/pryvalovbogdan/nyan-plugin-youtube#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@vitest/coverage-v8": "^4.1.8",
     "chokidar-cli": "^3.0.0",
     "chrome-types": "^0.1.429",
     "concurrently": "^9.2.1",

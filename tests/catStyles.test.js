@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { CUSTOM_FALLBACK_STYLES, resolveCatStyles } from '../src/js/catStyles.js';
+import { CUSTOM_FALLBACK_STYLES, resolveCatStyles } from '../src/js/utils/catStyles.js';
 import { CUSTOM_CAT_SENTINEL, catsData } from '../src/js/consts.js';
 
 describe('resolveCatStyles', () => {

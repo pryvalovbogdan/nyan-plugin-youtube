@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import { MAX_UPLOAD_BYTES } from '../src/js/consts.js';
-import { LANGUAGE_NAMES, TRANSLATIONS, getTranslation } from '../src/js/i18n.js';
-import { ALLOWED_UPLOAD_TYPES, validateUploadFile } from '../src/js/uploadValidation.js';
+import { LANGUAGE_NAMES, TRANSLATIONS, getTranslation } from '../src/js/utils/i18n.js';
+import { ALLOWED_UPLOAD_TYPES, validateUploadFile } from '../src/js/utils/uploadValidation.js';
 
 describe('validateUploadFile', () => {
   it('accepts a small gif', () => {

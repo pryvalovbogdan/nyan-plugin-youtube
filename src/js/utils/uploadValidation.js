@@ -1,4 +1,4 @@
-import { MAX_UPLOAD_BYTES } from './consts.js';
+import { MAX_UPLOAD_BYTES } from '../consts.js';
 
 export const ALLOWED_UPLOAD_TYPES = ['image/gif', 'image/png', 'image/webp', 'image/apng', 'image/jpeg'];
 

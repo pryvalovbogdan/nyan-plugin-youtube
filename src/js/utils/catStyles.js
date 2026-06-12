@@ -1,4 +1,4 @@
-import { CUSTOM_CAT_SENTINEL, catsData } from './consts.js';
+import { CUSTOM_CAT_SENTINEL, catsData } from '../consts.js';
 
 export const CUSTOM_FALLBACK_STYLES = { height: '28px', top: '-13px', topHover: '-16px', topMusic: '-1px' };
 
