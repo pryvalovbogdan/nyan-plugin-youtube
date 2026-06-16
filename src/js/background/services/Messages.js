@@ -48,24 +48,28 @@ export default {
     return true;
   },
 
+  // Activated when you call sendToExtension('SELECT_CAT', ...)
   [ACTIONS.SELECT_CAT]: (request, _sender, sendResponse) => {
-    if (!request.src) {
+    const catSrc = request.src || request.catSrc; // Fallback defense line
+
+    if (!catSrc) {
       sendResponse({ ok: false });
 
       return false;
     }
 
-    const isCustom = request.src === CUSTOM_CAT_SENTINEL;
+    const isCustom = catSrc === CUSTOM_CAT_SENTINEL;
 
     (async () => {
-      await setSelectedCat(request.src);
-      await notifyYouTubeTabs({ action: ACTIONS.CHANGE_CAT_IMAGE, src: request.src, isCustom });
+      await setSelectedCat(catSrc);
+      await notifyYouTubeTabs({ action: ACTIONS.CHANGE_CAT_IMAGE, src: catSrc, isCustom });
       sendResponse({ ok: true });
     })();
 
     return true;
   },
 
+  // Activated when you call sendToExtension('UPLOAD_CUSTOM_CAT', ...)
   [ACTIONS.UPLOAD_CUSTOM_CAT]: (request, _sender, sendResponse) => {
     if (!request.base64) {
       sendResponse({ ok: false });

@@ -732,3 +732,35 @@ body.light-theme
   background: #ffe1e1;
   color: #8a1f1f;
 }
+
+@media (width <= 480px),
+  (device-width <= 932px) and (orientation: landscape) {
+  body {
+    width: 100vw !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    padding: 16px 16px 24px !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    box-shadow: none !important;
+    overflow: auto !important;
+  }
+
+  .cat-grid-container {
+    max-height: none !important;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(85px, 1fr)
+    ) !important;
+    gap: 12px !important;
+  }
+
+  .custom-cat-controls {
+    margin: 12px 0 0 !important;
+  }
+
+  .lang-select-container {
+    padding: 0 !important;
+  }
+}

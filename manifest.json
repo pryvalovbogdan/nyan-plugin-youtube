@@ -1,7 +1,7 @@
 {
-  "name": "Nyan cat extension",
-  "version": "1.1.2",
-  "description": "Replace YouTube's boring progress bar with an animated cat on a rainbow trail. 12 cats to choose from or upload your own GIF.",
+  "name": "Nyan Cat Youtube Extension",
+  "version": "1.0.0",
+  "description": "Replace YouTube's progress bar with an animated cat on a rainbow trail. 12 cats or upload your own GIF.",
   "icons": {
     "16": "assets/icon16.png",
     "48": "assets/icon48.png",
@@ -37,14 +37,6 @@
       "matches": [
         "https://nyan-progressbar.com/*"
       ]
-    },
-    {
-      "resources": [
-        "assets/icon128.png"
-      ],
-      "matches": [
-        "http://localhost/*"
-      ]
     }
   ],
   "action": {
@@ -64,8 +56,7 @@
     },
     {
       "matches": [
-        "https://nyan-progressbar.com/*",
-        "http://localhost/*"
+        "https://nyan-progressbar.com/*"
       ],
       "js": [
         "websiteContentScript.js"
@@ -74,8 +65,7 @@
   ],
   "externally_connectable": {
     "matches": [
-      "https://nyan-progressbar.com/*",
-      "http://localhost/*"
+      "https://nyan-progressbar.com/*"
     ]
   },
   "manifest_version": 3

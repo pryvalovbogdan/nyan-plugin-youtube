@@ -81,6 +81,15 @@ export const YT_SELECTORS = {
   MUSIC_SLIDER_KNOB_INNER: '.slider-knob-inner.tp-yt-paper-slider',
 };
 
+export const MOBILE_SELECTORS = {
+  SCRUBBER_BUTTON: '.ytProgressBarPlayheadProgressBarPlayheadDot',
+  SCRUBBER_CONTAINER: '.ytProgressBarPlayheadHost',
+  PLAY_PROGRESS: '.ytProgressBarLineProgressBarPlayed',
+  LOAD_PROGRESS: '.ytProgressBarLineProgressBarLoaded',
+  CONTENT: '#player-control-container',
+  PLAYER_CONTROLS: '.player-controls-content',
+};
+
 export const YOUTUBE_URL_PATTERNS = ['*://*.youtube.com/*', '*://music.youtube.com/*'];
 
 export const ASSETS = {

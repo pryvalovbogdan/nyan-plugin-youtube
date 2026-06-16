@@ -7,16 +7,24 @@ import {
   STORAGE_KEYS,
   YT_SELECTORS,
   debugLog,
+  MOBILE_SELECTORS,
 } from './consts.js';
 import { resolveCatStyles } from './utils/catStyles.js';
 import { detectBrowserLanguage, getTranslation } from './utils/i18n.js';
 
-const url = `chrome-extension://${chrome.runtime.id}/assets/`;
-const MAX_ITERATIONS = 3;
+const url = chrome.runtime.getURL('assets/');
+const MAX_ITERATIONS = 6;
 let currentScrubberSrc = 'catty.gif';
 let customCatDataUrl = null;
 let catStyleOverrides = {};
 
+const isMobileSafari = /iPhone|iPad|iPod/i.test(navigator.userAgent) && !window.MSStream;
+const activeSelectors = isMobileSafari
+  ? {
+      ...YT_SELECTORS,
+      ...MOBILE_SELECTORS,
+    }
+  : YT_SELECTORS;
 const getCatStyles = src => resolveCatStyles(src, catStyleOverrides);
 
 function getCatSrcUrl(src) {
@@ -121,7 +129,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 function toggleToolBars(parent = document, isChapter = false) {
-  parent.querySelectorAll(YT_SELECTORS.PLAY_PROGRESS).forEach(item => {
+  parent.querySelectorAll(activeSelectors.PLAY_PROGRESS).forEach(item => {
     if (item.querySelector(`.${PLUGIN_CLASSES.RAINBOW}`)) return;
 
     item.style.setProperty('background', 'transparent', 'important');
@@ -147,16 +155,19 @@ function toggleToolBars(parent = document, isChapter = false) {
 }
 
 function toggleCurrentVideo(component, scrubbers) {
-  if (component) component.style.display = 'none';
+  if (component && component.style) component.style.display = 'none';
 
-  const targets = scrubbers || document.querySelectorAll(YT_SELECTORS.SCRUBBER_CONTAINER);
+  const targets = scrubbers || document.querySelectorAll(activeSelectors.SCRUBBER_CONTAINER);
 
   targets.forEach(item => {
     if (item.querySelectorAll(`.${PLUGIN_CLASSES.CAT_RUNNING}`).length) return;
 
-    const miniPlayer = document.querySelector(YT_SELECTORS.VIDEO_PLAYER);
+    // Desktop optimization fallback
+    if (!isMobileSafari) {
+      const miniPlayer = document.querySelector(activeSelectors.VIDEO_PLAYER);
 
-    if (miniPlayer) miniPlayer.style.setProperty('overflow', 'visible', 'important');
+      if (miniPlayer) miniPlayer.style.setProperty('overflow', 'visible', 'important');
+    }
 
     const styles = getCatStyles(currentScrubberSrc);
     const image = document.createElement('img');
@@ -167,7 +178,23 @@ function toggleCurrentVideo(component, scrubbers) {
 
     if (styles.topHover) image.style.top = styles.topHover;
 
-    document.querySelectorAll(YT_SELECTORS.SCRUBBER_BUTTON).forEach(btn => (btn.style.display = 'none'));
+    //      const defaultScrubbers = document.querySelectorAll(YT_SELECTORS.SCRUBBER_BUTTON);
+    //
+    //       toggleCurrentVideo(defaultScrubbers[0], scrubbers);
+    //       defaultScrubbers.forEach(btn => (btn.style.display = 'none'));
+    // Safely hide standard track elements
+    console.log(
+      'document.querySelectorAll(activeSelectors.SCRUBBER_BUTTON)',
+      document.querySelectorAll(activeSelectors.SCRUBBER_BUTTON),
+    );
+    document.querySelectorAll(activeSelectors.SCRUBBER_BUTTON).forEach(btn => {
+      console.log('btn', btn);
+      btn.style.setProperty('display', 'none', 'important');
+      btn.style.setProperty('background', 'orange', 'important');
+      btn.style.display = 'none!important;';
+      btn.style.background = 'purple!important;';
+    });
+
     item.append(image);
   });
 
@@ -239,164 +266,246 @@ const togglePreview = () => {
 };
 
 // Main scrubber
-waitForElement(YT_SELECTORS.SCRUBBER_BUTTON, el => toggleCurrentVideo(el));
+if (isMobileSafari) {
+  // Mobile Safari Track Setup
+  waitForElement(activeSelectors.CONTENT, container => {
+    const mobileDOMObserver = new MutationObserver(() => {
+      const nativeVideo = document.querySelector('video');
+      const scrubberContainer = document.querySelector(activeSelectors.SCRUBBER_CONTAINER);
 
-// YouTube is a SPA: re-attach promptly after internal navigation instead of
-// relying solely on the catch-all content observer below.
-window.addEventListener('yt-navigate-finish', () => {
-  waitForElement(YT_SELECTORS.SCRUBBER_BUTTON, el => toggleCurrentVideo(el));
+      // If a mobile track container exists and the cat hasn't been appended yet
+      if (scrubberContainer && !scrubberContainer.querySelector(`.${PLUGIN_CLASSES.CAT_RUNNING}`)) {
+        toggleCurrentVideo(null, [scrubberContainer]);
+      }
+
+      // Fallback: Bind directly to HTML5 video lifecycle updates
+      // if mobile UI shifts block native CSS timeline positioning
+      if (nativeVideo && !nativeVideo.dataset.nyanBound) {
+        nativeVideo.dataset.nyanBound = 'true';
+
+        nativeVideo.addEventListener('timeupdate', () => {
+          const catImg = document.querySelector(`.${PLUGIN_CLASSES.CAT_RUNNING}`);
+
+          if (catImg && nativeVideo.duration) {
+            const currentPercentage = (nativeVideo.currentTime / nativeVideo.duration) * 100;
+
+            // Adjust position inline if native layout classes clip relative transforms
+            catImg.style.setProperty('left', `calc(${currentPercentage}% - 15px)`, 'important');
+          }
+        });
+      }
+    });
+
+    mobileDOMObserver.observe(container, { attributes: false, childList: true, subtree: true });
+  });
+
+  waitForElement(activeSelectors.PLAYER_CONTROLS, player => {
+    console.log('player', player);
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll(activeSelectors.SCRUBBER_BUTTON).forEach(dot => {
+        console.log('dot', dot);
+
+        if (dot && dot.style.getPropertyValue('display') !== 'none') {
+          // 2. Hide the native tracking dot safely on both mobile and desktop
+          dot.style.setProperty('display', 'none', 'important');
+        }
+      });
+    });
+
+    observer.observe(player, { attributes: true, childList: true, subtree: true });
+  });
+} else {
+  // Original Desktop/Desktop-SPA Pipelines
+  waitForElement(activeSelectors.SCRUBBER_BUTTON, el => toggleCurrentVideo(el));
+
+  window.addEventListener('yt-navigate-finish', () => {
+    waitForElement(activeSelectors.SCRUBBER_BUTTON, el => toggleCurrentVideo(el));
+    waitForElement(activeSelectors.CHAPTERS_CONTAINER, node => {
+      addObserver(node, { attributes: false, childList: true, subtree: true });
+    });
+  });
+
+  waitForElement(activeSelectors.CHAPTERS_CONTAINER, node => {
+    addObserver(node, { attributes: false, childList: true, subtree: true });
+  });
+
+  // (Keep your existing desktop waitForElement(activeSelectors.CONTENT) block here...)
+
+  // YouTube is a SPA: re-attach promptly after internal navigation instead of
+  // relying solely on the catch-all content observer below.
+  window.addEventListener('yt-navigate-finish', () => {
+    waitForElement(YT_SELECTORS.SCRUBBER_BUTTON, el => toggleCurrentVideo(el));
+    waitForElement(YT_SELECTORS.CHAPTERS_CONTAINER, node => {
+      addObserver(node, { attributes: false, childList: true, subtree: true });
+    });
+  });
+
+  // Startup health check: warns (debug builds) when YouTube renames the class
+  // names this extension depends on, so breakage is caught before user reports.
+  const HEALTH_CHECK_SELECTORS = [
+    'SCRUBBER_BUTTON',
+    'SCRUBBER_CONTAINER',
+    'PLAY_PROGRESS',
+    'LOAD_PROGRESS',
+    'VIDEO_PLAYER',
+  ];
+
+  function runSelectorHealthCheck() {
+    if (!window.location.pathname.startsWith('/watch')) return;
+
+    const missing = HEALTH_CHECK_SELECTORS.filter(key => !document.querySelector(YT_SELECTORS[key]));
+
+    // console.log(missing);
+
+    if (missing.length) {
+      debugLog('Selector health check failed. Missing:', missing.map(key => YT_SELECTORS[key]).join(', '));
+    } else {
+      debugLog('Selector health check passed.');
+    }
+  }
+
+  setTimeout(runSelectorHealthCheck, 5000);
+
+  // Chapter toolbars
   waitForElement(YT_SELECTORS.CHAPTERS_CONTAINER, node => {
     addObserver(node, { attributes: false, childList: true, subtree: true });
   });
-});
 
-// Startup health check: warns (debug builds) when YouTube renames the class
-// names this extension depends on, so breakage is caught before user reports.
-const HEALTH_CHECK_SELECTORS = [
-  'SCRUBBER_BUTTON',
-  'SCRUBBER_CONTAINER',
-  'PLAY_PROGRESS',
-  'LOAD_PROGRESS',
-  'VIDEO_PLAYER',
-];
+  // Page observer: scrubbers, mini player, watched segments, main page rainbow bars
+  waitForElement(YT_SELECTORS.CONTENT, contentEl => {
+    const observer = new MutationObserver(() => {
+      // New scrubber containers after navigation or new video load
+      const scrubbers = document.querySelectorAll(YT_SELECTORS.SCRUBBER_CONTAINER);
 
-function runSelectorHealthCheck() {
-  if (!window.location.pathname.startsWith('/watch')) return;
+      if (scrubbers.length > document.querySelectorAll(`.${PLUGIN_CLASSES.CAT_RUNNING}`).length) {
+        const defaultScrubbers = document.querySelectorAll(YT_SELECTORS.SCRUBBER_BUTTON);
 
-  const missing = HEALTH_CHECK_SELECTORS.filter(key => !document.querySelector(YT_SELECTORS[key]));
+        toggleCurrentVideo(defaultScrubbers[0], scrubbers);
+        defaultScrubbers.forEach(btn => (btn.style.display = 'none'));
+        document.querySelectorAll(YT_SELECTORS.CHAPTERS_CONTAINER).forEach(node => addObserver(node));
+      }
 
-  if (missing.length) {
-    debugLog('Selector health check failed. Missing:', missing.map(key => YT_SELECTORS[key]).join(', '));
-  } else {
-    debugLog('Selector health check passed.');
-  }
-}
+      const d = document.querySelector('#shorts-container');
+      const dot = document.querySelector(YT_SELECTORS.HOVER_PLAYHEAD_DOT);
 
-setTimeout(runSelectorHealthCheck, 5000);
+      if (d && dot) {
+        togglePreview();
+      }
 
-// Chapter toolbars
-waitForElement(YT_SELECTORS.CHAPTERS_CONTAINER, node => {
-  addObserver(node, { attributes: false, childList: true, subtree: true });
-});
+      // Mini player scrubber
+      const miniPlayerParent = document.querySelector(YT_SELECTORS.MINI_PLAYER_UI);
+      const miniScrubber = miniPlayerParent?.parentNode?.querySelector(YT_SELECTORS.SCRUBBER_CONTAINER);
 
-// Page observer: scrubbers, mini player, watched segments, main page rainbow bars
-waitForElement(YT_SELECTORS.CONTENT, contentEl => {
-  const observer = new MutationObserver(() => {
-    // New scrubber containers after navigation or new video load
-    const scrubbers = document.querySelectorAll(YT_SELECTORS.SCRUBBER_CONTAINER);
+      if (miniPlayerParent && miniScrubber && !miniScrubber.classList.contains(PLUGIN_CLASSES.MINI_PLAYER_ATTACHED)) {
+        miniScrubber.classList.add(PLUGIN_CLASSES.MINI_PLAYER_ATTACHED);
+        toggleCurrentVideo();
+      }
 
-    if (scrubbers.length > document.querySelectorAll(`.${PLUGIN_CLASSES.CAT_RUNNING}`).length) {
-      const defaultScrubbers = document.querySelectorAll(YT_SELECTORS.SCRUBBER_BUTTON);
+      // Watched segment bars on thumbnails
+      const watchedBars = document.querySelectorAll(YT_SELECTORS.WATCHED_PROGRESS_BAR);
 
-      toggleCurrentVideo(defaultScrubbers[0], scrubbers);
-      defaultScrubbers.forEach(btn => (btn.style.display = 'none'));
-      document.querySelectorAll(YT_SELECTORS.CHAPTERS_CONTAINER).forEach(node => addObserver(node));
-    }
+      if (document.querySelectorAll(`.${PLUGIN_CLASSES.MAIN_RAINBOW_WATCHED}`).length < watchedBars.length) {
+        watchedBars.forEach(item => {
+          if (item.querySelector(`.${PLUGIN_CLASSES.MAIN_RAINBOW_WATCHED}`)) return;
 
-    const d = document.querySelector('#shorts-container');
-    const dot = document.querySelector(YT_SELECTORS.HOVER_PLAYHEAD_DOT);
+          const img = document.createElement('img');
 
-    if (d && dot) {
-      togglePreview();
-    }
+          img.src = url + ASSETS.RAINBOW;
+          img.className = PLUGIN_CLASSES.MAIN_RAINBOW_WATCHED;
+          img.style.cssText = 'height:12px;top:0px;position:absolute;width:100%';
+          item.style.position = 'relative';
+          item.style.height = '100%';
+          item.parentElement.style.height = '8px';
+          item.parentElement.style.marginBottom = '6px';
+          item.append(img);
+        });
+      }
 
-    // Mini player scrubber
-    const miniPlayerParent = document.querySelector(YT_SELECTORS.MINI_PLAYER_UI);
-    const miniScrubber = miniPlayerParent?.parentNode?.querySelector(YT_SELECTORS.SCRUBBER_CONTAINER);
+      // Main page resume progress bars
+      const mainProgressBars = document.querySelectorAll(YT_SELECTORS.RESUME_PROGRESS_BAR);
 
-    if (miniPlayerParent && miniScrubber && !miniScrubber.classList.contains(PLUGIN_CLASSES.MINI_PLAYER_ATTACHED)) {
-      miniScrubber.classList.add(PLUGIN_CLASSES.MINI_PLAYER_ATTACHED);
-      toggleCurrentVideo();
-    }
+      if (document.querySelectorAll(`.${PLUGIN_CLASSES.MAIN_RAINBOW}`).length >= mainProgressBars.length) return;
 
-    // Watched segment bars on thumbnails
-    const watchedBars = document.querySelectorAll(YT_SELECTORS.WATCHED_PROGRESS_BAR);
-
-    if (document.querySelectorAll(`.${PLUGIN_CLASSES.MAIN_RAINBOW_WATCHED}`).length < watchedBars.length) {
-      watchedBars.forEach(item => {
-        if (item.querySelector(`.${PLUGIN_CLASSES.MAIN_RAINBOW_WATCHED}`)) return;
+      mainProgressBars.forEach(item => {
+        if (item.querySelector(`.${PLUGIN_CLASSES.MAIN_RAINBOW}`)) return;
 
         const img = document.createElement('img');
 
         img.src = url + ASSETS.RAINBOW;
-        img.className = PLUGIN_CLASSES.MAIN_RAINBOW_WATCHED;
-        img.style.cssText = 'height:12px;top:0px;position:absolute;width:100%';
-        item.style.position = 'relative';
-        item.style.height = '100%';
-        item.parentElement.style.height = '8px';
-        item.parentElement.style.marginBottom = '6px';
+        img.className = PLUGIN_CLASSES.MAIN_RAINBOW;
         item.append(img);
       });
+    });
+
+    observer.observe(contentEl, { attributes: false, childList: true, subtree: true });
+  });
+
+  // Video hover preview
+  waitForElement(YT_SELECTORS.PLAYER_CONTROLS, player => {
+    const observer = new MutationObserver(() => {
+      togglePreview();
+    });
+
+    observer.observe(player, { attributes: false, childList: true, subtree: true });
+  });
+
+  // YouTube Music
+  function addYoutubeMusicObserver(player) {
+    const progressbarPlayed = player.querySelector(YT_SELECTORS.MUSIC_PRIMARY_PROGRESS);
+    const progressbarLoaded = player.querySelector(YT_SELECTORS.MUSIC_SECONDARY_PROGRESS);
+    const scrubber = player.querySelector(YT_SELECTORS.MUSIC_SLIDER_KNOB);
+
+    progressbarPlayed.parentNode.style.setProperty('overflow', 'visible', 'important');
+
+    const rainbow = document.createElement('img');
+
+    rainbow.src = url + ASSETS.RAINBOW;
+    rainbow.className = PLUGIN_CLASSES.MAIN_RAINBOW;
+    rainbow.style.cssText = 'width:100%;height:16px;top:-6px';
+    progressbarPlayed.append(rainbow);
+
+    const sky = document.createElement('img');
+
+    sky.src = url + ASSETS.NIGHT_SKY;
+    sky.className = PLUGIN_CLASSES.NIGHT_SKY;
+    sky.style.cssText = 'height:10px;top:-4px';
+    progressbarLoaded.append(sky);
+
+    scrubber.classList.add(PLUGIN_CLASSES.SCRUBBER_ATTACHED);
+    scrubber.querySelector(YT_SELECTORS.MUSIC_SLIDER_KNOB_INNER).style.setProperty('display', 'none', 'important');
+
+    const styles = getCatStyles(currentScrubberSrc);
+    const cat = document.createElement('img');
+
+    cat.src = getCatSrcUrl(currentScrubberSrc);
+    cat.className = PLUGIN_CLASSES.CAT_RUNNING;
+    cat.style.cssText = 'position:absolute;right:0;left:auto';
+    cat.style.setProperty('height', styles.height, 'important');
+    cat.style.setProperty('top', styles.topMusic, 'important');
+    scrubber.append(cat);
+  }
+
+  const musicPlayer = document.querySelector(YT_SELECTORS.MUSIC_PROGRESS_BAR);
+
+  if (musicPlayer) {
+    addYoutubeMusicObserver(musicPlayer);
+  }
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== 'sync') return;
+
+    const banner = document.getElementById(PLUGIN_IDS.PROMO_BANNER);
+
+    if (!banner) return;
+
+    if (changes[STORAGE_KEYS.THEME]) {
+      banner.classList.toggle(PLUGIN_CLASSES.LIGHT_THEME, changes[STORAGE_KEYS.THEME].newValue === 'light');
     }
 
-    // Main page resume progress bars
-    const mainProgressBars = document.querySelectorAll(YT_SELECTORS.RESUME_PROGRESS_BAR);
-
-    if (document.querySelectorAll(`.${PLUGIN_CLASSES.MAIN_RAINBOW}`).length >= mainProgressBars.length) return;
-
-    mainProgressBars.forEach(item => {
-      if (item.querySelector(`.${PLUGIN_CLASSES.MAIN_RAINBOW}`)) return;
-
-      const img = document.createElement('img');
-
-      img.src = url + ASSETS.RAINBOW;
-      img.className = PLUGIN_CLASSES.MAIN_RAINBOW;
-      item.append(img);
-    });
+    if (changes[STORAGE_KEYS.LANGUAGE]) {
+      applyBannerTranslation(banner, changes[STORAGE_KEYS.LANGUAGE].newValue);
+    }
   });
-
-  observer.observe(contentEl, { attributes: false, childList: true, subtree: true });
-});
-
-// Video hover preview
-waitForElement(YT_SELECTORS.PLAYER_CONTROLS, player => {
-  const observer = new MutationObserver(() => {
-    togglePreview();
-  });
-
-  observer.observe(player, { attributes: false, childList: true, subtree: true });
-});
-
-// YouTube Music
-function addYoutubeMusicObserver(player) {
-  const progressbarPlayed = player.querySelector(YT_SELECTORS.MUSIC_PRIMARY_PROGRESS);
-  const progressbarLoaded = player.querySelector(YT_SELECTORS.MUSIC_SECONDARY_PROGRESS);
-  const scrubber = player.querySelector(YT_SELECTORS.MUSIC_SLIDER_KNOB);
-
-  progressbarPlayed.parentNode.style.setProperty('overflow', 'visible', 'important');
-
-  const rainbow = document.createElement('img');
-
-  rainbow.src = url + ASSETS.RAINBOW;
-  rainbow.className = PLUGIN_CLASSES.MAIN_RAINBOW;
-  rainbow.style.cssText = 'width:100%;height:16px;top:-6px';
-  progressbarPlayed.append(rainbow);
-
-  const sky = document.createElement('img');
-
-  sky.src = url + ASSETS.NIGHT_SKY;
-  sky.className = PLUGIN_CLASSES.NIGHT_SKY;
-  sky.style.cssText = 'height:10px;top:-4px';
-  progressbarLoaded.append(sky);
-
-  scrubber.classList.add(PLUGIN_CLASSES.SCRUBBER_ATTACHED);
-  scrubber.querySelector(YT_SELECTORS.MUSIC_SLIDER_KNOB_INNER).style.setProperty('display', 'none', 'important');
-
-  const styles = getCatStyles(currentScrubberSrc);
-  const cat = document.createElement('img');
-
-  cat.src = getCatSrcUrl(currentScrubberSrc);
-  cat.className = PLUGIN_CLASSES.CAT_RUNNING;
-  cat.style.cssText = 'position:absolute;right:0;left:auto';
-  cat.style.setProperty('height', styles.height, 'important');
-  cat.style.setProperty('top', styles.topMusic, 'important');
-  scrubber.append(cat);
-}
-
-const musicPlayer = document.querySelector(YT_SELECTORS.MUSIC_PROGRESS_BAR);
-
-if (musicPlayer) {
-  addYoutubeMusicObserver(musicPlayer);
 }
 
 function applyBannerTranslation(banner, lang) {
@@ -466,19 +575,3 @@ function injectPromoBanner() {
 }
 
 injectPromoBanner();
-
-chrome.storage.onChanged.addListener((changes, area) => {
-  if (area !== 'sync') return;
-
-  const banner = document.getElementById(PLUGIN_IDS.PROMO_BANNER);
-
-  if (!banner) return;
-
-  if (changes[STORAGE_KEYS.THEME]) {
-    banner.classList.toggle(PLUGIN_CLASSES.LIGHT_THEME, changes[STORAGE_KEYS.THEME].newValue === 'light');
-  }
-
-  if (changes[STORAGE_KEYS.LANGUAGE]) {
-    applyBannerTranslation(banner, changes[STORAGE_KEYS.LANGUAGE].newValue);
-  }
-});
