@@ -733,34 +733,48 @@ body.light-theme
   color: #8a1f1f;
 }
 
-@media (width <= 480px),
-  (device-width <= 932px) and (orientation: landscape) {
+/* Mobile portrait + landscape: iPhone 16 family short side is 393–440 CSS px.
+   `hover: none` + `pointer: coarse` restricts these rules to real touch devices
+   so the desktop Chrome/Safari extension popup windows (which can also be small)
+   don't get the full-screen layout. */
+@media (hover: none) and (pointer: coarse) and (orientation: portrait) and (max-width: 480px),
+  (hover: none) and (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
   body {
-    width: 100vw !important;
-    max-width: 100% !important;
-    min-width: 100% !important;
-    padding: 16px 16px 24px !important;
-    border-radius: 0 !important;
-    border-left: none !important;
-    border-right: none !important;
-    box-shadow: none !important;
-    overflow: auto !important;
+    width: 100vw;
+    max-width: 100%;
+    min-width: 100%;
+    padding: 12px 16px 16px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+    overflow: auto;
   }
 
   .cat-grid-container {
-    max-height: none !important;
+    max-height: none;
     grid-template-columns: repeat(
       auto-fill,
-      minmax(85px, 1fr)
-    ) !important;
-    gap: 12px !important;
+      minmax(70px, 1fr)
+    );
+    gap: 10px;
   }
 
   .custom-cat-controls {
-    margin: 12px 0 0 !important;
+    margin: 8px 0 0;
   }
 
   .lang-select-container {
-    padding: 0 !important;
+    padding: 0;
+  }
+
+  .support-button-row {
+    gap: 8px;
+  }
+
+  .support-button {
+    font-size: 16px;
+    padding: 11px 8px;
+    border-radius: 26px;
   }
 }

@@ -88,9 +88,12 @@ export const MOBILE_SELECTORS = {
   LOAD_PROGRESS: '.ytProgressBarLineProgressBarLoaded',
   CONTENT: '#player-control-container',
   PLAYER_CONTROLS: '.player-controls-content',
+  PLAY_PROGRESS_BAR_SEGMENTAL: '.ytChapteredProgressBarChapteredPlayerBarChapterSeen',
+  LOAD_PROGRESS_BAR_SEGMENTAL: '.ytChapteredProgressBarChapteredPlayerBarLoaded',
+  PROGRESS_BAR_SEGMENTAL: '.ytChapteredProgressBarChapteredPlayerBarChapter',
 };
 
-export const YOUTUBE_URL_PATTERNS = ['*://*.youtube.com/*', '*://music.youtube.com/*'];
+export const YOUTUBE_URL_PATTERNS = ['*://*.youtube.com/*', '*://music.youtube.com/*', '*://m.youtube.com/*'];
 
 export const ASSETS = {
   RAINBOW: 'rainbow.png',
