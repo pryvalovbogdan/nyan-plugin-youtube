@@ -31,8 +31,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.runtime.onMessageExternal.addListener((request, sender, sendResponse) => {
   const handler = Messages[request.action];
 
-  console.log('handler', handler);
-
   if (typeof handler === 'function') {
     return handler(request, sender, sendResponse);
   }

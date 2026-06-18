@@ -1,5 +1,5 @@
 {
-  "name": "Nyan Cat Youtube Extension",
+  "name": "Nyan Cat Extension",
   "version": "1.0.0",
   "description": "Replace YouTube's progress bar with an animated cat on a rainbow trail. 12 cats or upload your own GIF.",
   "icons": {

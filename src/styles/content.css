@@ -16,6 +16,7 @@
   height: 20px;
   width: 100%;
   left: -7px;
+  min-width: auto;
 }
 
 .night-sky {

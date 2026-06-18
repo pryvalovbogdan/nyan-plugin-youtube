@@ -66,10 +66,9 @@ function updateActiveCatElements(srcName) {
   const styles = getCatStyles(srcName);
   const isYouTubeMusic = window.location.hostname === 'music.youtube.com';
 
-  console.log('srcName', srcName);
   document.querySelectorAll(`.${PLUGIN_CLASSES.CAT_RUNNING}`).forEach(catImg => {
     catImg.src = getCatSrcUrl(srcName);
-    console.log('catImg', catImg);
+
     catImg.style.setProperty('height', styles.height, 'important');
     catImg.style.top = isYouTubeMusic ? styles.topMusic : styles.top;
   });
@@ -99,8 +98,6 @@ chrome.storage.local.get(['customUserCat', STORAGE_KEYS.CAT_STYLE_OVERRIDES], lo
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('message.action', message.action);
-
   if (message.action === ACTIONS.CHANGE_CAT_IMAGE) {
     if (message.isCustom) {
       chrome.storage.local.get(['customUserCat'], localResult => {
@@ -182,11 +179,6 @@ function toggleCurrentVideo(component, scrubbers) {
 
     if (styles.topHover) image.style.top = styles.topHover;
 
-    document.querySelectorAll(activeSelectors.SCRUBBER_BUTTON).forEach(btn => {
-      btn.style.setProperty('display', 'none', 'important');
-      btn.style.display = 'none!important;';
-    });
-
     item.append(image);
   });
 
@@ -267,7 +259,6 @@ if (isMobileSafari) {
 
       // If a mobile track container exists and the cat hasn't been appended yet
       if (scrubberContainer && !scrubberContainer.querySelector(`.${PLUGIN_CLASSES.CAT_RUNNING}`)) {
-        scrubberContainer.style.setProperty('z-index', '5', 'important');
         toggleCurrentVideo(null, [scrubberContainer]);
       }
 
@@ -292,63 +283,64 @@ if (isMobileSafari) {
     mobileDOMObserver.observe(container, { attributes: true, childList: true, subtree: true });
   });
 
-  waitForElement(activeSelectors.PLAYER_CONTROLS, player => {
+  waitForElement('body', player => {
     const observer = new MutationObserver(() => {
       document.querySelectorAll(activeSelectors.SCRUBBER_BUTTON).forEach(dot => {
-        if (dot && dot.style.getPropertyValue('display') !== 'none') {
-          console.log('dot11', dot, dot.style.getPropertyValue('display'));
-          // 2. Hide the native tracking dot safely on both mobile and desktop
-          dot.style.setProperty('display', 'none');
-          dot.style.display = 'none';
+        if (
+          dot.style.getPropertyValue('background-color') === 'transparent' ||
+          dot.style.getPropertyValue('z-index') === '2'
+        ) {
+          return;
         }
 
-        document.querySelectorAll(activeSelectors.PLAY_PROGRESS_BAR_SEGMENTAL).forEach(item => {
-          // if (item.querySelector(`.${PLUGIN_CLASSES.RAINBOW}`)) return;
-          if (item.classList.contains(PLUGIN_CLASSES.SCRUBBER_ATTACHED)) {
-            return;
-          }
+        dot.style.setProperty('position', 'absolute', 'important');
+        dot.style.setProperty('z-index', '2', 'important');
+        dot.style.setProperty('width', '20px', 'important');
+        dot.style.setProperty('height', '20px', 'important');
+        dot.style.setProperty('top', '-9px', 'important');
+        dot.style.setProperty('left', '-5px', 'important');
+        dot.style.setProperty('background', 'transparent', 'important');
+        dot.style.setProperty('background-color', 'transparent', 'important');
+      });
 
-          if (item.querySelector(`:scope > .${PLUGIN_CLASSES.RAINBOW}`)) return;
+      document.querySelectorAll(activeSelectors.LOAD_PROGRESS_BAR_SEGMENTAL).forEach(item => {
+        const width = item.style.getPropertyValue('width');
 
-          // console.log('item22112', item);
+        if (item.querySelector(`.${PLUGIN_CLASSES.RAINBOW}`) || width === '0%') return;
+
+        item.style.setProperty('background', 'transparent', 'important');
+        const img = document.createElement('img');
+
+        img.src = url + ASSETS.RAINBOW;
+        img.className = PLUGIN_CLASSES.RAINBOW;
+
+        item.parentNode
+          .querySelector('.ytChapteredProgressBarChapteredPlayerBarFill')
+          .style.setProperty('background', 'transparent', 'important');
+
+        item.append(img);
+      });
+      const seenClass = activeSelectors.PLAY_PROGRESS_BAR_SEGMENTAL.slice(1);
+
+      document.querySelectorAll(activeSelectors.PROGRESS_BAR_SEGMENTAL).forEach(item => {
+        const isSeen = item.classList.contains(seenClass);
+        const existingRainbow = item.querySelector(`:scope > .${PLUGIN_CLASSES.RAINBOW}`);
+
+        if (isSeen && !existingRainbow) {
           item.classList.add(PLUGIN_CLASSES.SCRUBBER_ATTACHED);
           item.style.setProperty('background', 'transparent', 'important');
           const img = document.createElement('img');
 
           img.src = url + ASSETS.RAINBOW;
           img.className = PLUGIN_CLASSES.RAINBOW;
+          img.style.setProperty('min-width', 'auto', 'important');
           item.append(img);
-        });
-
-        document.querySelectorAll(activeSelectors.LOAD_PROGRESS_BAR_SEGMENTAL).forEach(item => {
-          const width = item.style.getPropertyValue('width');
-
-          if (item.querySelector(`.${PLUGIN_CLASSES.RAINBOW}`) || width === '0%') return;
-
-          //          if (item.querySelector(`:scope > .${PLUGIN_CLASSES.RAINBOW}`) || width === '0%') return;
-          // console.log('item222', item, width, width === '0%');
-          item.style.setProperty('background', 'transparent', 'important');
-          const img = document.createElement('img');
-
-          img.src = url + ASSETS.RAINBOW;
-          img.className = PLUGIN_CLASSES.RAINBOW;
-
-          item.parentNode
-            .querySelector('.ytChapteredProgressBarChapteredPlayerBarFill')
-            .style.setProperty('background', 'transparent', 'important');
-
-          item.append(img);
-        });
-
-        document.querySelectorAll(activeSelectors.PROGRESS_BAR_SEGMENTAL).forEach(item => {
-          const rainbow = item.querySelector(`.${PLUGIN_CLASSES.RAINBOW}`);
-
-          console.log('rainbow', rainbow, item.classList);
-          // if (!item.classList.contains(activeSelectors.PLAY_PROGRESS_BAR_SEGMENTAL) && rainbow) {
-          //   console.log('calslses', item.classList);
-          //   rainbow.remove();
-          // }
-        });
+        } else if (!isSeen && existingRainbow) {
+          // User seeked back, YouTube stripped ChapterSeen — drop the rainbow
+          // so it can be re-added if the chapter is seen again.
+          existingRainbow.remove();
+          item.classList.remove(PLUGIN_CLASSES.SCRUBBER_ATTACHED);
+        }
       });
     });
 
@@ -394,8 +386,6 @@ if (isMobileSafari) {
     if (!window.location.pathname.startsWith('/watch')) return;
 
     const missing = HEALTH_CHECK_SELECTORS.filter(key => !document.querySelector(YT_SELECTORS[key]));
-
-    // console.log(missing);
 
     if (missing.length) {
       debugLog('Selector health check failed. Missing:', missing.map(key => YT_SELECTORS[key]).join(', '));
