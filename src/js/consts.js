@@ -95,6 +95,22 @@ export const MOBILE_SELECTORS = {
 
 export const YOUTUBE_URL_PATTERNS = ['*://*.youtube.com/*', '*://music.youtube.com/*', '*://m.youtube.com/*'];
 
+export const EXTENSION_VERSION = '1.1.2';
+
+export const WEB_BRIDGE_MESSAGES = {
+  EXTENSION_INSTALLED: 'MY_EXTENSION_INSTALLED',
+  CHECK_EXTENSION_PRESENT: 'CHECK_EXTENSION_PRESENT',
+};
+
+export const WEB_BRIDGE_TARGETS = {
+  CONTENT_SCRIPT: 'SAFARI_EXTENSION_CONTENT_SCRIPT',
+  WEB_PAGE: 'WEB_PAGE',
+};
+
+export const CUSTOM_EVENTS = {
+  CAT_SELECTED: 'nyan:cat-selected',
+};
+
 export const ASSETS = {
   RAINBOW: 'rainbow.png',
   NIGHT_SKY: 'night-sky.gif',

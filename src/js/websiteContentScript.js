@@ -1,16 +1,23 @@
-import { ACTIONS } from './consts.js';
+import {
+  ACTIONS,
+  CUSTOM_EVENTS,
+  EXTENSION_VERSION,
+  STORAGE_KEYS,
+  WEB_BRIDGE_MESSAGES,
+  WEB_BRIDGE_TARGETS,
+} from './consts.js';
 import { isSafariOnAppleOS } from './utils/utils.js';
 
 // 1. Existing Message Passing: Extension background -> Website
 chrome.runtime.onMessage.addListener(message => {
   if (message.action === ACTIONS.CAT_SELECTED_IN_POPUP) {
-    window.dispatchEvent(new CustomEvent('nyan:cat-selected', { detail: message }));
+    window.dispatchEvent(new CustomEvent(CUSTOM_EVENTS.CAT_SELECTED, { detail: message }));
   }
 });
 
 // Helper to announce extension presence to the React layout
 function notifyWebsite() {
-  window.postMessage({ type: 'MY_EXTENSION_INSTALLED', version: '1.1.2' }, '*');
+  window.postMessage({ type: WEB_BRIDGE_MESSAGES.EXTENSION_INSTALLED, version: EXTENSION_VERSION }, '*');
 }
 
 function initSafariWebBridge() {
@@ -20,13 +27,13 @@ function initSafariWebBridge() {
   window.addEventListener('message', async event => {
     if (!event.data) return;
 
-    if (event.data.type === 'CHECK_EXTENSION_PRESENT') {
+    if (event.data.type === WEB_BRIDGE_MESSAGES.CHECK_EXTENSION_PRESENT) {
       notifyWebsite();
 
       return;
     }
 
-    if (event.data.target === 'SAFARI_EXTENSION_CONTENT_SCRIPT') {
+    if (event.data.target === WEB_BRIDGE_TARGETS.CONTENT_SCRIPT) {
       const { action, requestId, ...payload } = event.data;
 
       if (action === ACTIONS.SELECT_CAT) {
@@ -35,8 +42,8 @@ function initSafariWebBridge() {
           if (requestId) {
             window.postMessage(
               {
-                source: 'SAFARI_EXTENSION_CONTENT_SCRIPT',
-                target: 'WEB_PAGE',
+                source: WEB_BRIDGE_TARGETS.CONTENT_SCRIPT,
+                target: WEB_BRIDGE_TARGETS.WEB_PAGE,
                 requestId,
                 response: response ?? { ok: true },
               },
@@ -51,13 +58,13 @@ function initSafariWebBridge() {
       // Handle Custom Upload State synchronization
       if (action === ACTIONS.CHANGE_CAT_IMAGE && payload.isCustom && payload.customUserCat) {
         // Direct update to local extension storage mimicking context updates
-        chrome.storage.local.set({ customUserCat: payload.customUserCat }, () => {
+        chrome.storage.local.set({ [STORAGE_KEYS.CUSTOM_USER_CAT]: payload.customUserCat }, () => {
           chrome.runtime.sendMessage({ action, ...payload }, response => {
             if (requestId) {
               window.postMessage(
                 {
-                  source: 'SAFARI_EXTENSION_CONTENT_SCRIPT',
-                  target: 'WEB_PAGE',
+                  source: WEB_BRIDGE_TARGETS.CONTENT_SCRIPT,
+                  target: WEB_BRIDGE_TARGETS.WEB_PAGE,
                   requestId,
                   response,
                 },
@@ -70,12 +77,12 @@ function initSafariWebBridge() {
         return;
       }
 
-      if (action === 'GET_STATE') {
+      if (action === ACTIONS.GET_STATE) {
         chrome.runtime.sendMessage({ action, ...payload }, response => {
           window.postMessage(
             {
-              source: 'SAFARI_EXTENSION_CONTENT_SCRIPT',
-              target: 'WEB_PAGE',
+              source: WEB_BRIDGE_TARGETS.CONTENT_SCRIPT,
+              target: WEB_BRIDGE_TARGETS.WEB_PAGE,
               requestId,
               response,
             },
