@@ -33,7 +33,7 @@ export async function handleCatSelection(imgSrc, isCustomBase64 = false) {
 
   const [youtubeTabs, websiteTabs] = await Promise.all([
     chrome.tabs.query({ url: YOUTUBE_URL_PATTERNS }),
-    chrome.tabs.query({ url: ['https://nyan-progressbar.com/*', 'http://localhost/*'] }),
+    chrome.tabs.query({ url: ['https://*.nyan-progressbar.com/*'] }),
   ]);
 
   youtubeTabs.forEach(tab => {
