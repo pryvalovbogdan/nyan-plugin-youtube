@@ -1,11 +1,15 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
+const isSafari = process.env.BUILD_TARGET === 'safari';
+const sourceManifest = isSafari ? 'manifest.safari.json' : 'manifest.json';
+const outDir = isSafari ? 'dist-safari' : 'dist';
+
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
-const manifest = JSON.parse(readFileSync('manifest.json', 'utf8'));
+const manifest = JSON.parse(readFileSync(sourceManifest, 'utf8'));
 
 manifest.version = pkg.version;
 
-mkdirSync('dist', { recursive: true });
-writeFileSync('dist/manifest.json', JSON.stringify(manifest, null, 2));
+mkdirSync(outDir, { recursive: true });
+writeFileSync(`${outDir}/manifest.json`, JSON.stringify(manifest, null, 2));
 
-console.log(`manifest.json -> dist/ (version ${pkg.version})`);
+console.log(`${sourceManifest} -> ${outDir}/ (version ${pkg.version})`);

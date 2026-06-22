@@ -51,8 +51,12 @@ export const POPUP_IDS = {
 // Base64 encoding inflates this ~33% before it hits chrome.storage.local.
 export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
-// Flip to true (or build with --define:__NYAN_DEBUG__=true) for verbose logging.
-export const DEBUG = typeof __NYAN_DEBUG__ !== 'undefined' ? __NYAN_DEBUG__ : false;
+// Build-time flag. Always defined via esbuild --define or vitest config.
+// Written as a direct ref (not behind `typeof`) so esbuild can constant-fold
+// and dead-code-eliminate the unused branch.
+export const DEBUG = __NYAN_DEBUG__;
+// __SAFARI__ is used directly at call sites (not re-exported) for the same
+// DCE reason — esbuild only folds across import boundaries inconsistently.
 
 export const debugLog = (...args) => {
   if (DEBUG) console.log('[nyan]', ...args);

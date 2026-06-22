@@ -1,0 +1,72 @@
+{
+  "name": "Kitty Progress Bar",
+  "version": "1.0.0",
+  "description": "Replace the video progress bar with an animated cat on a rainbow trail. 12 cats or upload your own GIF.",
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "author": "Bogdan Pryvalov",
+  "permissions": [
+    "activeTab",
+    "alarms",
+    "storage",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "https://*.youtube.com/*",
+    "https://*.nyan-progressbar.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/*"
+      ],
+      "matches": [
+        "https://*.youtube.com/*"
+      ]
+    },
+    {
+      "resources": [
+        "assets/icon128.png"
+      ],
+      "matches": [
+        "https://*.nyan-progressbar.com/*"
+      ]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.youtube.com/*"
+      ],
+      "js": [
+        "contentScript.js"
+      ],
+      "css": [
+        "content.css"
+      ]
+    },
+    {
+      "matches": [
+        "https://*.nyan-progressbar.com/*"
+      ],
+      "js": [
+        "websiteContentScript.js"
+      ]
+    }
+  ],
+  "externally_connectable": {
+    "matches": [
+      "https://*.nyan-progressbar.com/*"
+    ]
+  },
+  "manifest_version": 3
+}

@@ -5,6 +5,8 @@ import { reloadYouTubeTabs } from './services/YouTubeTabs.js';
 chrome.runtime.onInstalled.addListener(() => {
   reloadYouTubeTabs();
 
+  if (__SAFARI__) return;
+
   chrome.runtime.setUninstallURL('https://nyan-progressbar.com/en/contact/uninstall', () => {
     if (chrome.runtime.lastError) {
       console.error('Error setting uninstall URL:', chrome.runtime.lastError.message);
