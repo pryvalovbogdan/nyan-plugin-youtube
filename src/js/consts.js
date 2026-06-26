@@ -27,11 +27,13 @@ export const PLUGIN_CLASSES = {
   MAIN_RAINBOW: 'main-rainbow',
   MAIN_RAINBOW_WATCHED: 'main-rainbow-watched-segment',
   SCRUBBER_ATTACHED: 'nyanScrubberAttached',
+  SCRUBBER_DOT: 'nyan-scrubber-dot',
   MINI_PLAYER_ATTACHED: 'plugin-attached',
   DOT_HIDDEN: 'displayedNone',
   PROMO_BANNER: 'nyan-promo-banner',
   LIGHT_THEME: 'light-theme',
   CAT_GRID_ITEM: 'cat-grid-item',
+  BODY: 'body',
 };
 
 export const PLUGIN_IDS = {
@@ -83,6 +85,7 @@ export const YT_SELECTORS = {
   MUSIC_SECONDARY_PROGRESS: '#secondaryProgress',
   MUSIC_SLIDER_KNOB: '#sliderKnob',
   MUSIC_SLIDER_KNOB_INNER: '.slider-knob-inner.tp-yt-paper-slider',
+  FILL_PLAYED_BAR: '.ytChapteredProgressBarChapteredPlayerBarFill',
 };
 
 export const MOBILE_SELECTORS = {

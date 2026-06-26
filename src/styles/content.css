@@ -19,6 +19,17 @@
   min-width: auto;
 }
 
+.nyan-scrubber-dot {
+  position: absolute !important;
+  z-index: 2 !important;
+  width: 20px !important;
+  height: 20px !important;
+  top: -9px !important;
+  left: -5px !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
 .night-sky {
   position: absolute;
   height: 18px;
