@@ -86,6 +86,8 @@ export const YT_SELECTORS = {
   MUSIC_SLIDER_KNOB: '#sliderKnob',
   MUSIC_SLIDER_KNOB_INNER: '.slider-knob-inner.tp-yt-paper-slider',
   FILL_PLAYED_BAR: '.ytChapteredProgressBarChapteredPlayerBarFill',
+  YT_NAVIGATE_FINISH: 'yt-navigate-finish',
+  SHORTS_CONTAINER: '#shorts-container',
 };
 
 export const MOBILE_SELECTORS = {

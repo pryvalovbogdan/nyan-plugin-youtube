@@ -285,7 +285,13 @@ export function addYoutubeMusicObserver(player) {
   scrubber.append(cat);
 }
 
-const HEALTH_CHECK_SELECTORS = ['SCRUBBER_BUTTON', 'SCRUBBER_CONTAINER', 'PLAY_PROGRESS', 'LOAD_PROGRESS', 'VIDEO_PLAYER'];
+const HEALTH_CHECK_SELECTORS = [
+  'SCRUBBER_BUTTON',
+  'SCRUBBER_CONTAINER',
+  'PLAY_PROGRESS',
+  'LOAD_PROGRESS',
+  'VIDEO_PLAYER',
+];
 
 // Startup health check: warns (debug builds) when YouTube renames the class
 // names this extension depends on, so breakage is caught before user reports.

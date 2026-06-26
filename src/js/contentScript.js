@@ -29,7 +29,7 @@ import {
   waitForElement,
 } from './contentScript/helpers.js';
 
-chrome.storage.local.get(['customUserCat', STORAGE_KEYS.CAT_STYLE_OVERRIDES], localResult => {
+chrome.storage.local.get([STORAGE_KEYS.CUSTOM_USER_CAT, STORAGE_KEYS.CAT_STYLE_OVERRIDES], localResult => {
   if (localResult[STORAGE_KEYS.CAT_STYLE_OVERRIDES]) {
     setCatStyleOverrides(localResult[STORAGE_KEYS.CAT_STYLE_OVERRIDES]);
   }
@@ -49,7 +49,7 @@ chrome.storage.local.get(['customUserCat', STORAGE_KEYS.CAT_STYLE_OVERRIDES], lo
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === ACTIONS.CHANGE_CAT_IMAGE) {
     if (message.isCustom) {
-      chrome.storage.local.get(['customUserCat'], localResult => {
+      chrome.storage.local.get([STORAGE_KEYS.CUSTOM_USER_CAT], localResult => {
         if (localResult.customUserCat) {
           applyCustomCat(localResult.customUserCat);
         }
@@ -185,25 +185,14 @@ if (isMobileSafari) {
   });
 } else {
   // Original Desktop/Desktop-SPA Pipelines
-  waitForElement(activeSelectors.SCRUBBER_BUTTON, el => toggleCurrentVideo(el));
-
-  window.addEventListener('yt-navigate-finish', () => {
+  window.addEventListener(YT_SELECTORS.YT_NAVIGATE_FINISH, () => {
     waitForElement(activeSelectors.SCRUBBER_BUTTON, el => toggleCurrentVideo(el));
     waitForElement(activeSelectors.CHAPTERS_CONTAINER, node => {
       addObserver(node, { attributes: false, childList: true, subtree: true });
     });
   });
 
-  waitForElement(activeSelectors.CHAPTERS_CONTAINER, node => {
-    addObserver(node, { attributes: false, childList: true, subtree: true });
-  });
-
   setTimeout(runSelectorHealthCheck, 5000);
-
-  // Chapter toolbars
-  waitForElement(YT_SELECTORS.CHAPTERS_CONTAINER, node => {
-    addObserver(node, { attributes: false, childList: true, subtree: true });
-  });
 
   // Page observer: scrubbers, mini player, watched segments, main page rainbow bars
   waitForElement(YT_SELECTORS.CONTENT, contentEl => {
@@ -232,13 +221,12 @@ if (isMobileSafari) {
 
           toggleCurrentVideo(defaultScrubbers[0], scrubbers);
           defaultScrubbers.forEach(btn => (btn.style.display = 'none'));
-          document.querySelectorAll(YT_SELECTORS.CHAPTERS_CONTAINER).forEach(node => addObserver(node));
         }
 
         // Shorts-only branch: skip on every other route so the home feed doesn't
         // pay for two extra document queries on every mutation.
         if (location.pathname.startsWith('/shorts')) {
-          const d = document.querySelector('#shorts-container');
+          const d = document.querySelector(YT_SELECTORS.SHORTS_CONTAINER);
           const dot = document.querySelector(YT_SELECTORS.HOVER_PLAYHEAD_DOT);
 
           if (d && dot) {
