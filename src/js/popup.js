@@ -6,6 +6,13 @@ import { LanguageModule } from './popup/LanguageModule.js';
 import { ThemeModule } from './popup/ThemeModule.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (__SAFARI__) {
+    // App Store guideline 3.1.1 forbids external donation links; the Chrome
+    // Web Store rate-us link also doesn't apply to the Safari build.
+    document.getElementById('donateBtn')?.remove();
+    document.getElementById('rateUsBtn')?.remove();
+  }
+
   [
     new CatGridModule(),
     new ThemeModule(),

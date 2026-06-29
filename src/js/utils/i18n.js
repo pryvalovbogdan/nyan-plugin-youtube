@@ -192,7 +192,11 @@ export const LANGUAGE_NAMES = {
 };
 
 export function getTranslation(lang) {
-  return TRANSLATIONS[lang] || TRANSLATIONS.en;
+  const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
+
+  if (!__SAFARI__) return t;
+
+  return { ...t, bannerText: t.bannerText.replace(/Nyan Cat/g, 'Kitty') };
 }
 
 export function detectBrowserLanguage() {

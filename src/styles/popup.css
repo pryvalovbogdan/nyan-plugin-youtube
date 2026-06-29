@@ -732,3 +732,49 @@ body.light-theme
   background: #ffe1e1;
   color: #8a1f1f;
 }
+
+/* Mobile portrait + landscape: iPhone 16 family short side is 393–440 CSS px.
+   `hover: none` + `pointer: coarse` restricts these rules to real touch devices
+   so the desktop Chrome/Safari extension popup windows (which can also be small)
+   don't get the full-screen layout. */
+@media (hover: none) and (pointer: coarse) and (orientation: portrait) and (max-width: 480px),
+  (hover: none) and (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
+  body {
+    width: 100vw;
+    max-width: 100%;
+    min-width: 100%;
+    padding: 12px 16px 16px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+    overflow: auto;
+  }
+
+  .cat-grid-container {
+    max-height: none;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(70px, 1fr)
+    );
+    gap: 10px;
+  }
+
+  .custom-cat-controls {
+    margin: 8px 0 0;
+  }
+
+  .lang-select-container {
+    padding: 0;
+  }
+
+  .support-button-row {
+    gap: 8px;
+  }
+
+  .support-button {
+    font-size: 16px;
+    padding: 11px 8px;
+    border-radius: 26px;
+  }
+}

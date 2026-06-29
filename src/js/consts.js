@@ -27,11 +27,13 @@ export const PLUGIN_CLASSES = {
   MAIN_RAINBOW: 'main-rainbow',
   MAIN_RAINBOW_WATCHED: 'main-rainbow-watched-segment',
   SCRUBBER_ATTACHED: 'nyanScrubberAttached',
+  SCRUBBER_DOT: 'nyan-scrubber-dot',
   MINI_PLAYER_ATTACHED: 'plugin-attached',
   DOT_HIDDEN: 'displayedNone',
   PROMO_BANNER: 'nyan-promo-banner',
   LIGHT_THEME: 'light-theme',
   CAT_GRID_ITEM: 'cat-grid-item',
+  BODY: 'body',
 };
 
 export const PLUGIN_IDS = {
@@ -51,8 +53,12 @@ export const POPUP_IDS = {
 // Base64 encoding inflates this ~33% before it hits chrome.storage.local.
 export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
-// Flip to true (or build with --define:__NYAN_DEBUG__=true) for verbose logging.
-export const DEBUG = typeof __NYAN_DEBUG__ !== 'undefined' ? __NYAN_DEBUG__ : false;
+// Build-time flag. Always defined via esbuild --define or vitest config.
+// Written as a direct ref (not behind `typeof`) so esbuild can constant-fold
+// and dead-code-eliminate the unused branch.
+export const DEBUG = __NYAN_DEBUG__;
+// __SAFARI__ is used directly at call sites (not re-exported) for the same
+// DCE reason — esbuild only folds across import boundaries inconsistently.
 
 export const debugLog = (...args) => {
   if (DEBUG) console.log('[nyan]', ...args);
@@ -79,9 +85,40 @@ export const YT_SELECTORS = {
   MUSIC_SECONDARY_PROGRESS: '#secondaryProgress',
   MUSIC_SLIDER_KNOB: '#sliderKnob',
   MUSIC_SLIDER_KNOB_INNER: '.slider-knob-inner.tp-yt-paper-slider',
+  FILL_PLAYED_BAR: '.ytChapteredProgressBarChapteredPlayerBarFill',
+  YT_NAVIGATE_FINISH: 'yt-navigate-finish',
+  SHORTS_CONTAINER: '#shorts-container',
 };
 
-export const YOUTUBE_URL_PATTERNS = ['*://*.youtube.com/*', '*://music.youtube.com/*'];
+export const MOBILE_SELECTORS = {
+  SCRUBBER_BUTTON: '.ytProgressBarPlayheadProgressBarPlayheadDot',
+  SCRUBBER_CONTAINER: '.ytProgressBarPlayheadHost',
+  PLAY_PROGRESS: '.ytProgressBarLineProgressBarPlayed',
+  LOAD_PROGRESS: '.ytProgressBarLineProgressBarLoaded',
+  CONTENT: '#player-control-container',
+  PLAYER_CONTROLS: '.player-controls-content',
+  PLAY_PROGRESS_BAR_SEGMENTAL: '.ytChapteredProgressBarChapteredPlayerBarChapterSeen',
+  LOAD_PROGRESS_BAR_SEGMENTAL: '.ytChapteredProgressBarChapteredPlayerBarLoaded',
+  PROGRESS_BAR_SEGMENTAL: '.ytChapteredProgressBarChapteredPlayerBarChapter',
+};
+
+export const YOUTUBE_URL_PATTERNS = ['*://*.youtube.com/*', '*://music.youtube.com/*', '*://m.youtube.com/*'];
+
+export const EXTENSION_VERSION = '1.1.2';
+
+export const WEB_BRIDGE_MESSAGES = {
+  EXTENSION_INSTALLED: 'MY_EXTENSION_INSTALLED',
+  CHECK_EXTENSION_PRESENT: 'CHECK_EXTENSION_PRESENT',
+};
+
+export const WEB_BRIDGE_TARGETS = {
+  CONTENT_SCRIPT: 'SAFARI_EXTENSION_CONTENT_SCRIPT',
+  WEB_PAGE: 'WEB_PAGE',
+};
+
+export const CUSTOM_EVENTS = {
+  CAT_SELECTED: 'nyan:cat-selected',
+};
 
 export const ASSETS = {
   RAINBOW: 'rainbow.png',

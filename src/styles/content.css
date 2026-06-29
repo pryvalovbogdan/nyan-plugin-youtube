@@ -4,7 +4,6 @@
   top: -5px;
   left: -15px;
   transform: scale(1.1);
-  z-index: 2;
 }
 
 .nyan-running:hover {
@@ -17,6 +16,18 @@
   height: 20px;
   width: 100%;
   left: -7px;
+  min-width: auto;
+}
+
+.nyan-scrubber-dot {
+  position: absolute !important;
+  z-index: 2 !important;
+  width: 20px !important;
+  height: 20px !important;
+  top: -9px !important;
+  left: -5px !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 .night-sky {

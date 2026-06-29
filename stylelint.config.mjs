@@ -3,6 +3,7 @@ export default {
   "extends": ["stylelint-config-standard", "stylelint-config-css-modules"],
   "plugins": ["stylelint-prettier"],
   "rules": {
+  "media-feature-range-notation": "prefix",
     "prettier/prettier": [true, {
         "singleQuote": true,
         "tabWidth": 2,

@@ -15,6 +15,8 @@ module.exports = [
             globals: {
                 ...globals.browser,
                 ...globals.webextensions,
+                __NYAN_DEBUG__: 'readonly',
+                __SAFARI__: 'readonly',
             },
         },
         plugins: {

@@ -1,7 +1,10 @@
 .idea
 node_modules
 dist
+dist-safari
 extension.zip
+extension-safari.zip
 extension
-nyan-progressbar
 coverage
+ios-safari-build
+nyan-progressbar
