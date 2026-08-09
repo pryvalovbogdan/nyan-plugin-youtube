@@ -175,6 +175,22 @@ export const TRANSLATIONS = {
     uploadErrorType: 'Будь ласка, оберіть файл зображення (GIF, PNG, WebP або JPEG).',
     uploadErrorSize: 'Зображення завелике. Максимальний розмір — 4 МБ.',
   },
+  sk: {
+    title: 'Výber mačky',
+    donate: 'Podporiť',
+    customize: 'Prispôsobiť',
+    more: 'Viac',
+    rateUs: 'Ohodnoťte nás',
+    bannerText: 'Teraz si môžete vybrať vlastnú tému <strong>Nyan Cat</strong>! 🐱✨',
+    bannerBtn: 'Vybrať mačku',
+    bannerClose: 'Zavrieť',
+    adjustPosition: 'Upraviť polohu',
+    height: 'Výška',
+    topOffset: 'Odsadenie zhora',
+    resetPosition: 'Nastaviť predvolenú polohu',
+    uploadErrorType: 'Vyberte prosím obrázkový súbor (GIF, PNG, WebP alebo JPEG).',
+    uploadErrorSize: 'Obrázok je príliš veľký. Maximálna veľkosť je 4 MB.',
+  },
 };
 
 export const LANGUAGE_NAMES = {
@@ -189,6 +205,7 @@ export const LANGUAGE_NAMES = {
   pl: 'Polski',
   de: 'Deutsch',
   uk: 'Українська',
+  sk: 'Slovenčina',
 };
 
 export function getTranslation(lang) {
