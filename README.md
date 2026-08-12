@@ -61,7 +61,7 @@
 | Bundler | esbuild |
 | CSS | csso (minified) |
 | Storage | `chrome.storage.local` + `chrome.storage.sync` |
-| i18n | 11 locales — en, es, pt, fr, de, uk, pl, vi, id, tl, tr |
+| i18n | 12 locales — en, es, pt, fr, de, uk, pl, vi, id, tl, tr, sk |
 
 ---
 
