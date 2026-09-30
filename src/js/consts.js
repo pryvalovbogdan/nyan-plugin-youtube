@@ -16,6 +16,8 @@ export const STORAGE_KEYS = {
   BANNER_DISMISSED: 'bannerDismissed',
   CAT_STYLE_OVERRIDES: 'catStyleOverrides',
   CUSTOM_USER_CAT: 'customUserCat',
+  HIDE_RAINBOW: 'hideRainbow',
+  HIDE_NIGHT_SKY: 'hideNightSky',
 };
 
 export const CUSTOM_CAT_SENTINEL = '__custom__';
@@ -34,6 +36,8 @@ export const PLUGIN_CLASSES = {
   LIGHT_THEME: 'light-theme',
   CAT_GRID_ITEM: 'cat-grid-item',
   BODY: 'body',
+  HIDE_RAINBOW: 'nyan-hide-rainbow',
+  HIDE_NIGHT_SKY: 'nyan-hide-night-sky',
 };
 
 export const PLUGIN_IDS = {
@@ -47,6 +51,8 @@ export const POPUP_IDS = {
   THEME_CHECKBOX: 'themeCheckbox',
   LANGUAGE_SELECT: 'languageSelect',
   UPLOAD_ERROR: 'uploadError',
+  HIDE_RAINBOW_CHECKBOX: 'hideRainbowCheckbox',
+  HIDE_NIGHT_SKY_CHECKBOX: 'hideNightSkyCheckbox',
 };
 
 // Maximum size for user-uploaded custom cat images (4 MB).

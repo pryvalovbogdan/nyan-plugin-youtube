@@ -8,10 +8,12 @@ import {
   YT_SELECTORS,
 } from './consts.js';
 import {
+  BAR_VISIBILITY_KEYS,
   activeSelectors,
   addObserver,
   addYoutubeMusicObserver,
   applyBannerTranslation,
+  applyBarVisibility,
   applyCustomCat,
   getCurrentScrubberSrc,
   injectPromoBanner,
@@ -44,6 +46,20 @@ chrome.storage.local.get([STORAGE_KEYS.CUSTOM_USER_CAT, STORAGE_KEYS.CAT_STYLE_O
       updateActiveCatElements(saved);
     }
   });
+});
+
+chrome.storage.sync.get(BAR_VISIBILITY_KEYS, applyBarVisibility);
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'sync') return;
+
+  const settings = {};
+
+  BAR_VISIBILITY_KEYS.forEach(key => {
+    if (changes[key]) settings[key] = changes[key].newValue;
+  });
+
+  applyBarVisibility(settings);
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -185,12 +201,18 @@ if (isMobileSafari) {
   });
 } else {
   // Original Desktop/Desktop-SPA Pipelines
-  window.addEventListener(YT_SELECTORS.YT_NAVIGATE_FINISH, () => {
-    waitForElement(activeSelectors.SCRUBBER_BUTTON, el => toggleCurrentVideo(el));
-    waitForElement(activeSelectors.CHAPTERS_CONTAINER, node => {
+  const observeChapterContainers = () => {
+    document.querySelectorAll(activeSelectors.CHAPTERS_CONTAINER).forEach(node => {
       addObserver(node, { attributes: false, childList: true, subtree: true });
     });
+  };
+
+  window.addEventListener(YT_SELECTORS.YT_NAVIGATE_FINISH, () => {
+    waitForElement(activeSelectors.SCRUBBER_BUTTON, el => toggleCurrentVideo(el));
+    waitForElement(activeSelectors.CHAPTERS_CONTAINER, observeChapterContainers);
   });
+
+  waitForElement(activeSelectors.CHAPTERS_CONTAINER, observeChapterContainers);
 
   setTimeout(runSelectorHealthCheck, 5000);
 
@@ -212,6 +234,8 @@ if (isMobileSafari) {
         }
 
         if (!hasAdded) return;
+
+        observeChapterContainers();
 
         // New scrubber containers after navigation or new video load
         const scrubbers = document.querySelectorAll(YT_SELECTORS.SCRUBBER_CONTAINER);

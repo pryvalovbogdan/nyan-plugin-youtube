@@ -19,6 +19,13 @@
   min-width: auto;
 }
 
+html:not(.nyan-hide-rainbow)
+  .ytp-play-progress:has(
+    > .rainbow
+  ) {
+  background: transparent !important;
+}
+
 .nyan-scrubber-dot {
   position: absolute !important;
   z-index: 2 !important;
@@ -191,4 +198,21 @@
   background-color: rgb(
     0 0 0 / 8%
   );
+}
+
+.nyan-hide-rainbow .rainbow,
+.nyan-hide-rainbow
+  .main-rainbow,
+.nyan-hide-rainbow
+  .main-rainbow-watched-segment,
+.nyan-hide-night-sky
+  .night-sky {
+  display: none !important;
+}
+
+.nyan-hide-rainbow
+  .night-sky {
+  top: 0 !important;
+  left: 0 !important;
+  height: 100% !important;
 }

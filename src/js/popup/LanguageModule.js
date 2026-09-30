@@ -15,6 +15,9 @@ export class LanguageModule extends PopupModule {
     const labelHeight = document.getElementById('labelHeight');
     const labelTop = document.getElementById('labelTop');
     const resetPositionBtn = document.getElementById('resetPositionBtn');
+    const progressBarTitle = document.getElementById('progressBarTitle');
+    const labelHideRainbow = document.getElementById('labelHideRainbow');
+    const labelHideNightSky = document.getElementById('labelHideNightSky');
 
     if (title) title.textContent = t.title;
 
@@ -33,6 +36,12 @@ export class LanguageModule extends PopupModule {
     if (labelTop) labelTop.textContent = t.topOffset;
 
     if (resetPositionBtn) resetPositionBtn.textContent = t.resetPosition;
+
+    if (progressBarTitle) progressBarTitle.textContent = t.progressBar;
+
+    if (labelHideRainbow) labelHideRainbow.textContent = t.hideRainbow;
+
+    if (labelHideNightSky) labelHideNightSky.textContent = t.hideNightSky;
   }
 
   #buildLanguageSelect(savedLang) {
