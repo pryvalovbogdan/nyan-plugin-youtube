@@ -1,3 +1,4 @@
+import { BarVisibilityModule } from './popup/BarVisibilityModule.js';
 import { CatGridModule } from './popup/CatGridModule.js';
 import { CustomCatControlsModule } from './popup/CustomCatControlsModule.js';
 import { GifUploaderModule } from './popup/GifUploaderModule.js';
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new LanguageModule(),
     new GifUploaderModule(),
     new CustomCatControlsModule(),
+    new BarVisibilityModule(),
     new HeartAnimationModule(),
   ].forEach(m => m.init());
 });

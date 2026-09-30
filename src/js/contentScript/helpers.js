@@ -130,11 +130,25 @@ export function applyCustomCat(dataUrl) {
   updateActiveCatElements(currentScrubberSrc);
 }
 
+const BAR_VISIBILITY_CLASSES = {
+  [STORAGE_KEYS.HIDE_RAINBOW]: PLUGIN_CLASSES.HIDE_RAINBOW,
+  [STORAGE_KEYS.HIDE_NIGHT_SKY]: PLUGIN_CLASSES.HIDE_NIGHT_SKY,
+};
+
+export const BAR_VISIBILITY_KEYS = Object.keys(BAR_VISIBILITY_CLASSES);
+
+export function applyBarVisibility(settings) {
+  Object.entries(BAR_VISIBILITY_CLASSES).forEach(([key, className]) => {
+    if (key in settings) document.documentElement.classList.toggle(className, Boolean(settings[key]));
+  });
+}
+
 export function toggleToolBars(parent = document, isChapter = false) {
   parent.querySelectorAll(activeSelectors.PLAY_PROGRESS).forEach(item => {
     if (item.querySelector(`.${PLUGIN_CLASSES.RAINBOW}`)) return;
 
-    item.style.setProperty('background', 'transparent', 'important');
+    if (isMobileSafari) item.style.setProperty('background', 'transparent', 'important');
+
     const img = document.createElement('img');
 
     img.src = url + ASSETS.RAINBOW;

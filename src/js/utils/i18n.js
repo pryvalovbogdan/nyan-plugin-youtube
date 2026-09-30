@@ -14,6 +14,9 @@ export const TRANSLATIONS = {
     resetPosition: 'Set default position',
     uploadErrorType: 'Please choose an image file (GIF, PNG, WebP or JPEG).',
     uploadErrorSize: 'Image is too large. Maximum size is 4 MB.',
+    progressBar: 'Progress bar',
+    hideRainbow: 'Hide rainbow',
+    hideNightSky: 'Hide night sky',
   },
   es: {
     title: 'Selector de gatito',
@@ -30,6 +33,9 @@ export const TRANSLATIONS = {
     resetPosition: 'Posición predeterminada',
     uploadErrorType: 'Elige un archivo de imagen (GIF, PNG, WebP o JPEG).',
     uploadErrorSize: 'La imagen es demasiado grande. El tamaño máximo es 4 MB.',
+    progressBar: 'Barra de progreso',
+    hideRainbow: 'Ocultar arcoíris',
+    hideNightSky: 'Ocultar cielo nocturno',
   },
   pt: {
     title: 'Seletor de gatinho',
@@ -46,6 +52,9 @@ export const TRANSLATIONS = {
     resetPosition: 'Posição padrão',
     uploadErrorType: 'Escolha um arquivo de imagem (GIF, PNG, WebP ou JPEG).',
     uploadErrorSize: 'A imagem é muito grande. O tamanho máximo é 4 MB.',
+    progressBar: 'Barra de progresso',
+    hideRainbow: 'Ocultar arco-íris',
+    hideNightSky: 'Ocultar céu noturno',
   },
   vi: {
     title: 'Chọn mèo',
@@ -62,6 +71,9 @@ export const TRANSLATIONS = {
     resetPosition: 'Vị trí mặc định',
     uploadErrorType: 'Vui lòng chọn tệp hình ảnh (GIF, PNG, WebP hoặc JPEG).',
     uploadErrorSize: 'Hình ảnh quá lớn. Kích thước tối đa là 4 MB.',
+    progressBar: 'Thanh tiến trình',
+    hideRainbow: 'Ẩn cầu vồng',
+    hideNightSky: 'Ẩn bầu trời đêm',
   },
   id: {
     title: 'Pilih kucing',
@@ -78,6 +90,9 @@ export const TRANSLATIONS = {
     resetPosition: 'Posisi default',
     uploadErrorType: 'Silakan pilih berkas gambar (GIF, PNG, WebP, atau JPEG).',
     uploadErrorSize: 'Gambar terlalu besar. Ukuran maksimum 4 MB.',
+    progressBar: 'Bilah progres',
+    hideRainbow: 'Sembunyikan pelangi',
+    hideNightSky: 'Sembunyikan langit malam',
   },
   fr: {
     title: 'Sélecteur de chaton',
@@ -94,6 +109,9 @@ export const TRANSLATIONS = {
     resetPosition: 'Position par défaut',
     uploadErrorType: 'Veuillez choisir un fichier image (GIF, PNG, WebP ou JPEG).',
     uploadErrorSize: "L'image est trop volumineuse. Taille maximale : 4 Mo.",
+    progressBar: 'Barre de progression',
+    hideRainbow: "Masquer l'arc-en-ciel",
+    hideNightSky: 'Masquer le ciel nocturne',
   },
   tl: {
     title: 'Pumili ng pusa',
@@ -110,6 +128,9 @@ export const TRANSLATIONS = {
     resetPosition: 'Default na posisyon',
     uploadErrorType: 'Pumili ng image file (GIF, PNG, WebP o JPEG).',
     uploadErrorSize: 'Masyadong malaki ang larawan. 4 MB ang maximum na laki.',
+    progressBar: 'Progress bar',
+    hideRainbow: 'Itago ang bahaghari',
+    hideNightSky: 'Itago ang kalangitan sa gabi',
   },
   tr: {
     title: 'Kedi seçici',
@@ -126,6 +147,9 @@ export const TRANSLATIONS = {
     resetPosition: 'Varsayılan konum',
     uploadErrorType: 'Lütfen bir görsel dosyası seçin (GIF, PNG, WebP veya JPEG).',
     uploadErrorSize: 'Görsel çok büyük. En fazla 4 MB olabilir.',
+    progressBar: 'İlerleme çubuğu',
+    hideRainbow: 'Gökkuşağını gizle',
+    hideNightSky: 'Gece gökyüzünü gizle',
   },
   pl: {
     title: 'Wybór kotka',
@@ -142,6 +166,9 @@ export const TRANSLATIONS = {
     resetPosition: 'Domyślna pozycja',
     uploadErrorType: 'Wybierz plik obrazu (GIF, PNG, WebP lub JPEG).',
     uploadErrorSize: 'Obraz jest za duży. Maksymalny rozmiar to 4 MB.',
+    progressBar: 'Pasek postępu',
+    hideRainbow: 'Ukryj tęczę',
+    hideNightSky: 'Ukryj nocne niebo',
   },
   de: {
     title: 'Kätzchen-Auswahl',
@@ -158,6 +185,9 @@ export const TRANSLATIONS = {
     resetPosition: 'Standardposition',
     uploadErrorType: 'Bitte wähle eine Bilddatei (GIF, PNG, WebP oder JPEG).',
     uploadErrorSize: 'Das Bild ist zu groß. Maximale Größe: 4 MB.',
+    progressBar: 'Fortschrittsleiste',
+    hideRainbow: 'Regenbogen ausblenden',
+    hideNightSky: 'Nachthimmel ausblenden',
   },
   uk: {
     title: 'Вибір котика',
@@ -174,6 +204,9 @@ export const TRANSLATIONS = {
     resetPosition: 'Типова позиція',
     uploadErrorType: 'Будь ласка, оберіть файл зображення (GIF, PNG, WebP або JPEG).',
     uploadErrorSize: 'Зображення завелике. Максимальний розмір — 4 МБ.',
+    progressBar: 'Смуга прогресу',
+    hideRainbow: 'Сховати веселку',
+    hideNightSky: 'Сховати нічне небо',
   },
   sk: {
     title: 'Výber mačky',
@@ -190,6 +223,9 @@ export const TRANSLATIONS = {
     resetPosition: 'Nastaviť predvolenú polohu',
     uploadErrorType: 'Vyberte prosím obrázkový súbor (GIF, PNG, WebP alebo JPEG).',
     uploadErrorSize: 'Obrázok je príliš veľký. Maximálna veľkosť je 4 MB.',
+    progressBar: 'Lišta priebehu',
+    hideRainbow: 'Skryť dúhu',
+    hideNightSky: 'Skryť nočnú oblohu',
   },
 };
 

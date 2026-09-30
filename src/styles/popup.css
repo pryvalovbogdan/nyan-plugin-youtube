@@ -733,6 +733,40 @@ body.light-theme
   color: #8a1f1f;
 }
 
+.bar-visibility-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 4px 4px;
+  padding: 10px;
+  background: var(--tile-bg);
+  border: 1px solid
+    var(--border-color);
+  border-radius: 10px;
+}
+
+.bar-visibility-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.bar-visibility-row
+  .control-label {
+  max-width: none;
+}
+
+.bar-visibility-checkbox {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(
+    --accent-color
+  );
+  cursor: pointer;
+}
+
 /* Mobile portrait + landscape: iPhone 16 family short side is 393–440 CSS px.
    `hover: none` + `pointer: coarse` restricts these rules to real touch devices
    so the desktop Chrome/Safari extension popup windows (which can also be small)
