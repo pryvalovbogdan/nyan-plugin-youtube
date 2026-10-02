@@ -19,13 +19,14 @@
         <button id="langDropdownTrigger" class="lang-dropdown-trigger">English</button>
         <div id="langDropdownMenu" class="lang-dropdown-menu"></div>
     </div>
-    <div class="cat-grid-container" id="catGrid">
-        <label class="cat-grid-item upload-tile-card" for="gifUploader" title="Upload your own custom GIF!">
-            <div class="upload-plus-icon">+</div>
-            <div class="upload-text">Upload GIF</div>
+    <div class="upload-bar">
+        <label class="upload-button" for="gifUploader" title="Upload your own custom GIF!" data-i18n-title="uploadGifHint">
+            <span class="upload-plus-icon">+</span>
+            <span class="upload-text" data-i18n="uploadGif">Upload GIF</span>
             <input type="file" id="gifUploader" accept="image/gif" style="display: none;" />
         </label>
     </div>
+    <div class="cat-grid-container" id="catGrid"></div>
     <div class="custom-cat-controls" id="customCatControls">
         <div class="controls-section-header">
             <span class="controls-section-title" id="adjustPositionTitle">Adjust Position</span>
@@ -49,15 +50,17 @@
         </div>
     </div>
     <div class="bar-visibility-controls">
-        <span class="controls-section-title" id="progressBarTitle">Progress bar</span>
-        <label class="bar-visibility-row">
-            <input type="checkbox" class="bar-visibility-checkbox" id="hideRainbowCheckbox">
-            <span class="control-label" id="labelHideRainbow">Hide rainbow</span>
-        </label>
-        <label class="bar-visibility-row">
-            <input type="checkbox" class="bar-visibility-checkbox" id="hideNightSkyCheckbox">
-            <span class="control-label" id="labelHideNightSky">Hide night sky</span>
-        </label>
+        <span class="controls-section-title" id="progressBarTitle">Hide progress bar</span>
+        <div class="bar-visibility-options">
+            <label class="bar-visibility-row">
+                <input type="checkbox" class="bar-visibility-checkbox" id="hideRainbowCheckbox">
+                <span class="control-label" id="labelHideRainbow">Rainbow</span>
+            </label>
+            <label class="bar-visibility-row">
+                <input type="checkbox" class="bar-visibility-checkbox" id="hideNightSkyCheckbox">
+                <span class="control-label" id="labelHideNightSky">Night sky</span>
+            </label>
+        </div>
     </div>
     <div class="support-button-container">
         <div class="support-button-row">
