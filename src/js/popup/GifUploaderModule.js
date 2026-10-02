@@ -52,15 +52,9 @@ export class GifUploaderModule extends PopupModule {
         const base64DataUrl = e.target.result;
 
         chrome.storage.local.set({ [STORAGE_KEYS.CUSTOM_USER_CAT]: base64DataUrl }, () => {
-          const gridContainer = document.getElementById(POPUP_IDS.CAT_GRID);
-          const uploadCard = gridContainer.firstElementChild;
-
           if (chrome.runtime.lastError) {
             console.error('Storage failed:', chrome.runtime.lastError.message);
           }
-
-          gridContainer.innerHTML = '';
-          gridContainer.appendChild(uploadCard);
 
           handleCatSelection(base64DataUrl, true);
           CatGridModule.render();

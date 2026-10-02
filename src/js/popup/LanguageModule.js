@@ -42,6 +42,14 @@ export class LanguageModule extends PopupModule {
     if (labelHideRainbow) labelHideRainbow.textContent = t.hideRainbow;
 
     if (labelHideNightSky) labelHideNightSky.textContent = t.hideNightSky;
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      if (t[el.dataset.i18n]) el.textContent = t[el.dataset.i18n];
+    });
+
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      if (t[el.dataset.i18nTitle]) el.title = t[el.dataset.i18nTitle];
+    });
   }
 
   #buildLanguageSelect(savedLang) {
