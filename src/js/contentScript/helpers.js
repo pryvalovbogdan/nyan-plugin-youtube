@@ -92,24 +92,53 @@ export function waitForElement(selector, callback) {
 // Sub-frame delay, no user-visible difference. YouTube mutates `#content` and
 // `<body>` dozens of times per scroll tick — without this, the callback's
 // querySelectorAll sweep runs each time.
+//
+// Mutation records from every batch in the frame are accumulated, so callbacks
+// that inspect `addedNodes` never miss nodes from an earlier batch.
 export function rafCoalesce(fn) {
-  let queued = false;
-  let lastMutations = null;
+  let pending = null;
 
   return mutations => {
-    lastMutations = mutations;
+    if (pending) {
+      if (mutations) pending.push(...mutations);
 
-    if (queued) return;
+      return;
+    }
 
-    queued = true;
+    pending = mutations ? Array.from(mutations) : [];
     requestAnimationFrame(() => {
-      queued = false;
-      const m = lastMutations;
+      const m = pending;
 
-      lastMutations = null;
+      pending = null;
       fn(m);
     });
   };
+}
+
+export function findInAdded(roots, selector) {
+  const found = [];
+
+  for (const root of roots) {
+    if (root.matches(selector)) found.push(root);
+
+    root.querySelectorAll(selector).forEach(el => found.push(el));
+  }
+
+  return found;
+}
+
+export function addedElements(mutations) {
+  const elements = [];
+
+  if (!mutations) return elements;
+
+  for (const m of mutations) {
+    for (const node of m.addedNodes) {
+      if (node.nodeType === Node.ELEMENT_NODE) elements.push(node);
+    }
+  }
+
+  return elements;
 }
 
 export function updateActiveCatElements(srcName) {
@@ -145,6 +174,8 @@ export function applyBarVisibility(settings) {
 
 export function toggleToolBars(parent = document, isChapter = false) {
   parent.querySelectorAll(activeSelectors.PLAY_PROGRESS).forEach(item => {
+    item.classList.add(PLUGIN_CLASSES.RAINBOW_HOST);
+
     if (item.querySelector(`.${PLUGIN_CLASSES.RAINBOW}`)) return;
 
     if (isMobileSafari) item.style.setProperty('background', 'transparent', 'important');
@@ -209,18 +240,18 @@ export function addObserver(node, config = { attributes: false, childList: true,
 
   observedNodes.add(node);
 
-  const observer = new MutationObserver(() => toggleToolBars(node, true));
+  const observer = new MutationObserver(rafCoalesce(() => toggleToolBars(node, true)));
 
   observer.observe(node, config);
 }
 
 export const togglePreview = () => {
-  const dot = document.querySelector(YT_SELECTORS.HOVER_PLAYHEAD_DOT);
+  document.querySelectorAll(YT_SELECTORS.HOVER_PLAYHEAD_DOT).forEach(dot => {
+    if (dot.classList.contains(PLUGIN_CLASSES.DOT_HIDDEN)) return;
 
-  if (dot && !dot.classList.contains(PLUGIN_CLASSES.DOT_HIDDEN)) {
     dot.style.display = 'none';
     dot.classList.add(PLUGIN_CLASSES.DOT_HIDDEN);
-  }
+  });
 
   document.querySelectorAll(YT_SELECTORS.HOVER_PROGRESS_PLAYED).forEach(item => {
     if (

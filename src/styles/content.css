@@ -20,9 +20,7 @@
 }
 
 html:not(.nyan-hide-rainbow)
-  .ytp-play-progress:has(
-    > .rainbow
-  ) {
+  .ytp-play-progress.nyan-rainbow-host {
   background: transparent !important;
 }
 
@@ -49,6 +47,15 @@ html:not(.nyan-hide-rainbow)
   top: -4px;
   height: 10px;
   width: inherit;
+}
+
+.nyan-resume-host {
+  position: relative;
+}
+
+html:not(.nyan-hide-rainbow)
+  .nyan-resume-host {
+  background: transparent !important;
 }
 
 .ytp-progress-list {

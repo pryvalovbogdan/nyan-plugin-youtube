@@ -11,10 +11,12 @@ import {
   BAR_VISIBILITY_KEYS,
   activeSelectors,
   addObserver,
+  addedElements,
   addYoutubeMusicObserver,
   applyBannerTranslation,
   applyBarVisibility,
   applyCustomCat,
+  findInAdded,
   getCurrentScrubberSrc,
   injectPromoBanner,
   isMobileSafari,
@@ -108,8 +110,13 @@ if (isMobileSafari) {
         if (nativeVideo && !nativeVideo.dataset.nyanBound) {
           nativeVideo.dataset.nyanBound = 'true';
 
+          let catImg = null;
+
           nativeVideo.addEventListener('timeupdate', () => {
-            const catImg = document.querySelector(`.${PLUGIN_CLASSES.CAT_RUNNING}`);
+            // Cache the cat lookup; re-query only after YouTube replaces it.
+            if (!catImg || !catImg.isConnected) {
+              catImg = document.querySelector(`.${PLUGIN_CLASSES.CAT_RUNNING}`);
+            }
 
             if (catImg && nativeVideo.duration) {
               const currentPercentage = (nativeVideo.currentTime / nativeVideo.duration) * 100;
@@ -216,39 +223,70 @@ if (isMobileSafari) {
 
   setTimeout(runSelectorHealthCheck, 5000);
 
-  // Page observer: scrubbers, mini player, watched segments, main page rainbow bars
+  const attachWatchedRainbow = item => {
+    if (item.querySelector(`.${PLUGIN_CLASSES.MAIN_RAINBOW_WATCHED}`)) return;
+
+    const img = document.createElement('img');
+
+    img.src = url + ASSETS.RAINBOW;
+    img.className = PLUGIN_CLASSES.MAIN_RAINBOW_WATCHED;
+    img.style.cssText = 'height:12px;top:0px;position:absolute;width:100%';
+    item.style.position = 'relative';
+    item.style.height = '100%';
+    item.parentElement.style.height = '8px';
+    item.parentElement.style.marginBottom = '6px';
+    item.append(img);
+  };
+
+  const attachMainRainbow = item => {
+    // The ytw resume renderer (playlist side panel, newer lockups) draws the red
+    // fill as a static, gradient-backed div: the host class lets CSS drop the fill
+    // and anchor the rainbow to the bar instead of the whole overlay.
+    if (item.matches(YT_SELECTORS.RESUME_PROGRESS_BAR_YTW)) {
+      item.classList.add(PLUGIN_CLASSES.RESUME_HOST);
+    }
+
+    if (item.querySelector(`.${PLUGIN_CLASSES.MAIN_RAINBOW}`)) return;
+
+    const img = document.createElement('img');
+
+    img.src = url + ASSETS.RAINBOW;
+    img.className = PLUGIN_CLASSES.MAIN_RAINBOW;
+    item.append(img);
+  };
+
+  // Page observer: scrubbers, mini player, watched segments, main page rainbow bars.
+  // #content covers the whole page (feed, comments, chat), so this fires on almost
+  // every scroll tick. Work is scoped to the subtrees that were actually added
+  // instead of sweeping the whole document each frame.
   waitForElement(YT_SELECTORS.CONTENT, contentEl => {
     const observer = new MutationObserver(
       rafCoalesce(mutations => {
-        // Every branch below gates on "did a new container appear?". If no nodes
-        // were added in this batch, nothing can have changed — skip the sweep.
-        let hasAdded = false;
+        const added = addedElements(mutations);
 
-        if (mutations) {
-          for (const m of mutations) {
-            if (m.addedNodes && m.addedNodes.length) {
-              hasAdded = true;
-              break;
-            }
-          }
-        }
+        if (!added.length) return;
 
-        if (!hasAdded) return;
+        findInAdded(added, activeSelectors.CHAPTERS_CONTAINER).forEach(node => {
+          addObserver(node, { attributes: false, childList: true, subtree: true });
+        });
 
-        observeChapterContainers();
+        // Thumbnail bars: can be hundreds of nodes on feed pages — only touch new ones.
+        findInAdded(added, YT_SELECTORS.WATCHED_PROGRESS_BAR).forEach(attachWatchedRainbow);
+        findInAdded(added, YT_SELECTORS.RESUME_PROGRESS_BAR).forEach(attachMainRainbow);
 
-        // New scrubber containers after navigation or new video load
+        // Player scrubbers: only a handful exist, so a single global lookup keeps
+        // the previous self-healing behaviour (cat re-added if YouTube re-renders).
         const scrubbers = document.querySelectorAll(YT_SELECTORS.SCRUBBER_CONTAINER);
+        const needsCat = Array.prototype.some.call(scrubbers, s => !s.querySelector(`.${PLUGIN_CLASSES.CAT_RUNNING}`));
 
-        if (scrubbers.length > document.querySelectorAll(`.${PLUGIN_CLASSES.CAT_RUNNING}`).length) {
+        if (needsCat) {
           const defaultScrubbers = document.querySelectorAll(YT_SELECTORS.SCRUBBER_BUTTON);
 
           toggleCurrentVideo(defaultScrubbers[0], scrubbers);
           defaultScrubbers.forEach(btn => (btn.style.display = 'none'));
         }
 
-        // Shorts-only branch: skip on every other route so the home feed doesn't
-        // pay for two extra document queries on every mutation.
+        // Shorts-only branch: skip on every other route.
         if (location.pathname.startsWith('/shorts')) {
           const d = document.querySelector(YT_SELECTORS.SHORTS_CONTAINER);
           const dot = document.querySelector(YT_SELECTORS.HOVER_PLAYHEAD_DOT);
@@ -266,56 +304,48 @@ if (isMobileSafari) {
           miniScrubber.classList.add(PLUGIN_CLASSES.MINI_PLAYER_ATTACHED);
           toggleCurrentVideo();
         }
-
-        // Watched segment bars on thumbnails
-        const watchedBars = document.querySelectorAll(YT_SELECTORS.WATCHED_PROGRESS_BAR);
-
-        if (document.querySelectorAll(`.${PLUGIN_CLASSES.MAIN_RAINBOW_WATCHED}`).length < watchedBars.length) {
-          watchedBars.forEach(item => {
-            if (item.querySelector(`.${PLUGIN_CLASSES.MAIN_RAINBOW_WATCHED}`)) return;
-
-            const img = document.createElement('img');
-
-            img.src = url + ASSETS.RAINBOW;
-            img.className = PLUGIN_CLASSES.MAIN_RAINBOW_WATCHED;
-            img.style.cssText = 'height:12px;top:0px;position:absolute;width:100%';
-            item.style.position = 'relative';
-            item.style.height = '100%';
-            item.parentElement.style.height = '8px';
-            item.parentElement.style.marginBottom = '6px';
-            item.append(img);
-          });
-        }
-
-        // Main page resume progress bars
-        const mainProgressBars = document.querySelectorAll(YT_SELECTORS.RESUME_PROGRESS_BAR);
-
-        if (document.querySelectorAll(`.${PLUGIN_CLASSES.MAIN_RAINBOW}`).length >= mainProgressBars.length) return;
-
-        mainProgressBars.forEach(item => {
-          if (item.querySelector(`.${PLUGIN_CLASSES.MAIN_RAINBOW}`)) return;
-
-          const img = document.createElement('img');
-
-          img.src = url + ASSETS.RAINBOW;
-          img.className = PLUGIN_CLASSES.MAIN_RAINBOW;
-          item.append(img);
-        });
       }),
     );
 
     observer.observe(contentEl, { attributes: false, childList: true, subtree: true });
+
+    // Bars rendered before the observer attached.
+    contentEl.querySelectorAll(YT_SELECTORS.WATCHED_PROGRESS_BAR).forEach(attachWatchedRainbow);
+    contentEl.querySelectorAll(YT_SELECTORS.RESUME_PROGRESS_BAR).forEach(attachMainRainbow);
   });
 
   // Video hover preview
-  waitForElement(YT_SELECTORS.PLAYER_CONTROLS, player => {
-    const observer = new MutationObserver(
-      rafCoalesce(() => {
-        togglePreview();
-      }),
-    );
+  const observePreview = root => {
+    const observer = new MutationObserver(rafCoalesce(() => togglePreview()));
 
-    observer.observe(player, { attributes: false, childList: true, subtree: true });
+    observer.observe(root, { attributes: false, childList: true, subtree: true });
+    togglePreview();
+  };
+
+  waitForElement(YT_SELECTORS.PLAYER_CONTROLS, observePreview);
+
+  // Feed inline preview player lives in `ytd-app > #video-preview`, outside #content.
+  // YouTube creates it lazily on first thumbnail hover, so wait for it on ytd-app's
+  // direct children only (cheap: no subtree).
+  waitForElement(YT_SELECTORS.APP, app => {
+    const existing = app.querySelector(`:scope > ${YT_SELECTORS.VIDEO_PREVIEW}`);
+
+    if (existing) {
+      observePreview(existing);
+
+      return;
+    }
+
+    const appObserver = new MutationObserver(() => {
+      const preview = app.querySelector(`:scope > ${YT_SELECTORS.VIDEO_PREVIEW}`);
+
+      if (!preview) return;
+
+      appObserver.disconnect();
+      observePreview(preview);
+    });
+
+    appObserver.observe(app, { childList: true });
   });
 
   // YouTube Music
